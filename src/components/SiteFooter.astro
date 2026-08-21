@@ -1,0 +1,30 @@
+---
+import { site } from '../data/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="footer-symbol" aria-hidden="true"><span>✦</span></div>
+  <div class="footer-grid page-width">
+    <div>
+      <a class="footer-brand" href="/">亚略<span>Ar</span></a>
+      <p>{site.description}</p>
+    </div>
+    <div class="footer-index">
+      <p class="eyebrow">INDEX / 索引</p>
+      <a href="/notes/">物理与技术笔记</a>
+      <a href="/writing/">文学与幻想叙事</a>
+      <a href="/projects/">项目档案</a>
+    </div>
+    <div class="footer-meta">
+      <p class="eyebrow">COORDINATES / 坐标</p>
+      <p>31.2304° N · 121.4737° E</p>
+      <p>Shanghai, China</p>
+    </div>
+  </div>
+  <div class="footer-bottom page-width">
+    <span>© {year} 亚略Ar</span>
+    <span>Built with Astro · Written in Markdown</span>
+    <a href="/rss.xml">RSS</a>
+  </div>
+</footer>

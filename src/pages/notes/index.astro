@@ -1,0 +1,51 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleRow from '../../components/ArticleRow.astro';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft && data.kind === 'note'))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const categories = [...new Set(posts.map(post => post.data.category))];
+---
+
+<BaseLayout title="笔记" description="物理课程、实验方法、计算方法与代码工具笔记。">
+  <header class="page-hero">
+    <div class="page-hero-grid">
+      <div><p class="eyebrow">NOTES / 笔记</p><h1>推导、实验<br />与<em>计算</em></h1></div>
+      <p class="page-hero-description">把公式的来路、仪器的脾气与程序的边界写下来。这里收录物理笔记、实验方法、数值模拟和工具实践。</p>
+    </div>
+  </header>
+  <section class="page-content">
+    <div class="page-controls">
+      <span class="page-count">{String(posts.length).padStart(2, '0')} ENTRIES</span>
+      <div class="filter-list" role="group" aria-label="按分类筛选">
+        <button class="filter-button active" data-filter="all">全部</button>
+        {categories.map(category => <button class="filter-button" data-filter={category}>{category}</button>)}
+      </div>
+    </div>
+    <div data-post-list>
+      {posts.map((post, index) => (
+        <div data-category={post.data.category}><ArticleRow post={post} number={String(index + 1).padStart(2, '0')} /></div>
+      ))}
+    </div>
+    <p class="empty-state" data-empty hidden>此分类下暂时没有文章。</p>
+  </section>
+</BaseLayout>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+  const rows = document.querySelectorAll<HTMLElement>('[data-category]');
+  const empty = document.querySelector<HTMLElement>('[data-empty]');
+  buttons.forEach(button => button.addEventListener('click', () => {
+    buttons.forEach(item => item.classList.remove('active'));
+    button.classList.add('active');
+    const filter = button.dataset.filter;
+    let visible = 0;
+    rows.forEach(row => {
+      const show = filter === 'all' || row.dataset.category === filter;
+      row.hidden = !show;
+      if (show) visible++;
+    });
+    if (empty) empty.hidden = visible > 0;
+  }));
+</script>

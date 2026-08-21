@@ -1,0 +1,26 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+  number?: string;
+}
+const { post, number = '01' } = Astro.props;
+const date = post.data.date.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' }).replaceAll('/', '.');
+---
+
+<article class="article-row">
+  <div class="article-number">{number}</div>
+  <div class="article-main">
+    <div class="article-meta">
+      <a class="category" href={`/tags/${encodeURIComponent(post.data.category)}/`}>{post.data.category}</a>
+      <time datetime={post.data.date.toISOString()}>{date}</time>
+    </div>
+    <h3><a href={`/blog/${post.id}/`}>{post.data.title}</a></h3>
+    <p>{post.data.description}</p>
+    <div class="tag-list">
+      {post.data.tags.slice(0, 3).map(tag => <a href={`/tags/${encodeURIComponent(tag)}/`}>#{tag}</a>)}
+    </div>
+  </div>
+  <a class="article-arrow" href={`/blog/${post.id}/`} aria-label={`阅读《${post.data.title}》`}>↗</a>
+</article>

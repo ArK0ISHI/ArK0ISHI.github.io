@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#f7f4ed"/>
+  <g fill="none" stroke="#526b7a" opacity=".18">
+    <circle cx="920" cy="315" r="240"/><circle cx="920" cy="315" r="170"/><circle cx="920" cy="315" r="96"/>
+    <path d="M650 315h540M920 45v540"/>
+  </g>
+  <circle cx="1160" cy="315" r="6" fill="#9a2735"/>
+  <text x="90" y="130" fill="#9a2735" font-family="Consolas,monospace" font-size="16" letter-spacing="4">APPLIED PHYSICS · WRITING</text>
+  <text x="88" y="275" fill="#1d2633" font-family="serif" font-size="100" font-weight="600">亚略</text>
+  <text x="310" y="275" fill="#9a2735" font-family="Georgia,serif" font-size="94" font-style="italic">Ar</text>
+  <text x="94" y="347" fill="#1d2633" font-family="serif" font-size="34" letter-spacing="5">物理、计算与幻想叙事</text>
+  <path d="M94 410h90" stroke="#9a2735"/>
+  <text x="94" y="462" fill="#52606d" font-family="serif" font-size="24">在方程、器件与故事之间，记录可见与不可见的远方。</text>
+  <text x="920" y="344" text-anchor="middle" fill="#1d2633" font-family="Georgia,serif" font-size="90" font-style="italic">Ar</text>
+</svg>

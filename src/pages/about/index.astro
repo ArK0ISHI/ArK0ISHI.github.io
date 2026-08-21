@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="关于我" description="关于亚略Ar：应用物理、计算与文学写作。">
+  <header class="page-hero">
+    <div class="page-hero-grid">
+      <div><p class="eyebrow">ABOUT / 关于</p><h1>世界如何运行，<br />我们如何<em>讲述</em></h1></div>
+      <p class="page-hero-description">应用物理学本科生、物理实验与计算爱好者、文学评论及文本装帧实践者。现在生活与学习于上海。</p>
+    </div>
+  </header>
+
+  <div class="page-content">
+    <section class="about-lead">
+      <aside class="about-aside">
+        <p>NAME · 亚略Ar</p><p>MARK · Ar</p><p>BASE · 上海</p>
+        <strong>KEYWORDS</strong>
+        <p>应用物理 / 精密测量<br />计算物理 / 微纳与光电<br />文学评论 / 东方Project<br />LaTeX / 装帧与排版</p>
+      </aside>
+      <div class="about-copy">
+        <p>这里是亚略Ar，目前就读于东华大学物理学院应用物理学（新能源与微电子）专业。</p>
+        <p>我的学习与实践横跨基础物理、精密测量、计算物理、微纳电子和光电信息。我关心的不只是一个结果是否正确，也关心它如何由实验装置、数学模型和计算方法共同产生。过去的项目涉及融合机器学习的差动式电容微位移测量、滴水龙头液滴的非线性动力学，以及双线圈磁镜场和线圈误差磁场的数值模拟。</p>
+        <p>我也将相当一部分时间留给文学和幻想叙事。我阅读视觉小说、东方Project及其同人作品，尝试文学批评、文本校订与 LaTeX 书籍装帧。对我而言，物理与文学并非彼此隔绝：前者追问世界如何运行，后者追问我们如何感受、记忆并讲述这个世界。</p>
+        <p>这个站点不是一份简历的网页复刻，而是一间持续生长的个人档案室。我会在这里整理研究项目、课程笔记、技术工具、文学评论与零散随笔。</p>
+      </div>
+    </section>
+
+    <section class="detail-section">
+      <h2>方法与工具<small>Methods & Tools</small></h2>
+      <div class="skill-groups">
+        <div class="skill-group"><h3>PHYSICS</h3><p>基础物理 · 精密测量<br />微纳电子 · 光电信息</p></div>
+        <div class="skill-group"><h3>COMPUTATION</h3><p>Python · MATLAB<br />数值模拟 · 数据分析</p></div>
+        <div class="skill-group"><h3>WRITING</h3><p>文学评论 · 长篇写作<br />文本校订 · 研究写作</p></div>
+        <div class="skill-group"><h3>TYPESETTING</h3><p>LaTeX · 书籍装帧<br />公式与技术文档排版</p></div>
+      </div>
+    </section>
+
+    <section class="detail-section">
+      <h2>本站原则<small>Site Principles</small></h2>
+      <ol class="principle-list">
+        <li>把过程写清楚，不只陈列最后的答案。</li>
+        <li>区分事实、推断与个人感受，保留修订的余地。</li>
+        <li>让技术文章能够复现，让文学评论保持温度。</li>
+        <li>保护私人信息，也尊重合作项目中的署名边界。</li>
+      </ol>
+    </section>
+
+    <section class="privacy-note">
+      <h2>联系与转载</h2>
+      <p>首版保持半匿名，邮箱与 GitHub 地址可在 <code>src/data/site.ts</code> 中补充。引用本站内容时请注明作者“亚略Ar”与原文链接。</p>
+    </section>
+  </div>
+</BaseLayout>

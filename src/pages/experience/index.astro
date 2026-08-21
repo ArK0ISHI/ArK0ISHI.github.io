@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const items = [
+  { year: '2026', title: '“华数杯”国际大学生数学建模竞赛一等奖', note: '数学建模与协作研究' },
+  { year: '2026', title: '《当代中国高校筹款的伦理问题诊断及其对策建议》', note: '发表于《高教探索》2026年第1期 · 学生第一作者' },
+  { year: '2025', title: '国家奖学金', note: '本科生国家奖学金' },
+  { year: '2025', title: '全国大学生物理实验竞赛创新赛全国一等奖', note: '融合机器学习的差动式电容微位移测量' },
+  { year: '2025', title: 'CUPT 全国一等奖、全国最佳实验图片奖', note: '滴水龙头液滴特性的实验研究' },
+  { year: '2024', title: '上海市奖学金', note: '上海市普通高等学校优秀学生奖学金' },
+];
+---
+
+<BaseLayout title="经历" description="亚略Ar的精选荣誉、发表与经历时间线。">
+  <header class="page-hero">
+    <div class="page-hero-grid">
+      <div><p class="eyebrow">EXPERIENCE / 经历</p><h1>刻度、记录<br />与<em>来路</em></h1></div>
+      <p class="page-hero-description">奖项是某个阶段的刻度，并不是探索本身。这里保留必要的时间与背景，把更完整的过程交给项目和文章。</p>
+    </div>
+  </header>
+  <section class="page-content">
+    <div class="page-controls"><span class="page-count">SELECTED · 2024—2026</span></div>
+    <div class="experience-list">
+      {items.map(item => (
+        <div class="experience-row"><time>{item.year}</time><h2>{item.title}</h2><p>{item.note}</p></div>
+      ))}
+    </div>
+    <aside class="privacy-note">
+      <h2>公开边界</h2>
+      <p>本站不公开真实姓名、班级、学号、手机号、详细住址或证书原件。GPA 与排名如需展示，建议仅放入单独维护的学术简历。</p>
+    </aside>
+  </section>
+</BaseLayout>

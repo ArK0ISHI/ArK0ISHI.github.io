@@ -1,0 +1,70 @@
+---
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { site } from '../data/site';
+import '../styles/global.css';
+import 'katex/dist/katex.min.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+}
+
+const {
+  title = site.title,
+  description = site.description,
+  image = '/og-card.svg',
+} = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const fullTitle = title === site.title ? title : `${title}｜${site.name}`;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#f7f4ed" />
+    <meta name="description" content={description} />
+    <meta name="keywords" content={site.keywords.join(',')} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate" type="application/rss+xml" title={site.title} href="/rss.xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL(image, Astro.site)} />
+    <title>{fullTitle}</title>
+    <script is:inline>
+      (() => {
+        document.documentElement.classList.add('js');
+        try {
+          const stored = localStorage.getItem('ar-theme');
+          const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          document.documentElement.dataset.theme = stored || (dark ? 'dark' : 'light');
+        } catch (_) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <SiteHeader />
+    <main id="main">
+      <slot />
+    </main>
+    <SiteFooter />
+    <script is:inline>
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.08 });
+      document.querySelectorAll('[data-reveal]').forEach((el) => observer.observe(el));
+    </script>
+  </body>
+</html>

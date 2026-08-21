@@ -1,0 +1,21 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleRow from '../../components/ArticleRow.astro';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft && data.kind === 'writing'))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<BaseLayout title="写作" description="文学评论、视觉小说、东方Project与零散随笔。">
+  <header class="page-hero">
+    <div class="page-hero-grid">
+      <div><p class="eyebrow">WRITING / 写作</p><h1>记忆、幻想<br />与<em>叙事</em></h1></div>
+      <p class="page-hero-description">物理追问世界如何运行，文学追问我们如何感受、记忆并讲述这个世界。这里保存关于视觉小说、东方Project与文本的思考。</p>
+    </div>
+  </header>
+  <section class="page-content">
+    <div class="page-controls"><span class="page-count">{String(posts.length).padStart(2, '0')} ESSAYS</span></div>
+    {posts.map((post, index) => <ArticleRow post={post} number={String(index + 1).padStart(2, '0')} />)}
+  </section>
+</BaseLayout>

@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectRow from '../../components/ProjectRow.astro';
+import { projects } from '../../data/projects';
+---
+
+<BaseLayout title="项目" description="亚略Ar的科研项目、课程大作业、网页与工具。">
+  <header class="page-hero">
+    <div class="page-hero-grid">
+      <div><p class="eyebrow">PROJECTS / 项目</p><h1>从装置到<br /><em>模型</em></h1></div>
+      <p class="page-hero-description">问题从哪里来，数据怎样获得，模型如何近似，误差又藏在哪里。这里保存实验、模拟与工具项目的完整脉络。</p>
+    </div>
+  </header>
+  <section class="page-content">
+    <div class="page-controls"><span class="page-count">{String(projects.length).padStart(2, '0')} PROJECTS</span><span class="eyebrow">ARCHIVE · 2024—NOW</span></div>
+    {projects.map(project => <ProjectRow project={project} />)}
+  </section>
+</BaseLayout>

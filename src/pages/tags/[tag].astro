@@ -1,0 +1,30 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleRow from '../../components/ArticleRow.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  const tags = [...new Set(posts.flatMap(post => [post.data.category, ...post.data.tags]))];
+  return tags.map(tag => ({
+    params: { tag },
+    props: { tag, posts: posts.filter(post => post.data.category === tag || post.data.tags.includes(tag)) },
+  }));
+}
+
+const { tag, posts } = Astro.props;
+posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<BaseLayout title={`标签：${tag}`} description={`收录在“${tag}”标签下的文章。`}>
+  <header class="page-hero">
+    <div class="page-hero-grid">
+      <div><p class="eyebrow">TAG / 标签</p><h1>#{tag}</h1></div>
+      <p class="page-hero-description">同一关键词下的笔记与文章，构成一条尚在生长的阅读路径。</p>
+    </div>
+  </header>
+  <section class="page-content">
+    <div class="page-controls"><span class="page-count">{String(posts.length).padStart(2, '0')} ENTRIES</span></div>
+    {posts.map((post, index) => <ArticleRow post={post} number={String(index + 1).padStart(2, '0')} />)}
+  </section>
+</BaseLayout>

@@ -1,0 +1,21 @@
+---
+import type { Project } from '../data/projects';
+interface Props { project: Project; }
+const { project } = Astro.props;
+---
+
+<article class="project-row">
+  <div class="project-number">{project.number}</div>
+  <div class="project-copy">
+    <p class="project-subtitle">{project.subtitle}</p>
+    <h3>{project.title}</h3>
+    <p>{project.description}</p>
+    <div class="tag-list">
+      {project.tags.map(tag => <span>#{tag}</span>)}
+    </div>
+  </div>
+  <div class="project-result">
+    <span>OUTPUT / 成果</span>
+    <p>{project.result}</p>
+  </div>
+</article>

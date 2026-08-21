@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const shelves = [
+  { no: 'SHELF 01', title: '视觉小说评论', desc: '关于记忆、选择、游戏机制与元叙事的阅读记录。', tags: '文学批评 · 元游戏 · 叙事学' },
+  { no: 'SHELF 02', title: '东方Project', desc: '原作、同人文本与幻想乡叙事传统的索引和分析。', tags: '东方Project · 同人文化 · 幻想' },
+  { no: 'SHELF 03', title: '装帧与校订', desc: 'LaTeX 版式实验、文本整理、字形选择与印刷实践。', tags: 'LaTeX · Typography · Editorial' },
+  { no: 'SHELF 04', title: '物理与科学史', desc: '从经典教材到科学史著作，记录概念形成的背景。', tags: 'Physics · History of Science' },
+  { no: 'SHELF 05', title: '方法与工具', desc: '写作、研究、编程与个人知识管理的方法笔记。', tags: 'Workflow · Tools · Research' },
+  { no: 'SHELF 06', title: '正在阅读', desc: '尚未写成评论的页边批注、摘录线索和待读清单。', tags: 'Currently Reading · Marginalia' },
+];
+---
+
+<BaseLayout title="书架" description="阅读记录、作品索引、装帧与校订实践。">
+  <header class="page-hero">
+    <div class="page-hero-grid">
+      <div><p class="eyebrow">LIBRARY / 书架</p><h1>读过的书<br />与<em>留下的页</em></h1></div>
+      <p class="page-hero-description">书架不是完成清单，而是文本之间关系的地图。这里整理阅读记录、作品索引、装帧试验和校订手记。</p>
+    </div>
+  </header>
+  <section class="page-content">
+    <div class="page-controls"><span class="page-count">06 COLLECTIONS</span><span class="eyebrow">A READING MAP</span></div>
+    <div class="library-grid">
+      {shelves.map(shelf => (
+        <article class="library-entry">
+          <p class="eyebrow">{shelf.no}</p>
+          <h2>{shelf.title}</h2>
+          <p>{shelf.desc}</p>
+          <footer>{shelf.tags}</footer>
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

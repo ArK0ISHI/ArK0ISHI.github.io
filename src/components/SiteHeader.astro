@@ -1,0 +1,79 @@
+---
+import { navItems, site } from '../data/site';
+
+const pathname = Astro.url.pathname;
+const isActive = (href: string) => href === '/' ? pathname === '/' : pathname.startsWith(href);
+---
+
+<header class="site-header" data-header>
+  <a class="skip-link" href="#main">跳至正文</a>
+  <div class="header-inner">
+    <a class="brand" href="/" aria-label={`${site.name} 首页`}>
+      <span class="brand-mark">Ar</span>
+      <span class="brand-name">亚略<span>Ar</span></span>
+    </a>
+
+    <nav class="desktop-nav" aria-label="主导航">
+      {navItems.map((item) => (
+        <a class:list={['nav-link', { active: isActive(item.href) }]} href={item.href}>
+          <span>{item.label}</span>
+          <small>{item.en}</small>
+        </a>
+      ))}
+    </nav>
+
+    <div class="header-actions">
+      <button class="icon-button theme-toggle" type="button" aria-label="切换深浅色模式" title="切换深浅色模式">
+        <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"></path></svg>
+        <svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11Z"></path></svg>
+      </button>
+      <button class="menu-button" type="button" aria-expanded="false" aria-controls="mobile-menu" aria-label="打开导航">
+        <span></span><span></span>
+      </button>
+    </div>
+  </div>
+
+  <nav id="mobile-menu" class="mobile-nav" aria-label="移动端导航" hidden>
+    {navItems.map((item, index) => (
+      <a class:list={['mobile-link', { active: isActive(item.href) }]} href={item.href}>
+        <small>{String(index + 1).padStart(2, '0')}</small>
+        <span>{item.label}</span>
+        <em>{item.en}</em>
+      </a>
+    ))}
+  </nav>
+</header>
+
+<script is:inline>
+  (() => {
+    const root = document.documentElement;
+    const stored = localStorage.getItem('ar-theme');
+    const preferredDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    root.dataset.theme = stored || (preferredDark ? 'dark' : 'light');
+
+    document.querySelector('.theme-toggle')?.addEventListener('click', () => {
+      const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      root.dataset.theme = next;
+      localStorage.setItem('ar-theme', next);
+    });
+
+    const menuButton = document.querySelector('.menu-button');
+    const menu = document.querySelector('#mobile-menu');
+    menuButton?.addEventListener('click', () => {
+      const open = menuButton.getAttribute('aria-expanded') === 'true';
+      menuButton.setAttribute('aria-expanded', String(!open));
+      menuButton.setAttribute('aria-label', open ? '打开导航' : '关闭导航');
+      if (menu instanceof HTMLElement) menu.hidden = open;
+      document.body.classList.toggle('menu-open', !open);
+    });
+
+    let lastY = 0;
+    const header = document.querySelector('[data-header]');
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      header?.classList.toggle('scrolled', y > 16);
+      header?.classList.toggle('hidden-header', y > lastY && y > 180 && !document.body.classList.contains('menu-open'));
+      lastY = y;
+    }, { passive: true });
+  })();
+</script>

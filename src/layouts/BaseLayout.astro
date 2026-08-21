@@ -3,6 +3,7 @@ import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import AmbientLayer from '../components/AmbientLayer.astro';
 import MusicPlayer from '../components/MusicPlayer.astro';
+import SearchPalette from '../components/SearchPalette.astro';
 import { ClientRouter } from 'astro:transitions';
 import { site } from '../data/site';
 import '../styles/global.css';
@@ -57,6 +58,7 @@ const fullTitle = title === site.title ? title : `${title}｜${site.name}`;
   <body>
     <AmbientLayer />
     <SiteHeader />
+    <SearchPalette />
     <main id="main">
       <slot />
     </main>

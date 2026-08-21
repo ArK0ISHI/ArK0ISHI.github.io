@@ -15,7 +15,7 @@ const isActive = (href: string) => href === '/' ? pathname === '/' : pathname.st
 
     <nav class="desktop-nav" aria-label="主导航">
       {navItems.map((item) => (
-        <a class:list={['nav-link', { active: isActive(item.href) }]} href={item.href}>
+        <a class:list={['nav-link', { active: isActive(item.href) }]} href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
           <span>{item.label}</span>
           <small>{item.en}</small>
         </a>
@@ -23,6 +23,9 @@ const isActive = (href: string) => href === '/' ? pathname === '/' : pathname.st
     </nav>
 
     <div class="header-actions">
+      <button class="icon-button search-toggle" type="button" data-search-trigger aria-label="检索文章与项目" title="检索（Ctrl/⌘ + K）">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.4"></circle><path d="m15.5 15.5 4 4"></path></svg>
+      </button>
       <button class="icon-button theme-toggle" type="button" aria-label="切换深浅色模式" title="切换深浅色模式">
         <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.5"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"></path></svg>
         <svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11Z"></path></svg>
@@ -35,7 +38,7 @@ const isActive = (href: string) => href === '/' ? pathname === '/' : pathname.st
 
   <nav id="mobile-menu" class="mobile-nav" aria-label="移动端导航" hidden>
     {navItems.map((item, index) => (
-      <a class:list={['mobile-link', { active: isActive(item.href) }]} href={item.href}>
+      <a class:list={['mobile-link', { active: isActive(item.href) }]} href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
         <small>{String(index + 1).padStart(2, '0')}</small>
         <span>{item.label}</span>
         <em>{item.en}</em>
@@ -67,13 +70,21 @@ const isActive = (href: string) => href === '/' ? pathname === '/' : pathname.st
     const menuButton = document.querySelector<HTMLButtonElement>('.menu-button');
     const menu = document.querySelector<HTMLElement>('#mobile-menu');
     document.body.classList.remove('menu-open');
+    const setMenu = (open: boolean, returnFocus = false) => {
+      menuButton?.setAttribute('aria-expanded', String(open));
+      menuButton?.setAttribute('aria-label', open ? '关闭导航' : '打开导航');
+      if (menu) menu.hidden = !open;
+      document.body.classList.toggle('menu-open', open);
+      if (returnFocus) menuButton?.focus();
+    };
     menuButton?.addEventListener('click', () => {
       const open = menuButton.getAttribute('aria-expanded') === 'true';
-      menuButton.setAttribute('aria-expanded', String(!open));
-      menuButton.setAttribute('aria-label', open ? '打开导航' : '关闭导航');
-      if (menu) menu.hidden = open;
-      document.body.classList.toggle('menu-open', !open);
+      setMenu(!open);
     }, { signal: controller.signal });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && menuButton?.getAttribute('aria-expanded') === 'true') setMenu(false, true);
+    }, { signal: controller.signal });
+    menu?.querySelectorAll('a').forEach(link => link.addEventListener('click', () => setMenu(false), { signal: controller.signal }));
 
     let lastY = window.scrollY;
     const header = document.querySelector<HTMLElement>('[data-header]');

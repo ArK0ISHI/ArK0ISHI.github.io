@@ -8,6 +8,11 @@ import { projects } from '../data/projects';
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 const latest = posts.slice(0, 4);
+const welcomeRoutes = [
+  { slug: 'why-this-site', prompt: '想知道这里为何存在', mark: '从一封开站说明开始' },
+  { slug: 'capacitive-displacement', prompt: '想从一条公式开始', mark: '走进实验、标定与模型' },
+  { slug: 'invisible-distance', prompt: '想从一个故事开始', mark: '翻到记忆与叙事的一页' },
+].map(route => ({ ...route, post: posts.find(post => post.id === route.slug) })).filter(route => route.post);
 const featuredProjects = projects.filter(project => project.featured);
 const honors = [
   { year: '2025', title: '全国大学生物理实验竞赛创新赛全国一等奖', scope: 'PHYSICS EXPERIMENT' },
@@ -19,7 +24,7 @@ const honors = [
 <BaseLayout>
   <section class="home-hero">
     <div class="hero-copy" data-reveal>
-      <p class="hero-overline">Night Field Notes · Shanghai · 31°N</p>
+      <p class="hero-overline">Field Notes · Shanghai · 31°N</p>
       <h1 class="hero-title">
         亚略<span class="latin">Ar</span>
         <span class="line">物理、计算与幻想叙事</span>
@@ -40,8 +45,8 @@ const honors = [
       <span class="observer-dot primary"></span>
       <span class="observer-dot secondary"></span>
       <div class="hero-monogram">Ar</div>
-      <p class="coordinate top">OBSERVATION 23:47<br />31.2304° N / 121.4737° E</p>
-      <p class="coordinate bottom">LAST TRAIN 00:12<br />VISIBLE &amp; INVISIBLE</p>
+      <p class="coordinate top">OBSERVATION ARCHIVE<br />SHANGHAI · 31°N</p>
+      <p class="coordinate bottom">TWO POINTS / ONE HORIZON<br />VISIBLE &amp; INVISIBLE</p>
     </div>
     <div class="hero-scroll"><i></i><span>向下阅读 / Scroll</span></div>
   </section>
@@ -65,45 +70,58 @@ const honors = [
   </section>
 
   <section class="home-section tonight-section" data-reveal>
-    <SectionHeading index="00" title="今晚的观测" en="Tonight's Field Log" />
+    <SectionHeading index="00" title="书桌上的三条线索" en="Three Threads on the Desk" />
     <div class="tonight-log">
       <article class="log-entry">
-        <p class="log-index">01 · ON THE DESK</p>
-        <h3>桌上正在做的事</h3>
-        <p>把一段磁场程序里的误差追到最后一位；茶已经凉了两次，窗口仍亮着。</p>
+        <p class="log-index">01 · MEASUREMENT</p>
+        <h3>测量如何变得可信</h3>
+        <p>从差动电容、重复测量与残差结构出发，整理微位移实验中容易被最终结果遮住的误差来源。</p>
       </article>
       <article class="log-entry">
-        <p class="log-index">02 · BETWEEN PAGES</p>
-        <h3>最近停留的书页</h3>
-        <p>重读那些关于记忆与边界的故事，在页角留下一些铅笔写成的问号。</p>
+        <p class="log-index">02 · MODEL</p>
+        <h3>模型怎样承认边界</h3>
+        <p>把线圈误差场与粒子轨道的数值工作写成可以回看的笔记，说明近似、步长与失效条件。</p>
       </article>
       <article class="log-entry is-listening">
-        <p class="log-index">03 · NOW PLAYING</p>
-        <h3>此刻正在听</h3>
-        <p>肖邦《夜想曲 Op. 15 No. 2》——给夜行、阅读，以及还没有说完的话。</p>
+        <p class="log-index">03 · SOUND ARCHIVE</p>
+        <h3>给阅读留一段声音</h3>
+        <p>声音档案收录肖邦《夜想曲 Op. 15 No. 2》。它默认安静，等你主动按下播放。</p>
         <button class="now-playing-link" type="button" data-open-music>打开夜间信号 <span>→</span></button>
       </article>
     </div>
     <figure class="night-letter">
-      <blockquote>晚风把实验楼的灯一盏盏吹灭。我们仍在讨论：世界的边界究竟写在公式里，还是藏在回家的末班车窗上。</blockquote>
+      <blockquote>有些问题适合在实验室里回答，有些要等到回程路上才慢慢显出轮廓。这个站点想把两种时刻都留下来。</blockquote>
       <figcaption>
-        <span><i></i>记录 · 23:47</span>
+        <span><i></i>观测记录</span>
         <b aria-hidden="true"></b>
-        <span><i></i>回信 · 00:12</span>
+        <span><i></i>夜间回信</span>
       </figcaption>
     </figure>
   </section>
 
   <section class="home-section" data-reveal>
-    <SectionHeading index="01" title="精选项目" en="Selected Projects" href="/projects/" />
+    <SectionHeading index="01" title="如果你第一次来" en="Three Ways into the Archive" />
+    <div class="welcome-paths">
+      {welcomeRoutes.map((route, index) => route.post && (
+        <a class="welcome-path" href={`/blog/${route.post.id}/`}>
+          <span>{String(index + 1).padStart(2, '0')}</span>
+          <div><p>{route.prompt}</p><h3>{route.post.data.title}</h3><small>{route.mark}</small></div>
+          <b aria-hidden="true">↗</b>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="home-section" data-reveal>
+    <SectionHeading index="02" title="精选项目" en="Selected Projects" href="/projects/" />
     <div class="featured-projects">
       {featuredProjects.map((project) => (
         <article class="featured-project">
-          <div class="fp-top"><span class="fp-index">{project.number}</span><span>RESEARCH ARCHIVE</span></div>
+          <div class="fp-top"><span class="fp-index">{project.number}</span><span>项目札记</span></div>
           <div class="fp-glyph" aria-hidden="true"></div>
           <h3>{project.title}</h3>
           <p>{project.description}</p>
-          {project.reflection && <p class="fp-reflection">“{project.reflection}”</p>}
+          {project.reflection && <p class="fp-reflection"><span>问题意识</span>{project.reflection}</p>}
           <div class="fp-result">{project.result}</div>
         </article>
       ))}
@@ -111,14 +129,14 @@ const honors = [
   </section>
 
   <section class="home-section" data-reveal>
-    <SectionHeading index="02" title="最近文章" en="Latest Notes & Essays" href="/notes/" />
+    <SectionHeading index="03" title="最近文章" en="Latest Notes & Essays" href="/notes/" />
     <div class="latest-list">
       {latest.map((post, index) => <ArticleRow post={post} number={String(index + 1).padStart(2, '0')} />)}
     </div>
   </section>
 
   <section class="home-section" data-reveal>
-    <SectionHeading index="03" title="当前关注" en="Currently Exploring" />
+    <SectionHeading index="04" title="当前关注" en="Currently Exploring" />
     <div class="focus-grid">
       <p class="focus-statement">一个结果如何由<em>实验装置</em>、数学模型与计算方法共同产生？一个故事又如何被记忆与讲述？</p>
       <div class="focus-detail">

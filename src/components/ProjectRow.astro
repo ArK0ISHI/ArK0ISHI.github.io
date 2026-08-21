@@ -4,7 +4,7 @@ interface Props { project: Project; }
 const { project } = Astro.props;
 ---
 
-<article class="project-row">
+<article class="project-row" id={project.id}>
   <div class="project-number">{project.number}</div>
   <div class="project-copy">
     <p class="project-subtitle">{project.subtitle}</p>
@@ -13,9 +13,13 @@ const { project } = Astro.props;
     <div class="tag-list">
       {project.tags.map(tag => <span>#{tag}</span>)}
     </div>
+    {project.reflection && (
+      <p class="project-question"><span>问题意识</span>{project.reflection}</p>
+    )}
   </div>
   <div class="project-result">
-    <span>OUTPUT / 成果</span>
+    <span>做成了什么</span>
     <p>{project.result}</p>
+    {project.articleHref && <a href={project.articleHref}>阅读相关笔记 <b>↗</b></a>}
   </div>
 </article>

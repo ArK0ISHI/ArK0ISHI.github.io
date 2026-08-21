@@ -1,0 +1,250 @@
+---
+import { getCollection } from 'astro:content';
+import { projects } from '../data/projects';
+
+type SearchItem = {
+  title: string;
+  description: string;
+  href: string;
+  type: '笔记' | '写作' | '项目' | '页面';
+  meta: string;
+  searchText: string;
+  rank: number;
+};
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const cleanBody = (body = '') => body
+  .replace(/```[\s\S]*?```/g, ' ')
+  .replace(/[`*_>#\[\]{}()$|\\-]/g, ' ')
+  .replace(/\s+/g, ' ')
+  .trim();
+
+const pageItems: SearchItem[] = [
+  { title: '首页', description: '个人简介、精选项目、最近文章与进入本站的三条路径。', href: '/', type: '页面', meta: 'HOME', searchText: '首页 主页 亚略Ar', rank: 20 },
+  { title: '笔记', description: '物理课程、实验方法、计算方法与代码工具笔记。', href: '/notes/', type: '页面', meta: 'NOTES', searchText: '笔记 物理 实验 计算 代码 工具', rank: 19 },
+  { title: '项目', description: '科研项目、课程大作业、网页与工具的持续档案。', href: '/projects/', type: '页面', meta: 'PROJECTS', searchText: '项目 科研 实验 模型 网页 工具', rank: 18 },
+  { title: '写作', description: '文学评论、视觉小说、东方Project与零散随笔。', href: '/writing/', type: '页面', meta: 'WRITING', searchText: '写作 文学 视觉小说 东方Project 随笔', rank: 17 },
+  { title: '书架', description: '已经写下的书页、主题索引、装帧与校订实践。', href: '/library/', type: '页面', meta: 'LIBRARY', searchText: '书架 阅读 文本 装帧 校订 索引', rank: 16 },
+  { title: '关于亚略Ar', description: '身份、方法、工具、本站原则与公开边界。', href: '/about/', type: '页面', meta: 'ABOUT', searchText: '关于 亚略Ar 上海 应用物理 方法 工具', rank: 15 },
+  { title: '经历', description: '精选荣誉、发表记录与必要的时间背景。', href: '/experience/', type: '页面', meta: 'EXPERIENCE', searchText: '经历 荣誉 奖学金 论文 比赛', rank: 14 },
+];
+
+const searchItems: SearchItem[] = [
+  ...posts.map((post, index) => ({
+    title: post.data.title,
+    description: post.data.description,
+    href: `/blog/${post.id}/`,
+    type: post.data.kind === 'note' ? '笔记' as const : '写作' as const,
+    meta: `${post.data.category} · ${post.data.tags.slice(0, 2).join(' · ')}`,
+    searchText: [post.data.title, post.data.description, post.data.category, ...post.data.tags, cleanBody(post.body)].join(' '),
+    rank: 100 - index,
+  })),
+  ...projects.map((project, index) => ({
+    title: project.title,
+    description: project.description,
+    href: `/projects/#${project.id}`,
+    type: '项目' as const,
+    meta: project.tags.slice(0, 3).join(' · '),
+    searchText: [project.title, project.subtitle, project.description, project.reflection, ...project.tags, project.result].filter(Boolean).join(' '),
+    rank: 70 - index,
+  })),
+  ...pageItems,
+];
+
+const serializedIndex = JSON.stringify(searchItems).replaceAll('<', '\\u003c');
+---
+
+<dialog class="search-dialog" data-search-dialog aria-labelledby="search-title">
+  <div class="search-window">
+    <header class="search-header">
+      <div>
+        <p class="eyebrow">ARCHIVE SEARCH / 档案检索</p>
+        <h2 id="search-title">沿着关键词，找一页旧记录</h2>
+      </div>
+      <button class="search-close" type="button" data-search-close aria-label="关闭检索">
+        <span aria-hidden="true"></span><span aria-hidden="true"></span>
+      </button>
+    </header>
+
+    <div class="search-field" role="search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.4"></circle><path d="m15.5 15.5 4 4"></path></svg>
+      <label class="sr-only" for="archive-search-input">搜索文章、项目与标签</label>
+      <input id="archive-search-input" data-search-input type="search" inputmode="search" autocomplete="off" placeholder="例如：误差场、LaTeX、记忆……" />
+      <kbd>ESC</kbd>
+    </div>
+
+    <div class="search-summary">
+      <p data-search-status aria-live="polite">最近整理的记录</p>
+      <button type="button" data-search-random>随机漫游一页 <span>↗</span></button>
+    </div>
+
+    <div class="search-results" data-search-results></div>
+    <div class="search-empty" data-search-empty hidden>
+      <span aria-hidden="true">∅</span>
+      <h3>这一条路径还没有留下记录</h3>
+      <p>换一个较短的关键词，或从“笔记”“写作”“项目”开始走走。</p>
+    </div>
+
+    <footer class="search-footer">
+      <span>检索标题、摘要、分类、标签与正文</span>
+      <span><kbd>⌘</kbd>/<kbd>Ctrl</kbd> + <kbd>K</kbd> 随时打开</span>
+    </footer>
+  </div>
+</dialog>
+
+<script is:inline type="application/json" data-search-index set:html={serializedIndex}></script>
+
+<script>
+  type SearchItem = {
+    title: string;
+    description: string;
+    href: string;
+    type: '笔记' | '写作' | '项目' | '页面';
+    meta: string;
+    searchText: string;
+    rank: number;
+  };
+
+  const searchWindowState = window as Window & { __arSearchController?: AbortController };
+
+  const normalizeSearch = (value: string) => value.normalize('NFKC').trim().toLocaleLowerCase('zh-CN');
+
+  function appendHighlighted(target: HTMLElement, text: string, rawQuery: string) {
+    const query = normalizeSearch(rawQuery);
+    if (!query) {
+      target.textContent = text;
+      return;
+    }
+    const normalizedText = normalizeSearch(text);
+    const index = normalizedText.indexOf(query);
+    if (index < 0) {
+      target.textContent = text;
+      return;
+    }
+    target.append(document.createTextNode(text.slice(0, index)));
+    const mark = document.createElement('mark');
+    mark.textContent = text.slice(index, index + rawQuery.length);
+    target.append(mark, document.createTextNode(text.slice(index + rawQuery.length)));
+  }
+
+  function setupSearchPalette() {
+    searchWindowState.__arSearchController?.abort();
+    const controller = new AbortController();
+    searchWindowState.__arSearchController = controller;
+
+    const dialog = document.querySelector<HTMLDialogElement>('[data-search-dialog]');
+    const input = dialog?.querySelector<HTMLInputElement>('[data-search-input]');
+    const results = dialog?.querySelector<HTMLElement>('[data-search-results]');
+    const empty = dialog?.querySelector<HTMLElement>('[data-search-empty]');
+    const status = dialog?.querySelector<HTMLElement>('[data-search-status]');
+    const indexNode = document.querySelector<HTMLScriptElement>('[data-search-index]');
+    const triggers = document.querySelectorAll<HTMLButtonElement>('[data-search-trigger]');
+    if (!dialog || !input || !results || !empty || !status || !indexNode) return;
+
+    let items: SearchItem[] = [];
+    try { items = JSON.parse(indexNode.textContent || '[]') as SearchItem[]; } catch { return; }
+    const articleItems = items.filter(item => item.type === '笔记' || item.type === '写作');
+    let previousFocus: HTMLElement | null = null;
+
+    const scoreItem = (item: SearchItem, rawQuery: string) => {
+      const query = normalizeSearch(rawQuery);
+      if (!query) return item.rank;
+      const title = normalizeSearch(item.title);
+      const meta = normalizeSearch(item.meta);
+      const description = normalizeSearch(item.description);
+      const full = normalizeSearch(item.searchText);
+      if (!full.includes(query)) return -1;
+      let score = item.rank / 100;
+      if (title === query) score += 120;
+      else if (title.startsWith(query)) score += 80;
+      else if (title.includes(query)) score += 55;
+      if (meta.includes(query)) score += 30;
+      if (description.includes(query)) score += 16;
+      return score;
+    };
+
+    const renderResults = (rawQuery = '') => {
+      const ranked = items
+        .map(item => ({ item, score: scoreItem(item, rawQuery) }))
+        .filter(result => result.score >= 0)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, rawQuery ? 12 : 7);
+
+      results.replaceChildren();
+      ranked.forEach(({ item }) => {
+        const link = document.createElement('a');
+        link.className = 'search-result';
+        link.href = item.href;
+
+        const type = document.createElement('span');
+        type.className = `search-result-type is-${item.type}`;
+        type.textContent = item.type;
+
+        const copy = document.createElement('div');
+        const title = document.createElement('h3');
+        appendHighlighted(title, item.title, rawQuery);
+        const description = document.createElement('p');
+        description.textContent = item.description;
+        const meta = document.createElement('small');
+        meta.textContent = item.meta;
+        copy.append(title, description, meta);
+
+        const arrow = document.createElement('b');
+        arrow.setAttribute('aria-hidden', 'true');
+        arrow.textContent = '↗';
+        link.append(type, copy, arrow);
+        results.append(link);
+      });
+
+      const hasQuery = Boolean(normalizeSearch(rawQuery));
+      status.textContent = hasQuery ? `找到 ${ranked.length} 条相关记录` : '最近整理的记录';
+      empty.hidden = ranked.length > 0;
+      results.hidden = ranked.length === 0;
+    };
+
+    const openSearch = () => {
+      previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      if (!dialog.open) dialog.showModal();
+      document.body.classList.add('search-open');
+      renderResults(input.value);
+      requestAnimationFrame(() => input.focus());
+    };
+
+    const closeSearch = () => {
+      if (dialog.open) dialog.close();
+    };
+
+    triggers.forEach(trigger => trigger.addEventListener('click', openSearch, { signal: controller.signal }));
+    dialog.querySelector('[data-search-close]')?.addEventListener('click', closeSearch, { signal: controller.signal });
+    input.addEventListener('input', () => renderResults(input.value), { signal: controller.signal });
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) closeSearch();
+    }, { signal: controller.signal });
+    dialog.addEventListener('close', () => {
+      document.body.classList.remove('search-open');
+      previousFocus?.focus();
+    }, { signal: controller.signal });
+    dialog.querySelector('[data-search-random]')?.addEventListener('click', () => {
+      if (articleItems.length === 0) return;
+      const target = articleItems[Math.floor(Math.random() * articleItems.length)];
+      if (target) window.location.assign(target.href);
+    }, { signal: controller.signal });
+
+    document.addEventListener('keydown', (event) => {
+      const target = event.target;
+      const editing = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || (target instanceof HTMLElement && target.isContentEditable);
+      if ((event.ctrlKey || event.metaKey) && event.key.toLocaleLowerCase() === 'k' && !event.isComposing && !editing) {
+        event.preventDefault();
+        openSearch();
+      }
+    }, { signal: controller.signal });
+
+    document.addEventListener('astro:before-preparation', closeSearch, { once: true, signal: controller.signal });
+    renderResults();
+  }
+
+  document.addEventListener('astro:page-load', setupSearchPalette);
+  setupSearchPalette();
+</script>

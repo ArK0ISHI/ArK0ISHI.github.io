@@ -3,14 +3,32 @@ import { getCollection, render } from 'astro:content';
 import PostLayout from '../../layouts/PostLayout.astro';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog', ({ data }) => !data.draft);
-  return posts.map(post => ({ params: { slug: post.id }, props: { post } }));
+  const posts = (await getCollection('blog', ({ data }) => !data.draft))
+    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+  return posts.map((post, index) => ({
+    params: { slug: post.id },
+    props: {
+      post,
+      newerPost: posts[index - 1] ? { title: posts[index - 1].data.title, href: `/blog/${posts[index - 1].id}/` } : undefined,
+      olderPost: posts[index + 1] ? { title: posts[index + 1].data.title, href: `/blog/${posts[index + 1].id}/` } : undefined,
+    },
+  }));
 }
 
-const { post } = Astro.props;
-const { Content } = await render(post);
+const { post, newerPost, olderPost } = Astro.props;
+const { Content, headings } = await render(post);
+const source = post.body || '';
+const cjkCount = (source.match(/[\u3400-\u9fff]/g) || []).length;
+const latinCount = (source.replace(/[\u3400-\u9fff]/g, ' ').match(/\b[\p{L}\p{N}'’-]+\b/gu) || []).length;
+const readingMinutes = Math.max(1, Math.ceil(cjkCount / 450 + latinCount / 220));
 ---
 
-<PostLayout {...post.data}>
+<PostLayout
+  {...post.data}
+  headings={headings.filter(heading => heading.depth === 2 || heading.depth === 3)}
+  readingMinutes={readingMinutes}
+  newerPost={newerPost}
+  olderPost={olderPost}
+>
   <Content />
 </PostLayout>

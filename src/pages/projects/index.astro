@@ -12,7 +12,7 @@ import { projects } from '../../data/projects';
     </div>
   </header>
   <section class="page-content">
-    <div class="page-controls"><span class="page-count">{String(projects.length).padStart(2, '0')} PROJECTS</span><span class="eyebrow">ARCHIVE · 2024—NOW</span></div>
+    <div class="page-controls"><span class="page-count">{String(projects.length).padStart(2, '0')} PROJECTS</span><span class="eyebrow">CONTINUING ARCHIVE / 持续整理</span></div>
     {projects.map(project => <ProjectRow project={project} />)}
   </section>
 </BaseLayout>

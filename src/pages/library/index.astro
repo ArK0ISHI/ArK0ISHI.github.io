@@ -1,13 +1,44 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleRow from '../../components/ArticleRow.astro';
 
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const writtenPages = posts.filter(post => ['文学批评', '装帧与排版', '东方Project'].includes(post.data.category));
 const shelves = [
-  { no: 'SHELF 01', title: '视觉小说评论', desc: '关于记忆、选择、游戏机制与元叙事的阅读记录。', tags: '文学批评 · 元游戏 · 叙事学' },
-  { no: 'SHELF 02', title: '东方Project', desc: '原作、同人文本与幻想乡叙事传统的索引和分析。', tags: '东方Project · 同人文化 · 幻想' },
-  { no: 'SHELF 03', title: '装帧与校订', desc: 'LaTeX 版式实验、文本整理、字形选择与印刷实践。', tags: 'LaTeX · Typography · Editorial' },
-  { no: 'SHELF 04', title: '物理与科学史', desc: '从经典教材到科学史著作，记录概念形成的背景。', tags: 'Physics · History of Science' },
-  { no: 'SHELF 05', title: '方法与工具', desc: '写作、研究、编程与个人知识管理的方法笔记。', tags: 'Workflow · Tools · Research' },
-  { no: 'SHELF 06', title: '正在阅读', desc: '尚未写成评论的页边批注、摘录线索和待读清单。', tags: 'Currently Reading · Marginalia' },
+  {
+    no: 'SHELF 01',
+    title: '视觉小说与叙事',
+    desc: '关于记忆、选择、界面与元叙事的阅读记录。',
+    href: `/tags/${encodeURIComponent('视觉小说')}/`,
+    count: posts.filter(post => post.data.tags.includes('视觉小说') || post.data.category === '文学批评').length,
+    tags: '记忆 · 界面 · 元游戏',
+  },
+  {
+    no: 'SHELF 02',
+    title: '幻想与同人文本',
+    desc: '从作品内部出发，慢慢整理叙事传统、文本关系与阅读线索。',
+    href: '/blog/latex-touhou-typesetting/',
+    count: posts.filter(post => post.data.category === '东方Project' || post.data.title.includes('东方')).length,
+    tags: '幻想 · 同人文化 · 文本索引',
+  },
+  {
+    no: 'SHELF 03',
+    title: '装帧与校订',
+    desc: 'LaTeX 版式实验、文本整理、字形选择与阅读节奏。',
+    href: `/tags/${encodeURIComponent('装帧与排版')}/`,
+    count: posts.filter(post => post.data.category === '装帧与排版').length,
+    tags: 'LaTeX · Typography · Editorial',
+  },
+  {
+    no: 'SHELF 04',
+    title: '研究与写作方法',
+    desc: '把写作、研究、计算与个人知识管理放在同一张工作台上。',
+    href: `/tags/${encodeURIComponent('方法')}/`,
+    count: posts.filter(post => post.data.tags.includes('方法')).length,
+    tags: 'Workflow · Tools · Research',
+  },
 ];
 ---
 
@@ -19,15 +50,29 @@ const shelves = [
     </div>
   </header>
   <section class="page-content">
-    <div class="page-controls"><span class="page-count">06 COLLECTIONS</span><span class="eyebrow">A READING MAP</span></div>
+    <aside class="library-preface">
+      <p class="eyebrow">A NOTE FROM THE DESK</p>
+      <p>这里不以“读完多少”作为刻度。尚未形成可公开笔记的阅读先留在纸面；当一个问题值得继续追问，它才会进入这张索引。</p>
+    </aside>
+
+    <section class="library-written" aria-labelledby="written-pages-title">
+      <div class="library-section-heading">
+        <div><p class="eyebrow">WRITTEN PAGES / 已写下</p><h2 id="written-pages-title">已经进入档案的书页</h2></div>
+        <span>{String(writtenPages.length).padStart(2, '0')} ENTRIES</span>
+      </div>
+      {writtenPages.map((post, index) => <ArticleRow post={post} number={String(index + 1).padStart(2, '0')} />)}
+    </section>
+
+    <div class="page-controls library-map-heading"><span class="page-count">按主题慢慢归档</span><span class="eyebrow">A READING MAP</span></div>
     <div class="library-grid">
       {shelves.map(shelf => (
-        <article class="library-entry">
+        <a class="library-entry" href={shelf.href}>
           <p class="eyebrow">{shelf.no}</p>
+          <span class="library-count">{shelf.count > 0 ? `${String(shelf.count).padStart(2, '0')} 页` : '等待整理'}</span>
           <h2>{shelf.title}</h2>
           <p>{shelf.desc}</p>
-          <footer>{shelf.tags}</footer>
-        </article>
+          <footer><span>{shelf.tags}</span><b aria-hidden="true">↗</b></footer>
+        </a>
       ))}
     </div>
   </section>

@@ -33,19 +33,33 @@ const categories = [...new Set(posts.map(post => post.data.category))];
 </BaseLayout>
 
 <script>
-  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
-  const rows = document.querySelectorAll<HTMLElement>('[data-category]');
-  const empty = document.querySelector<HTMLElement>('[data-empty]');
-  buttons.forEach(button => button.addEventListener('click', () => {
-    buttons.forEach(item => item.classList.remove('active'));
-    button.classList.add('active');
-    const filter = button.dataset.filter;
-    let visible = 0;
-    rows.forEach(row => {
-      const show = filter === 'all' || row.dataset.category === filter;
-      row.hidden = !show;
-      if (show) visible++;
-    });
-    if (empty) empty.hidden = visible > 0;
-  }));
+  const filterWindow = window as Window & { __arFilterController?: AbortController };
+
+  function setupNoteFilters() {
+    filterWindow.__arFilterController?.abort();
+    const controller = new AbortController();
+    filterWindow.__arFilterController = controller;
+    const buttons = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+    const rows = document.querySelectorAll<HTMLElement>('[data-category]');
+    const empty = document.querySelector<HTMLElement>('[data-empty]');
+    buttons.forEach(button => button.addEventListener('click', () => {
+      buttons.forEach(item => {
+        const active = item === button;
+        item.classList.toggle('active', active);
+        item.setAttribute('aria-pressed', String(active));
+      });
+      const filter = button.dataset.filter;
+      let visible = 0;
+      rows.forEach(row => {
+        const show = filter === 'all' || row.dataset.category === filter;
+        row.hidden = !show;
+        if (show) visible++;
+      });
+      if (empty) empty.hidden = visible > 0;
+    }, { signal: controller.signal }));
+    buttons.forEach((button, index) => button.setAttribute('aria-pressed', String(index === 0)));
+  }
+
+  document.addEventListener('astro:page-load', setupNoteFilters);
+  setupNoteFilters();
 </script>

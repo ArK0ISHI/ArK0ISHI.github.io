@@ -130,7 +130,6 @@ import { nightTrack } from '../data/music';
   function setupMusicDock() {
     const dock = document.querySelector<HTMLElement>('[data-music-dock]');
     if (!dock || dock.dataset.ready === 'true') return;
-    dock.dataset.ready = 'true';
 
     const audio = dock.querySelector<HTMLAudioElement>('[data-music-audio]');
     const panel = dock.querySelector<HTMLElement>('[data-music-panel]');
@@ -146,6 +145,7 @@ import { nightTrack } from '../data/music';
     const playButtons = Array.from(dock.querySelectorAll<HTMLButtonElement>('[data-music-play]'));
     const toggleButtons = Array.from(dock.querySelectorAll<HTMLButtonElement>('[data-music-toggle]'));
     if (!audio || !panel || !compact || !progress || !volume || !current || !duration) return;
+    dock.dataset.ready = 'true';
 
     const title = dock.dataset.title || '当前曲目';
     const saved = readState();
@@ -164,11 +164,13 @@ import { nightTrack } from '../data/music';
     };
 
     const setExpanded = (expanded: boolean) => {
+      const focusWasInside = panel.contains(document.activeElement);
       panel.hidden = !expanded;
       compact.hidden = expanded;
       toggleButtons.forEach((button) => button.setAttribute('aria-expanded', String(expanded)));
       dock.classList.toggle('is-expanded', expanded);
       persist();
+      if (!expanded && focusWasInside) requestAnimationFrame(() => compact.querySelector<HTMLButtonElement>('[data-music-toggle]')?.focus());
     };
 
     const setPlayingUI = () => {

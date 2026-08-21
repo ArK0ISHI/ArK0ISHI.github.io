@@ -1,6 +1,6 @@
 # 亚略Ar｜个人博客
 
-一套以“学术技术 × 文学创作”为核心的 Astro 静态博客。视觉方向是安静的学术书房，支持 Markdown / MDX、KaTeX 数学公式、代码高亮、深色模式、RSS、Sitemap 与 GitHub Pages 自动部署。
+一套以“学术技术 × 文学创作”为核心的 Astro 静态博客。视觉方向是安静的学术书房，支持 Markdown / MDX、KaTeX 数学公式、代码高亮、深色模式、档案检索、文章目录与阅读进度、跨页音乐、RSS、Sitemap 与 GitHub Pages 自动部署。
 
 ## 本地运行
 
@@ -22,6 +22,7 @@ npm run preview
 
 - 站点名称、关键词与联系方式：`src/data/site.ts`
 - 项目档案：`src/data/projects.ts`
+- 夜间音乐及授权来源：`src/data/music.ts`
 - 首页与荣誉：`src/pages/index.astro`
 - 关于页：`src/pages/about/index.astro`
 - 经历页：`src/pages/experience/index.astro`
@@ -46,6 +47,8 @@ draft: false
 ```
 
 `category` 可用值定义在 `src/content.config.ts`。`kind` 为 `note` 时进入“笔记”，为 `writing` 时进入“写作”。数学公式使用标准 Markdown 语法：行内 `$E=mc^2$`，块级公式用两个美元符号包围。
+
+新增文章会自动进入顶部的“档案检索”，也会自动生成阅读时间、文章目录和前后篇导航。检索可通过导航栏放大镜或 `Ctrl/⌘ + K` 打开。
 
 ## 部署到 GitHub Pages
 

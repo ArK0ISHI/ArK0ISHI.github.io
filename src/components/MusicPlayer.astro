@@ -1,0 +1,314 @@
+---
+import { nightTrack } from '../data/music';
+---
+
+<aside
+  class="music-dock"
+  data-music-dock
+  data-title={nightTrack.title}
+  data-artist={nightTrack.artist}
+  transition:persist="night-signal"
+  aria-label="夜间音乐播放器"
+>
+  <audio data-music-audio preload="metadata">
+    <source src={nightTrack.src} type="audio/mpeg" />
+  </audio>
+
+  <div class="music-compact" data-music-compact>
+    <button
+      class="music-open"
+      type="button"
+      data-music-toggle
+      aria-expanded="false"
+      aria-controls="night-signal-panel"
+    >
+      <span class="signal-orbit" aria-hidden="true"><i></i><i></i></span>
+      <span class="music-open-copy">
+        <small>NIGHT SIGNAL</small>
+        <strong data-compact-title>夜间信号</strong>
+      </span>
+    </button>
+    <button class="music-quick-play" type="button" data-music-play aria-label={`播放 ${nightTrack.title}`}>
+      <span class="play-shape" aria-hidden="true"></span>
+      <span class="pause-shape" aria-hidden="true"><i></i><i></i></span>
+    </button>
+  </div>
+
+  <section class="music-panel" id="night-signal-panel" data-music-panel hidden>
+    <header class="music-panel-header">
+      <div>
+        <p class="music-kicker"><span></span>NIGHT SIGNAL · 31°N</p>
+        <p class="music-state" data-music-state>等待一次主动的播放</p>
+      </div>
+      <button class="music-collapse" type="button" data-music-toggle aria-label="收起音乐播放器">
+        <span aria-hidden="true"></span>
+      </button>
+    </header>
+
+    <div class="music-track">
+      <div class="music-disc" data-music-disc aria-hidden="true">
+        <span></span><i></i>
+      </div>
+      <div class="music-track-copy">
+        <p class="music-track-title">{nightTrack.title}</p>
+        <p class="music-track-artist">{nightTrack.artist}</p>
+        <p class="music-track-note">{nightTrack.note}</p>
+      </div>
+    </div>
+
+    <div class="music-timeline">
+      <label class="sr-only" for="night-signal-progress">播放进度</label>
+      <input
+        id="night-signal-progress"
+        data-music-progress
+        type="range"
+        min="0"
+        max="1000"
+        value="0"
+        step="1"
+        aria-valuetext="0 分 00 秒"
+      />
+      <div class="music-time" aria-hidden="true">
+        <span data-music-current>0:00</span>
+        <span data-music-duration>–:––</span>
+      </div>
+    </div>
+
+    <div class="music-controls">
+      <button class="music-loop" type="button" data-music-loop aria-pressed="false" aria-label="开启单曲循环">
+        <span aria-hidden="true">↻</span><small>LOOP</small>
+      </button>
+      <button class="music-main-play" type="button" data-music-play aria-label={`播放 ${nightTrack.title}`}>
+        <span class="play-shape" aria-hidden="true"></span>
+        <span class="pause-shape" aria-hidden="true"><i></i><i></i></span>
+      </button>
+      <div class="music-volume">
+        <button type="button" data-music-mute aria-label="静音" aria-pressed="false">
+          <span class="volume-on" aria-hidden="true">◖</span>
+          <span class="volume-off" aria-hidden="true">×</span>
+        </button>
+        <label class="sr-only" for="night-signal-volume">音量</label>
+        <input id="night-signal-volume" data-music-volume type="range" min="0" max="1" value="0.72" step="0.01" />
+      </div>
+    </div>
+
+    <footer class="music-credit">
+      <span>声音档案 01</span>
+      <a href={nightTrack.source} target="_blank" rel="noreferrer">{nightTrack.license} · 曲源与授权 ↗</a>
+    </footer>
+  </section>
+
+  <p class="sr-only" data-music-announcement aria-live="polite"></p>
+</aside>
+
+<script>
+  type PlayerState = {
+    currentTime?: number;
+    volume?: number;
+    muted?: boolean;
+    expanded?: boolean;
+    loop?: boolean;
+  };
+
+  const STORAGE_KEY = 'ar-player:v1';
+
+  function formatTime(value: number) {
+    if (!Number.isFinite(value) || value < 0) return '0:00';
+    const minutes = Math.floor(value / 60);
+    const seconds = Math.floor(value % 60).toString().padStart(2, '0');
+    return `${minutes}:${seconds}`;
+  }
+
+  function readState(): PlayerState {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}') as PlayerState;
+    } catch {
+      return {};
+    }
+  }
+
+  function setupMusicDock() {
+    const dock = document.querySelector<HTMLElement>('[data-music-dock]');
+    if (!dock || dock.dataset.ready === 'true') return;
+    dock.dataset.ready = 'true';
+
+    const audio = dock.querySelector<HTMLAudioElement>('[data-music-audio]');
+    const panel = dock.querySelector<HTMLElement>('[data-music-panel]');
+    const compact = dock.querySelector<HTMLElement>('[data-music-compact]');
+    const progress = dock.querySelector<HTMLInputElement>('[data-music-progress]');
+    const volume = dock.querySelector<HTMLInputElement>('[data-music-volume]');
+    const current = dock.querySelector<HTMLElement>('[data-music-current]');
+    const duration = dock.querySelector<HTMLElement>('[data-music-duration]');
+    const stateLabel = dock.querySelector<HTMLElement>('[data-music-state]');
+    const announcement = dock.querySelector<HTMLElement>('[data-music-announcement]');
+    const loopButton = dock.querySelector<HTMLButtonElement>('[data-music-loop]');
+    const muteButton = dock.querySelector<HTMLButtonElement>('[data-music-mute]');
+    const playButtons = Array.from(dock.querySelectorAll<HTMLButtonElement>('[data-music-play]'));
+    const toggleButtons = Array.from(dock.querySelectorAll<HTMLButtonElement>('[data-music-toggle]'));
+    if (!audio || !panel || !compact || !progress || !volume || !current || !duration) return;
+
+    const title = dock.dataset.title || '当前曲目';
+    const saved = readState();
+    let resumeTime = Math.max(0, Number(saved.currentTime) || 0);
+    let lastStoredSecond = -1;
+
+    const persist = () => {
+      const next: PlayerState = {
+        currentTime: audio.currentTime,
+        volume: audio.volume,
+        muted: audio.muted,
+        expanded: !panel.hidden,
+        loop: audio.loop,
+      };
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch { /* storage is optional */ }
+    };
+
+    const setExpanded = (expanded: boolean) => {
+      panel.hidden = !expanded;
+      compact.hidden = expanded;
+      toggleButtons.forEach((button) => button.setAttribute('aria-expanded', String(expanded)));
+      dock.classList.toggle('is-expanded', expanded);
+      persist();
+    };
+
+    const setPlayingUI = () => {
+      const playing = !audio.paused && !audio.ended;
+      dock.classList.toggle('is-playing', playing);
+      playButtons.forEach((button) => {
+        button.setAttribute('aria-label', `${playing ? '暂停' : '播放'} ${title}`);
+        button.setAttribute('aria-pressed', String(playing));
+      });
+      if (stateLabel) stateLabel.textContent = playing ? '信号接收中' : (audio.currentTime > 1 ? `停在 ${formatTime(audio.currentTime)}` : '等待一次主动的播放');
+    };
+
+    const updateTimeline = () => {
+      const total = Number.isFinite(audio.duration) ? audio.duration : 0;
+      const ratio = total > 0 ? audio.currentTime / total : 0;
+      progress.value = String(Math.round(ratio * 1000));
+      progress.style.setProperty('--progress', `${ratio * 100}%`);
+      current.textContent = formatTime(audio.currentTime);
+      duration.textContent = total > 0 ? formatTime(total) : '–:––';
+      progress.setAttribute('aria-valuetext', `${formatTime(audio.currentTime)} / ${total > 0 ? formatTime(total) : '未知时长'}`);
+
+      const wholeSecond = Math.floor(audio.currentTime);
+      if (wholeSecond !== lastStoredSecond && wholeSecond % 2 === 0) {
+        lastStoredSecond = wholeSecond;
+        persist();
+      }
+    };
+
+    const togglePlay = async () => {
+      if (audio.paused) {
+        try {
+          await audio.play();
+        } catch {
+          if (stateLabel) stateLabel.textContent = '暂时无法载入这段声音';
+          if (announcement) announcement.textContent = '音乐加载失败，请稍后再试。';
+        }
+      } else {
+        audio.pause();
+      }
+    };
+
+    audio.volume = Math.min(1, Math.max(0, Number(saved.volume ?? 0.72)));
+    audio.muted = Boolean(saved.muted);
+    audio.loop = Boolean(saved.loop);
+    volume.value = String(audio.volume);
+    volume.style.setProperty('--volume', `${audio.volume * 100}%`);
+    setExpanded(Boolean(saved.expanded));
+
+    toggleButtons.forEach((button) => button.addEventListener('click', () => setExpanded(panel.hidden !== false)));
+    playButtons.forEach((button) => button.addEventListener('click', togglePlay));
+
+    progress.addEventListener('input', () => {
+      if (!Number.isFinite(audio.duration) || audio.duration <= 0) return;
+      audio.currentTime = (Number(progress.value) / 1000) * audio.duration;
+      updateTimeline();
+    });
+
+    volume.addEventListener('input', () => {
+      audio.volume = Number(volume.value);
+      audio.muted = false;
+      volume.style.setProperty('--volume', `${audio.volume * 100}%`);
+      persist();
+    });
+
+    muteButton?.addEventListener('click', () => {
+      audio.muted = !audio.muted;
+      persist();
+    });
+
+    loopButton?.addEventListener('click', () => {
+      audio.loop = !audio.loop;
+      dock.classList.toggle('is-looping', audio.loop);
+      loopButton.setAttribute('aria-pressed', String(audio.loop));
+      loopButton.setAttribute('aria-label', audio.loop ? '关闭单曲循环' : '开启单曲循环');
+      persist();
+    });
+
+    const restorePosition = () => {
+      if (resumeTime > 0 && resumeTime < audio.duration - 2) audio.currentTime = resumeTime;
+      resumeTime = 0;
+      updateTimeline();
+      setPlayingUI();
+    };
+
+    audio.addEventListener('loadedmetadata', restorePosition);
+    audio.addEventListener('timeupdate', updateTimeline);
+    audio.addEventListener('durationchange', updateTimeline);
+    audio.addEventListener('play', () => {
+      setPlayingUI();
+      if (announcement) announcement.textContent = `正在播放 ${title}`;
+    });
+    audio.addEventListener('pause', () => {
+      setPlayingUI();
+      persist();
+    });
+    audio.addEventListener('ended', () => {
+      setPlayingUI();
+      persist();
+    });
+    audio.addEventListener('volumechange', () => {
+      dock.classList.toggle('is-muted', audio.muted || audio.volume === 0);
+      muteButton?.setAttribute('aria-pressed', String(audio.muted));
+      muteButton?.setAttribute('aria-label', audio.muted ? '恢复声音' : '静音');
+      persist();
+    });
+    audio.addEventListener('error', () => {
+      if (stateLabel) stateLabel.textContent = '声音档案暂时离线';
+      if (announcement) announcement.textContent = '音乐加载失败。';
+    });
+    window.addEventListener('pagehide', persist);
+
+    document.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof Element) || !target.closest('[data-open-music]')) return;
+      setExpanded(true);
+      dock.querySelector<HTMLButtonElement>('[data-music-play]')?.focus();
+    });
+
+    loopButton?.setAttribute('aria-pressed', String(audio.loop));
+    muteButton?.setAttribute('aria-pressed', String(audio.muted));
+    dock.classList.toggle('is-muted', audio.muted || audio.volume === 0);
+    dock.classList.toggle('is-looping', audio.loop);
+    updateTimeline();
+    setPlayingUI();
+    if (audio.readyState >= 1) restorePosition();
+
+    if ('mediaSession' in navigator && 'MediaMetadata' in window) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title,
+        artist: dock.dataset.artist || '',
+        album: '亚略Ar · 夜间信号',
+      });
+      navigator.mediaSession.setActionHandler('play', () => { void audio.play(); });
+      navigator.mediaSession.setActionHandler('pause', () => audio.pause());
+      navigator.mediaSession.setActionHandler('seekto', (details) => {
+        if (typeof details.seekTime === 'number') audio.currentTime = details.seekTime;
+      });
+    }
+  }
+
+  document.addEventListener('astro:page-load', setupMusicDock);
+  setupMusicDock();
+</script>

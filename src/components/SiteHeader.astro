@@ -44,36 +44,47 @@ const isActive = (href: string) => href === '/' ? pathname === '/' : pathname.st
   </nav>
 </header>
 
-<script is:inline>
-  (() => {
+<script>
+  const headerWindow = window as Window & { __arHeaderController?: AbortController };
+
+  function setupHeader() {
+    headerWindow.__arHeaderController?.abort();
+    const controller = new AbortController();
+    headerWindow.__arHeaderController = controller;
+
     const root = document.documentElement;
-    const stored = localStorage.getItem('ar-theme');
+    let stored: string | null = null;
+    try { stored = localStorage.getItem('ar-theme'); } catch { /* keep system preference */ }
     const preferredDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     root.dataset.theme = stored || (preferredDark ? 'dark' : 'light');
 
     document.querySelector('.theme-toggle')?.addEventListener('click', () => {
       const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
       root.dataset.theme = next;
-      localStorage.setItem('ar-theme', next);
-    });
+      try { localStorage.setItem('ar-theme', next); } catch { /* theme still changes for this visit */ }
+    }, { signal: controller.signal });
 
-    const menuButton = document.querySelector('.menu-button');
-    const menu = document.querySelector('#mobile-menu');
+    const menuButton = document.querySelector<HTMLButtonElement>('.menu-button');
+    const menu = document.querySelector<HTMLElement>('#mobile-menu');
+    document.body.classList.remove('menu-open');
     menuButton?.addEventListener('click', () => {
       const open = menuButton.getAttribute('aria-expanded') === 'true';
       menuButton.setAttribute('aria-expanded', String(!open));
       menuButton.setAttribute('aria-label', open ? '打开导航' : '关闭导航');
-      if (menu instanceof HTMLElement) menu.hidden = open;
+      if (menu) menu.hidden = open;
       document.body.classList.toggle('menu-open', !open);
-    });
+    }, { signal: controller.signal });
 
-    let lastY = 0;
-    const header = document.querySelector('[data-header]');
+    let lastY = window.scrollY;
+    const header = document.querySelector<HTMLElement>('[data-header]');
     window.addEventListener('scroll', () => {
       const y = window.scrollY;
       header?.classList.toggle('scrolled', y > 16);
       header?.classList.toggle('hidden-header', y > lastY && y > 180 && !document.body.classList.contains('menu-open'));
       lastY = y;
-    }, { passive: true });
-  })();
+    }, { passive: true, signal: controller.signal });
+  }
+
+  document.addEventListener('astro:page-load', setupHeader);
+  setupHeader();
 </script>

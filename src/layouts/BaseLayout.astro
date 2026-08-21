@@ -1,8 +1,12 @@
 ---
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import AmbientLayer from '../components/AmbientLayer.astro';
+import MusicPlayer from '../components/MusicPlayer.astro';
+import { ClientRouter } from 'astro:transitions';
 import { site } from '../data/site';
 import '../styles/global.css';
+import '../styles/night.css';
 import 'katex/dist/katex.min.css';
 
 interface Props {
@@ -38,6 +42,7 @@ const fullTitle = title === site.title ? title : `${title}｜${site.name}`;
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={new URL(image, Astro.site)} />
     <title>{fullTitle}</title>
+    <ClientRouter />
     <script is:inline>
       (() => {
         document.documentElement.classList.add('js');
@@ -50,21 +55,37 @@ const fullTitle = title === site.title ? title : `${title}｜${site.name}`;
     </script>
   </head>
   <body>
+    <AmbientLayer />
     <SiteHeader />
     <main id="main">
       <slot />
     </main>
     <SiteFooter />
-    <script is:inline>
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
+    <MusicPlayer />
+    <script>
+      const revealWindow = window as Window & { __arRevealObserver?: IntersectionObserver };
+
+      function setupReveals() {
+        revealWindow.__arRevealObserver?.disconnect();
+        const targets = document.querySelectorAll<HTMLElement>('[data-reveal]');
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          targets.forEach((element) => element.classList.add('revealed'));
+          return;
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
             entry.target.classList.add('revealed');
             observer.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.08 });
-      document.querySelectorAll('[data-reveal]').forEach((el) => observer.observe(el));
+          });
+        }, { threshold: 0.08 });
+        revealWindow.__arRevealObserver = observer;
+        targets.forEach((element) => observer.observe(element));
+      }
+
+      document.addEventListener('astro:page-load', setupReveals);
+      setupReveals();
     </script>
   </body>
 </html>

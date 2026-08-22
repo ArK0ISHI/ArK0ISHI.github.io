@@ -22,7 +22,8 @@ npm run preview
 
 - 站点名称、关键词与联系方式：`src/data/site.ts`
 - 项目档案：`src/data/projects.ts`
-- 夜间音乐及授权来源：`src/data/music.ts`
+- 网易云专辑与曲目顺序：`music.config.json`
+- 播放器备用音源及授权来源：`src/data/music.ts`
 - 首页与荣誉：`src/pages/index.astro`
 - 关于页：`src/pages/about/index.astro`
 - 经历页：`src/pages/experience/index.astro`
@@ -49,6 +50,18 @@ draft: false
 `category` 可用值定义在 `src/content.config.ts`。`kind` 为 `note` 时进入“笔记”，为 `writing` 时进入“写作”。数学公式使用标准 Markdown 语法：行内 `$E=mc^2$`，块级公式用两个美元符号包围。
 
 新增文章会自动进入顶部的“档案检索”，也会自动生成阅读时间、文章目录和前后篇导航。检索可通过导航栏放大镜或 `Ctrl/⌘ + K` 打开。
+
+## 夜间音乐与歌词
+
+播放器目前收录《卯酉東海道 ～ Retrospective 53 minutes》和《大空魔術 ～ Magical Astronomy》两张专辑，共 21 首曲目。修改 `music.config.json` 中的网易云专辑与曲目信息即可调整顺序。
+
+运行 `npm run dev` 或 `npm run build` 时，站点会在 Node.js 构建阶段访问网易云专辑与 LRC 接口，生成同源的 `public/data/music.json`；浏览器只读取静态 JSON，并通过网易云 `outer/url` 播放音频。也可以单独执行：
+
+```bash
+npm run sync:music
+```
+
+两张专辑均为器乐作品，网易云目前返回的 LRC 主要是作曲署名和“纯音乐”提示，因此播放器的歌词面板不会出现演唱歌词。曲目、封面、录音和 LRC 的权利仍归相应创作者、发行方与平台；公开站点只保存构建时取得的元数据和 LRC，不把音频文件提交进仓库。网络或地区限制导致网易云音源全部不可用时，播放器会切换到 `src/data/music.ts` 中声明的 CC0 备用音源。
 
 ## 部署到 GitHub Pages
 

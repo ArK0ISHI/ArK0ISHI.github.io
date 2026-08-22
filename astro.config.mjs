@@ -4,11 +4,21 @@ import sitemap from '@astrojs/sitemap';
 import { unified } from '@astrojs/markdown-remark';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+import { syncNeteaseMusic } from './scripts/sync-netease-music.mjs';
+
+const neteaseMusicSync = () => ({
+  name: 'ar-netease-music-sync',
+  hooks: {
+    'astro:config:setup': async ({ command }) => {
+      if (command === 'build' || command === 'dev') await syncNeteaseMusic();
+    },
+  },
+});
 
 export default defineConfig({
   site: process.env.SITE_URL || 'https://example.com',
   output: 'static',
-  integrations: [mdx(), sitemap()],
+  integrations: [neteaseMusicSync(), mdx(), sitemap()],
   markdown: {
     processor: unified({
       remarkPlugins: [remarkMath],

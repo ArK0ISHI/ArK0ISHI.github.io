@@ -1,0 +1,404 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { lightNotePhotos, lightNoteStories } from '../../data/lightNotes';
+import '../../styles/light-notes.css';
+
+const photosById = new Map(lightNotePhotos.map(photo => [photo.id, photo]));
+const referencedIds = lightNoteStories.flatMap(story => story.items.map(item => item.photoId));
+const duplicateIds = referencedIds.filter((id, index) => referencedIds.indexOf(id) !== index);
+const missingIds = referencedIds.filter(id => !photosById.has(id));
+const unusedIds = lightNotePhotos.filter(photo => !referencedIds.includes(photo.id)).map(photo => photo.id);
+
+if (duplicateIds.length || missingIds.length || unusedIds.length) {
+  throw new Error(`光影札记数据不完整：重复 ${duplicateIds.join(', ') || '无'}；缺失 ${missingIds.join(', ') || '无'}；未编入 ${unusedIds.join(', ') || '无'}`);
+}
+
+const dateFormatter = new Intl.DateTimeFormat('zh-CN', {
+  month: 'long',
+  day: 'numeric',
+  weekday: 'short',
+  timeZone: 'Asia/Shanghai',
+});
+const timeFormatter = new Intl.DateTimeFormat('zh-CN', {
+  hour: '2-digit',
+  minute: '2-digit',
+  hourCycle: 'h23',
+  timeZone: 'Asia/Shanghai',
+});
+const monthDayFormatter = new Intl.DateTimeFormat('en-US', {
+  month: '2-digit',
+  day: '2-digit',
+  timeZone: 'Asia/Shanghai',
+});
+
+const formatDate = (value: string) => dateFormatter.format(new Date(value));
+const formatTime = (value: string) => timeFormatter.format(new Date(value));
+const formatMonthDay = (value: string) => monthDayFormatter.format(new Date(value)).replace('/', ' · ');
+const formatLocation = (city: string, place: string) => `${city} · ${place}`;
+
+const chapters = lightNoteStories.map((story, storyIndex) => {
+  const photos = story.items.map((item, itemIndex) => {
+    const photo = photosById.get(item.photoId)!;
+    return {
+      ...item,
+      photo,
+      globalIndex: referencedIds.indexOf(item.photoId),
+      itemIndex,
+    };
+  });
+  return {
+    ...story,
+    photos,
+    storyIndex,
+    firstShotAt: photos[0].photo.shotAt,
+  };
+});
+
+const cities = [...new Set(lightNoteStories.map(story => story.city))].map(city => ({
+  city,
+  chapters: lightNoteStories.filter(story => story.city === city).length,
+  photos: chapters.filter(story => story.city === city).reduce((sum, story) => sum + story.photos.length, 0),
+}));
+const heroPhoto = photosById.get('20260716-191447')!;
+---
+
+<BaseLayout
+  title="光影札记｜盛夏行旅"
+  description="43张照片、16段行旅切片：从湖滨、校园与研究所，到夜航、饭桌与同行者。"
+  image={heroPhoto.full}
+>
+  <article class="light-journal" id="light-notes-top">
+    <header class="journal-hero">
+      <div class="journal-hero-copy" data-reveal>
+        <p class="journal-kicker"><span>LIGHT NOTES</span><span>2026 · SUMMER</span></p>
+        <h1>光影<em>札记</em></h1>
+        <p class="journal-deck">一些路并不是由目的地连起来的。更多时候，是一顿饭、一次雨、窗外的灯，和始终出现在画面一角的同行者，让它们成为同一段旅程。</p>
+        <dl class="journal-stats" aria-label="本辑概况">
+          <div><dt>{String(lightNotePhotos.length).padStart(2, '0')}</dt><dd>帧影像</dd></div>
+          <div><dt>{String(lightNoteStories.length).padStart(2, '0')}</dt><dd>段章节</dd></div>
+          <div><dt>{String(cities.length).padStart(2, '0')}</dt><dd>座城市</dd></div>
+        </dl>
+      </div>
+
+      <figure class="journal-hero-figure" data-reveal>
+        <span class="journal-hero-index">NO. 28 / 43</span>
+        <img
+          src={heroPhoto.thumb}
+          width={heroPhoto.thumbWidth}
+          height={heroPhoto.thumbHeight}
+          alt={heroPhoto.alt}
+          loading="eager"
+          decoding="async"
+          fetchpriority="high"
+        />
+        <figcaption>
+          <time datetime={heroPhoto.shotAt}>{formatDate(heroPhoto.shotAt)} · {formatTime(heroPhoto.shotAt)}</time>
+          <span>{formatLocation(heroPhoto.location.city, heroPhoto.location.place)}</span>
+        </figcaption>
+      </figure>
+    </header>
+
+    <section class="journal-note" aria-label="归档说明">
+      <p>这不是地标清单，而是一条可继续书写的时间线。地点只保留城市、校园或景区级信息；所有公开影像均使用已移除 GPS 与设备信息的派生文件。</p>
+      <span>02 JUL — 31 JUL 2026</span>
+    </section>
+
+    <div class="journal-filter-shell">
+      <nav class="journal-filters" aria-label="按城市筛选照片" data-journal-filters>
+        <button type="button" data-city-filter="all" aria-pressed="true">全部 <span>{lightNotePhotos.length}</span></button>
+        {cities.map(item => (
+          <button type="button" data-city-filter={item.city} aria-pressed="false">{item.city} <span>{item.photos}</span></button>
+        ))}
+      </nav>
+      <p class="journal-filter-status" data-filter-status aria-live="polite">显示全部 {lightNoteStories.length} 个章节 · {lightNotePhotos.length} 张照片</p>
+    </div>
+
+    <div class="journal-archive">
+      <aside class="journal-index-shell">
+        <nav class="journal-index" aria-label="旅途章节索引">
+          <p><span>CHAPTER INDEX</span><small>沿日期下行</small></p>
+          <ol>
+            {chapters.map(chapter => (
+              <li data-index-city={chapter.city}>
+                <a href={`#${chapter.id}`} data-chapter-link={chapter.id}>
+                  <span>{String(chapter.storyIndex + 1).padStart(2, '0')}</span>
+                  <strong>{chapter.title}</strong>
+                  <small>{formatMonthDay(chapter.firstShotAt)} · {chapter.city}</small>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      </aside>
+
+      <div class="journal-timeline" data-journal-timeline>
+        {chapters.map(chapter => (
+          <section
+            id={chapter.id}
+            class="journal-chapter"
+            data-journal-chapter
+            data-city={chapter.city}
+            aria-labelledby={`${chapter.id}-title`}
+          >
+            <header class="journal-chapter-header" data-reveal>
+              <div class="journal-chapter-number" aria-hidden="true">{String(chapter.storyIndex + 1).padStart(2, '0')}</div>
+              <div class="journal-chapter-date">
+                <time datetime={chapter.firstShotAt}>{formatDate(chapter.firstShotAt)}</time>
+                <span>{chapter.city}</span>
+              </div>
+              <div class="journal-chapter-copy">
+                <p>{chapter.en}</p>
+                <h2 id={`${chapter.id}-title`}>{chapter.title}</h2>
+                <div><span>{String(chapter.photos.length).padStart(2, '0')} FRAMES</span><p>{chapter.intro}</p></div>
+              </div>
+            </header>
+
+            <div class="journal-photo-grid">
+              {chapter.photos.map(({ photo, caption, layout = 'standard', globalIndex }) => (
+                <figure class:list={['journal-photo', `is-${layout}`, { 'has-portrait-image': photo.height > photo.width }]}>
+                  <a
+                    class="journal-photo-trigger"
+                    href={photo.full}
+                    data-journal-photo
+                    data-photo-id={photo.id}
+                    data-full={photo.full}
+                    data-alt={photo.alt}
+                    data-width={photo.width}
+                    data-height={photo.height}
+                    data-story-title={chapter.title}
+                    data-datetime={photo.shotAt}
+                    data-time={`${formatDate(photo.shotAt)} · ${formatTime(photo.shotAt)}`}
+                    data-location={formatLocation(photo.location.city, photo.location.place)}
+                    data-caption={caption}
+                    aria-label={`放大查看：${formatDate(photo.shotAt)} ${formatTime(photo.shotAt)}，${formatLocation(photo.location.city, photo.location.place)}`}
+                    aria-haspopup="dialog"
+                  >
+                    <span class="journal-photo-frame">
+                      <img
+                        src={photo.thumb}
+                        width={photo.thumbWidth}
+                        height={photo.thumbHeight}
+                        alt={photo.alt}
+                        loading={globalIndex === 0 ? 'eager' : 'lazy'}
+                        decoding="async"
+                      />
+                      <span class="journal-photo-number" aria-hidden="true">{String(globalIndex + 1).padStart(2, '0')}</span>
+                      <span class="journal-photo-open" aria-hidden="true">VIEW ↗</span>
+                    </span>
+                  </a>
+                  <figcaption>
+                    <div class="journal-photo-meta">
+                      <time datetime={photo.shotAt}>{formatTime(photo.shotAt)}</time>
+                      <span>{formatLocation(photo.location.city, photo.location.place)}</span>
+                      {photo.location.confidence === 'inferred' && <small title="地点由画面与粗粒度位置信息推定">地点待核</small>}
+                    </div>
+                    <p>{caption}</p>
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
+    </div>
+
+    <footer class="journal-ending">
+      <p>故事线还没有封口。时间与地点先作为坐标留下，等记忆愿意开口时，再把照片之间的空白写完。</p>
+      <a href="#light-notes-top">回到卷首 ↑</a>
+    </footer>
+
+    <dialog class="journal-lightbox" data-journal-lightbox aria-labelledby="journal-lightbox-title" aria-describedby="journal-lightbox-caption">
+      <div class="journal-lightbox-inner">
+        <header>
+          <div>
+            <p><span data-lightbox-count>01 / 43</span><span data-lightbox-location>杭州 · 转塘</span></p>
+            <h2 id="journal-lightbox-title" data-lightbox-title>旅途的序夜</h2>
+          </div>
+          <button type="button" class="journal-lightbox-close" data-lightbox-close aria-label="关闭照片浏览器">关闭</button>
+        </header>
+        <figure>
+          <div class="journal-lightbox-stage" data-lightbox-stage>
+            <img
+              data-lightbox-image
+              src={heroPhoto.thumb}
+              width={heroPhoto.thumbWidth}
+              height={heroPhoto.thumbHeight}
+              alt=""
+              decoding="async"
+            />
+          </div>
+          <figcaption id="journal-lightbox-caption">
+            <time data-lightbox-time datetime={heroPhoto.shotAt}></time>
+            <p data-lightbox-caption></p>
+          </figcaption>
+        </figure>
+        <button type="button" class="journal-lightbox-nav is-prev" data-lightbox-prev aria-label="上一张照片" aria-keyshortcuts="ArrowLeft">←</button>
+        <button type="button" class="journal-lightbox-nav is-next" data-lightbox-next aria-label="下一张照片" aria-keyshortcuts="ArrowRight">→</button>
+      </div>
+    </dialog>
+  </article>
+</BaseLayout>
+
+<script>
+  const journalWindow = window as Window & { __arLightJournalController?: AbortController };
+
+  function setupLightJournal() {
+    journalWindow.__arLightJournalController?.abort();
+    const controller = new AbortController();
+    journalWindow.__arLightJournalController = controller;
+
+    const chapters = Array.from(document.querySelectorAll<HTMLElement>('[data-journal-chapter]'));
+    const indexItems = Array.from(document.querySelectorAll<HTMLElement>('[data-index-city]'));
+    const indexLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-chapter-link]'));
+    const filterButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-city-filter]'));
+    const filterStatus = document.querySelector<HTMLElement>('[data-filter-status]');
+    const allTriggers = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-journal-photo]'));
+    const dialog = document.querySelector<HTMLDialogElement>('[data-journal-lightbox]');
+    if (!chapters.length || !dialog) return;
+
+    const dialogImage = dialog.querySelector<HTMLImageElement>('[data-lightbox-image]');
+    const dialogStage = dialog.querySelector<HTMLElement>('[data-lightbox-stage]');
+    const dialogTitle = dialog.querySelector<HTMLElement>('[data-lightbox-title]');
+    const dialogCount = dialog.querySelector<HTMLElement>('[data-lightbox-count]');
+    const dialogLocation = dialog.querySelector<HTMLElement>('[data-lightbox-location]');
+    const dialogTime = dialog.querySelector<HTMLTimeElement>('[data-lightbox-time]');
+    const dialogCaption = dialog.querySelector<HTMLElement>('[data-lightbox-caption]');
+    const closeButton = dialog.querySelector<HTMLButtonElement>('[data-lightbox-close]');
+    if (!dialogImage || !dialogStage || !dialogTitle || !dialogCount || !dialogLocation || !dialogTime || !dialogCaption || !closeButton) return;
+
+    let activeCity = 'all';
+    let currentTrigger: HTMLAnchorElement | null = null;
+    let previousFocus: HTMLElement | null = null;
+
+    const visibleTriggers = () => allTriggers.filter(trigger => !trigger.closest<HTMLElement>('[data-journal-chapter]')?.hidden);
+    const setActiveIndexLink = (id: string) => {
+      indexLinks.forEach(link => {
+        const active = link.dataset.chapterLink === id;
+        link.classList.toggle('is-active', active);
+        if (active) link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
+      });
+    };
+
+    const sectionObserver = new IntersectionObserver((entries) => {
+      const visible = entries
+        .filter(entry => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (visible?.target.id) setActiveIndexLink(visible.target.id);
+    }, { rootMargin: '-18% 0px -66% 0px', threshold: [0, 0.1, 0.4] });
+    controller.signal.addEventListener('abort', () => sectionObserver.disconnect(), { once: true });
+
+    const refreshObservedSections = () => {
+      sectionObserver.disconnect();
+      chapters.filter(chapter => !chapter.hidden).forEach(chapter => sectionObserver.observe(chapter));
+      const firstVisible = chapters.find(chapter => !chapter.hidden);
+      if (firstVisible) setActiveIndexLink(firstVisible.id);
+    };
+
+    const applyFilter = (city: string) => {
+      activeCity = city;
+      if (dialog.open) dialog.close();
+      chapters.forEach(chapter => { chapter.hidden = city !== 'all' && chapter.dataset.city !== city; });
+      indexItems.forEach(item => { item.hidden = city !== 'all' && item.dataset.indexCity !== city; });
+      filterButtons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.cityFilter === city)));
+
+      const visibleChapterCount = chapters.filter(chapter => !chapter.hidden).length;
+      const visiblePhotoCount = visibleTriggers().length;
+      if (filterStatus) filterStatus.textContent = city === 'all'
+        ? `显示全部 ${visibleChapterCount} 个章节 · ${visiblePhotoCount} 张照片`
+        : `显示${city} ${visibleChapterCount} 个章节 · ${visiblePhotoCount} 张照片`;
+      refreshObservedSections();
+    };
+
+    filterButtons.forEach(button => button.addEventListener('click', () => applyFilter(button.dataset.cityFilter || 'all'), { signal: controller.signal }));
+
+    const preloadNeighbor = (trigger: HTMLAnchorElement | undefined) => {
+      const src = trigger?.dataset.full;
+      if (!src) return;
+      const preload = new Image();
+      preload.src = src;
+    };
+
+    const renderTrigger = (trigger: HTMLAnchorElement) => {
+      const available = visibleTriggers();
+      const position = available.indexOf(trigger);
+      if (position < 0) return;
+      currentTrigger = trigger;
+
+      const full = trigger.dataset.full || trigger.href;
+      dialogStage.classList.add('is-loading');
+      dialogImage.onload = () => {
+        if (dialogImage.getAttribute('src') === full) dialogStage.classList.remove('is-loading');
+      };
+      dialogImage.src = full;
+      dialogImage.alt = trigger.dataset.alt || '';
+      dialogImage.width = Number(trigger.dataset.width || 2000);
+      dialogImage.height = Number(trigger.dataset.height || 1500);
+      dialogTitle.textContent = trigger.dataset.storyTitle || '光影札记';
+      dialogCount.textContent = `${String(position + 1).padStart(2, '0')} / ${String(available.length).padStart(2, '0')}`;
+      dialogLocation.textContent = trigger.dataset.location || '';
+      dialogTime.textContent = trigger.dataset.time || '';
+      dialogTime.dateTime = trigger.dataset.datetime || '';
+      dialogCaption.textContent = trigger.dataset.caption || '';
+
+      const next = available[(position + 1) % available.length];
+      window.setTimeout(() => preloadNeighbor(next), 100);
+    };
+
+    const openTrigger = (trigger: HTMLAnchorElement) => {
+      previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : trigger;
+      renderTrigger(trigger);
+      if (!dialog.open) dialog.showModal();
+      document.body.classList.add('journal-lightbox-open');
+      requestAnimationFrame(() => closeButton.focus());
+    };
+
+    const move = (distance: number) => {
+      const available = visibleTriggers();
+      if (!currentTrigger || !available.length) return;
+      const current = available.indexOf(currentTrigger);
+      renderTrigger(available[(current + distance + available.length) % available.length]);
+    };
+
+    const moveToEdge = (edge: 'first' | 'last') => {
+      const available = visibleTriggers();
+      const target = edge === 'first' ? available[0] : available.at(-1);
+      if (target) renderTrigger(target);
+    };
+
+    if (typeof dialog.showModal === 'function') {
+      allTriggers.forEach(trigger => trigger.addEventListener('click', (event) => {
+        if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        openTrigger(trigger);
+      }, { signal: controller.signal }));
+    }
+
+    closeButton.addEventListener('click', () => dialog.close(), { signal: controller.signal });
+    dialog.querySelector('[data-lightbox-prev]')?.addEventListener('click', () => move(-1), { signal: controller.signal });
+    dialog.querySelector('[data-lightbox-next]')?.addEventListener('click', () => move(1), { signal: controller.signal });
+    dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); }, { signal: controller.signal });
+    dialog.addEventListener('close', () => {
+      document.body.classList.remove('journal-lightbox-open');
+      dialogStage.classList.remove('is-loading');
+      if (previousFocus?.isConnected) previousFocus.focus();
+    }, { signal: controller.signal });
+    document.addEventListener('keydown', (event) => {
+      if (!dialog.open || event.defaultPrevented) return;
+      if (event.key === 'ArrowLeft') { event.preventDefault(); move(-1); }
+      if (event.key === 'ArrowRight') { event.preventDefault(); move(1); }
+      if (event.key === 'Home') { event.preventDefault(); moveToEdge('first'); }
+      if (event.key === 'End') { event.preventDefault(); moveToEdge('last'); }
+    }, { signal: controller.signal });
+    document.addEventListener('astro:before-preparation', () => {
+      previousFocus = null;
+      if (dialog.open) dialog.close();
+      document.body.classList.remove('journal-lightbox-open');
+    }, { once: true, signal: controller.signal });
+
+    applyFilter(activeCity);
+  }
+
+  document.addEventListener('astro:page-load', setupLightJournal);
+  setupLightJournal();
+</script>

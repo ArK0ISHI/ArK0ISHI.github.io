@@ -55,6 +55,19 @@ const shelves = [
       <p>这里不以“读完多少”作为刻度。尚未形成可公开笔记的阅读先留在纸面；当一个问题值得继续追问，它才会进入这张索引。</p>
     </aside>
 
+    <a class="library-light-note" href="/light-notes/" data-reveal>
+      <figure>
+        <img src="/images/journal/2026-summer/20260716-191447-thumb.webp" width="720" height="540" loading="lazy" decoding="async" alt="西湖晚霞映在水面，同行小偶在近处看向镜头" />
+      </figure>
+      <div>
+        <p class="eyebrow">LIGHT NOTES / 光影札记</p>
+        <span>2026.07 · 43 FRAMES</span>
+        <h2>书页之外，<br />还有一路经过的<em>光</em></h2>
+        <p>校园、湖岸、夜航与途中饭桌。先把时间和地点认真存下，故事会在往后的整理中慢慢长出来。</p>
+        <strong>走进七月的旅途档案 <b aria-hidden="true">↗</b></strong>
+      </div>
+    </a>
+
     <section class="library-written" aria-labelledby="written-pages-title">
       <div class="library-section-heading">
         <div><p class="eyebrow">WRITTEN PAGES / 已写下</p><h2 id="written-pages-title">已经进入档案的书页</h2></div>
@@ -77,3 +90,31 @@ const shelves = [
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .library-light-note {
+    margin: clamp(54px, 8vw, 96px) 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(320px, .8fr);
+    min-height: 470px;
+    background: var(--night);
+    color: #f3efe7;
+    overflow: hidden;
+  }
+  .library-light-note figure { margin: 0; min-height: 100%; overflow: hidden; }
+  .library-light-note img { width: 100%; height: 100%; object-fit: cover; transition: transform .9s cubic-bezier(.2,.7,.2,1); }
+  .library-light-note > div { padding: clamp(38px, 5vw, 70px); display: flex; flex-direction: column; justify-content: center; }
+  .library-light-note .eyebrow { color: #c7d1d6; }
+  .library-light-note > div > span { margin-top: 14px; color: #b7c0c6; font: 300 9px/1.4 var(--mono); letter-spacing: .14em; }
+  .library-light-note h2 { margin: 30px 0 18px; font-size: clamp(30px, 3.3vw, 48px); line-height: 1.25; font-weight: 500; }
+  .library-light-note h2 em { color: #e8b870; font-style: normal; }
+  .library-light-note > div > p:not(.eyebrow) { margin: 0; color: #c8c7c2; font-size: 14px; line-height: 1.9; }
+  .library-light-note strong { width: max-content; margin-top: 36px; padding-bottom: 8px; border-bottom: 1px solid rgba(243,239,231,.5); font-size: 12px; letter-spacing: .08em; }
+  .library-light-note strong b { margin-left: 18px; color: #e8b870; font-family: var(--mono); }
+  .library-light-note:hover img { transform: scale(1.025); }
+  @media (max-width: 760px) {
+    .library-light-note { grid-template-columns: 1fr; min-height: 0; }
+    .library-light-note figure { aspect-ratio: 4 / 3; }
+    .library-light-note > div { padding: 34px 26px 40px; }
+  }
+</style>

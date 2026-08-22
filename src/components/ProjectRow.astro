@@ -13,6 +13,7 @@ const { project } = Astro.props;
     <div class="tag-list">
       {project.tags.map(tag => <span>#{tag}</span>)}
     </div>
+    {project.credit && <p class="project-credit"><span>协作署名</span>{project.credit}</p>}
     {project.reflection && (
       <p class="project-question"><span>问题意识</span>{project.reflection}</p>
     )}
@@ -20,6 +21,18 @@ const { project } = Astro.props;
   <div class="project-result">
     <span>做成了什么</span>
     <p>{project.result}</p>
-    {project.articleHref && <a href={project.articleHref}>阅读相关笔记 <b>↗</b></a>}
+    {(project.articleHref || project.detailHref || project.liveHref) && (
+      <nav class="project-links" aria-label={`${project.title}相关链接`}>
+        {project.articleHref && <a href={project.articleHref}>阅读相关笔记 <b aria-hidden="true">↗</b></a>}
+        {project.detailHref && <a href={project.detailHref}>查看项目档案 <b aria-hidden="true">↗</b></a>}
+        {project.liveHref && (
+          <a href={project.liveHref} target="_blank" rel="noopener noreferrer">
+            {project.liveLabel ?? '打开项目'} <b aria-hidden="true">↗</b>
+            <span class="sr-only">（新窗口，需授权访问）</span>
+          </a>
+        )}
+      </nav>
+    )}
+    {project.accessNote && <small class="project-access-note">{project.accessNote}</small>}
   </div>
 </article>

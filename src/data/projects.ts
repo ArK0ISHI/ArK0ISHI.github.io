@@ -8,6 +8,11 @@ export type Project = {
   tags: string[];
   result?: string;
   articleHref?: string;
+  detailHref?: string;
+  liveHref?: string;
+  liveLabel?: string;
+  credit?: string;
+  accessNote?: string;
   featured?: boolean;
 };
 
@@ -61,11 +66,16 @@ export const projects: Project[] = [
   {
     id: 'summer-camp-navigator',
     number: 'P.05',
-    title: '保研夏令营信息导航',
-    subtitle: 'Summer camp information navigator',
-    description: '面向应用物理与光电信息方向的信息聚合网页，负责页面整理与界面制作；抓取脚本作者署名“和谐号”。',
-    reflection: '怎样让分散信息更容易检索，同时把页面制作与抓取脚本的署名边界写清楚？',
-    tags: ['信息聚合', '网页设计', '协作项目'],
-    result: '页面整理与前端界面：亚略Ar',
+    title: '东华物理保研申请工作台',
+    subtitle: 'Graduate recommendation application workbench',
+    description: '面向应用物理、光电与相关方向，将分散的夏令营和预推免公开信息整理为可筛选、可核验并可追踪日程的非官方学生工具。',
+    reflection: '如何在信息密度很高的申请季里，同时保留来源、更新时间、缺失字段与个人状态的边界？',
+    tags: ['信息架构', '前端界面', '协作项目'],
+    result: '项目检索 · 动态 DDL · 日程与本机进度',
+    detailHref: '/projects/summer-camp-navigator/',
+    liveHref: 'https://dhu-baoyan-nav.pages.dev/',
+    liveLabel: '进入工作台（需授权）',
+    credit: '信息抓取脚本：和谐号｜网页整理与界面制作：亚略Ar',
+    accessNote: '学生整理 · 非官方信息工具 · 需授权访问',
   },
 ];

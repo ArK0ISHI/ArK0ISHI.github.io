@@ -1,0 +1,150 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import '../../styles/project-portal.css';
+
+const liveHref = 'https://dhu-baoyan-nav.pages.dev/';
+const title = '东华物理保研申请工作台｜信息设计与前端界面';
+const description = '面向东华大学物理学院相关专业同学的非官方学生工具：将夏令营与预推免信息整理为可检索、可核验、能排入日程的申请工作台。';
+
+const capabilities = [
+  {
+    index: '01',
+    en: 'DISCOVERY',
+    title: '从五千余条记录里，先找到与自己有关的部分',
+    body: '按学校、学院、研究方向与关键词检索，再叠加截止状态、院校层级、项目类型、地区和推荐档位。筛选条件与排序逻辑被放进同一条寻找路径。',
+  },
+  {
+    index: '02',
+    en: 'DEADLINE',
+    title: '把截止日期变成每天能看懂的紧迫度',
+    body: '页面会按访问当天动态计算今日截止、三天内和一周内项目；没有明确日期的记录不会被伪装成确定信息，而是保留“待确认”状态。',
+  },
+  {
+    index: '03',
+    en: 'PROVENANCE',
+    title: '让通知来源与信息缺口留在视线里',
+    body: '项目详情保留来源入口、更新时间与字段完整度，方便回到招生单位通知复核。工作台负责缩短寻找路径，不替代正式通知与报名系统。',
+  },
+  {
+    index: '04',
+    en: 'LOCAL WORKFLOW',
+    title: '把关注、投递与参营日程留在自己的浏览器',
+    body: '关注、收藏、已投、放弃、自定日期和彩色标签只写入当前设备；日程支持横排与月历、日期冲突提示和 14—90 天观察范围。',
+  },
+];
+---
+
+<BaseLayout title={title} description={description} image="/images/projects/dhu-baoyan-workbench.webp">
+  <article class="portal-archive">
+    <header class="portal-hero">
+      <div class="portal-hero-copy">
+        <a class="portal-breadcrumb" href="/projects/">← PROJECTS / 返回项目</a>
+        <p class="portal-eyebrow">STUDENT UTILITY · 2026 / CONTROLLED ACCESS</p>
+        <p class="portal-product-name">主界面：东华大学物理学院｜保研申请工作台</p>
+        <h1>让信息不只被收集，<br /><em>也能被每天使用。</em></h1>
+        <p class="portal-deck">面向东华大学物理学院相关专业同学的非官方信息工具。它把分散的夏令营与预推免通知，整理成一套可以检索、核验、标记和安排日程的申请工作流。</p>
+        <div class="portal-actions">
+          <a class="is-primary" href={liveHref} target="_blank" rel="noopener noreferrer">进入工作台 <span>需授权 ↗</span></a>
+          <a href="#portal-method">查看项目方法</a>
+        </div>
+        <p class="portal-access-note"><span aria-hidden="true"></span>部署入口“东华物理保研导航”在线 · 登录权限由平台单独管理</p>
+      </div>
+
+      <figure class="portal-hero-visual">
+        <div class="portal-screen-frame">
+          <div class="portal-screen-bar" aria-hidden="true"><i></i><i></i><i></i><span>dhu-baoyan-nav.pages.dev</span></div>
+          <img src="/images/projects/dhu-baoyan-workbench.webp" width="1440" height="1024" alt="东华物理保研申请工作台桌面端界面，包含筛选、项目列表和项目详情三栏" fetchpriority="high" />
+        </div>
+        <figcaption><span>INTERFACE SNAPSHOT / 2026.08.22</span><b>学生整理 · 非官方工具</b></figcaption>
+      </figure>
+
+      <dl class="portal-meta" aria-label="项目核心信息">
+        <div><dt>ROLE / 我的工作</dt><dd>网页整理与界面制作</dd></div>
+        <div><dt>COLLABORATION / 协作</dt><dd>信息抓取脚本：和谐号</dd></div>
+        <div><dt>SNAPSHOT / 数据快照</dt><dd>5,534 条 · 289 所学校</dd></div>
+        <div><dt>STACK / 实现</dt><dd>Vanilla JS · Node · Cloudflare Pages</dd></div>
+      </dl>
+    </header>
+
+    <section class="portal-section portal-intro" id="portal-method" aria-labelledby="portal-method-title">
+      <div class="portal-section-mark"><p>01 / THE PROBLEM</p><span>INFORMATION → DECISION</span></div>
+      <div class="portal-intro-main">
+        <h2 id="portal-method-title">真正消耗精力的，往往不是信息太少，<br />而是不知道哪一条此刻值得行动。</h2>
+        <div class="portal-lead">
+          <p>夏令营与预推免通知散落在学院官网、报名系统和转载页面里。截止日期写法不一，研究方向需要再次判断，很多项目还缺少参营时间。单纯把链接堆成表格，并不能回答“今天先做什么”。</p>
+          <p>因此，这个页面从申请者的日常动作反推结构：先找项目，再核对来源；决定关注后记录进度；时间明确后排入日程；遇到缺失字段时，明确提示尚待确认。</p>
+        </div>
+        <blockquote>信息设计在这里不是装饰，而是把不确定性摆到正确的位置。</blockquote>
+      </div>
+    </section>
+
+    <section class="portal-section portal-capabilities" aria-labelledby="portal-capabilities-title">
+      <div class="portal-section-mark"><p>02 / WORKBENCH</p><span>FOUR DAILY ACTIONS</span></div>
+      <div>
+        <h2 id="portal-capabilities-title">一张工作台，承接四种每天都会发生的动作。</h2>
+        <div class="portal-capability-grid">
+          {capabilities.map(item => (
+            <article class="portal-capability">
+              <div><span>{item.index}</span><small>{item.en}</small></div>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="portal-snapshots" aria-labelledby="portal-snapshots-title">
+      <header>
+        <p class="portal-eyebrow">03 / RESPONSIVE VIEWS</p>
+        <h2 id="portal-snapshots-title">同一套判断路径，<br />在深夜与手机上仍然成立。</h2>
+        <p>桌面端保留筛选、结果和详情的并列关系；小屏幕把动作收进底部导航与抽屉。深色界面不是另一套产品，只是为长时间查看通知降低光线负担。</p>
+      </header>
+      <div class="portal-snapshot-stage">
+        <figure class="is-desktop">
+          <img src="/images/projects/dhu-baoyan-dark.webp" width="1440" height="1024" alt="保研申请工作台深色界面的桌面端项目列表" loading="lazy" decoding="async" />
+          <figcaption><span>DESKTOP / DARK</span><b>筛选、列表、详情并列</b></figcaption>
+        </figure>
+        <figure class="is-mobile">
+          <img src="/images/projects/dhu-baoyan-mobile.webp" width="375" height="812" alt="保研申请工作台手机端的项目列表与底部导航" loading="lazy" decoding="async" />
+          <figcaption><span>MOBILE / 375 PX</span><b>动作留在拇指可达处</b></figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="portal-process" aria-labelledby="portal-process-title">
+      <div class="portal-process-copy">
+        <p class="portal-eyebrow">04 / FROM DATA TO ROUTINE</p>
+        <h2 id="portal-process-title">从原始记录到日常工具，<br />中间需要三次翻译。</h2>
+      </div>
+      <ol class="portal-process-list">
+        <li><span>01</span><div><h3>把来源翻译成统一字段</h3><p>抓取脚本由和谐号完成；数据进入页面前统一学校、学院、截止日期、方向与来源等字段，并通过更新与校验脚本检查结构。</p></div></li>
+        <li><span>02</span><div><h3>把字段翻译成判断顺序</h3><p>我负责网页整理与界面制作，把搜索、筛选、排序、详情与状态动作排成一条申请者可以反复使用的路径。</p></div></li>
+        <li><span>03</span><div><h3>把一次访问翻译成持续进度</h3><p>个人标记和日程只留在本机浏览器；Cloudflare Pages 负责静态部署，独立认证层控制访问，不在个人主页分发账号或密码。</p></div></li>
+      </ol>
+    </section>
+
+    <section class="portal-boundary" aria-labelledby="portal-boundary-title">
+      <div class="portal-boundary-copy">
+        <p class="portal-eyebrow">05 / CREDITS &amp; BOUNDARIES</p>
+        <h2 id="portal-boundary-title">署名、来源和不确定性，<br />都应该和功能一起被看见。</h2>
+        <p>这是学生整理的非官方工具，不代表东华大学或任何招生单位。页面帮助筛选和安排信息，但最终截止日期、申请资格与活动安排仍须以招生单位通知和报名系统为准。</p>
+      </div>
+      <div class="portal-credit-grid" aria-label="项目署名与边界">
+        <article><span>INTERFACE / 网页整理与界面制作</span><strong>亚略 Ar</strong><p>信息架构、响应式界面与本机申请工作流。</p></article>
+        <article><span>DATA SCRIPT / 信息抓取脚本</span><strong>和谐号</strong><p>原始信息的抓取脚本；本站不将这部分工作归于亚略 Ar。</p></article>
+        <article><span>PRIVACY / 个人状态</span><strong>LOCAL ONLY</strong><p>关注、投递与日程保存在访问者自己的浏览器，不上传个人进度。</p></article>
+        <article><span>ACCESS / 访问方式</span><strong>AUTH REQUIRED</strong><p>部署入口显示“东华物理保研导航”；授权后进入申请工作台。个人主页不会公开访问凭据。</p></article>
+      </div>
+    </section>
+
+    <footer class="portal-ending">
+      <div>
+        <span>LIVE WORKBENCH</span>
+        <h2>如果你已经获得访问权限，<br />可以从这里进入工作台。</h2>
+      </div>
+      <a href={liveHref} target="_blank" rel="noopener noreferrer">进入工作台 <span>需授权 ↗</span></a>
+      <nav aria-label="项目页后续导航"><a href="/projects/">继续浏览项目</a><a href="/">回到小屋首页</a></nav>
+    </footer>
+  </article>
+</BaseLayout>

@@ -4,6 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import HomeHero from '../components/HomeHero.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import ArticleRow from '../components/ArticleRow.astro';
+import ProjectSpotlight from '../components/ProjectSpotlight.astro';
 import { projects } from '../data/projects';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
@@ -15,6 +16,7 @@ const welcomeRoutes = [
   { slug: 'invisible-distance', prompt: '想从一个故事开始', mark: '翻到记忆与叙事的一页' },
 ].map(route => ({ ...route, post: posts.find(post => post.id === route.slug) })).filter(route => route.post);
 const featuredProjects = projects.filter(project => project.featured);
+const studentToolProject = projects.find(project => project.id === 'summer-camp-navigator');
 const honors = [
   { year: '2025', title: '全国大学生物理实验竞赛创新赛全国一等奖', scope: 'PHYSICS EXPERIMENT' },
   { year: '2025', title: 'CUPT 全国一等奖、全国最佳实验图片奖', scope: 'CUPT' },
@@ -100,6 +102,7 @@ const honors = [
         </article>
       ))}
     </div>
+    {studentToolProject && <ProjectSpotlight project={studentToolProject} />}
   </section>
 
   <section id="latest" class="home-section" data-reveal>

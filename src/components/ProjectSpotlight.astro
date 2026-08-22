@@ -1,0 +1,56 @@
+---
+import type { Project } from '../data/projects';
+
+interface Props { project: Project; }
+
+const { project } = Astro.props;
+const titleId = `${project.id}-spotlight-title`;
+const previewHref = project.detailHref ?? project.liveHref ?? '/projects/';
+---
+
+<article class="project-spotlight" aria-labelledby={titleId}>
+  <a class="project-spotlight-preview" href={previewHref} aria-label={`查看${project.title}项目档案`}>
+    <img
+      src="/images/projects/dhu-baoyan-workbench.webp"
+      alt="保研申请工作台桌面界面，包含筛选条件、项目列表与项目详情面板"
+      width="1440"
+      height="1024"
+      loading="lazy"
+      decoding="async"
+    />
+    <span>VIEW THE PROJECT ARCHIVE <b aria-hidden="true">↗</b></span>
+  </a>
+
+  <div class="project-spotlight-body">
+    <div class="project-spotlight-copy">
+      <div class="project-spotlight-kicker">
+        <span>{project.number}</span>
+        <span>STUDENT UTILITY / 学生协作工具</span>
+      </div>
+      <h3 id={titleId}>{project.title}</h3>
+      <p class="project-spotlight-description">{project.description}</p>
+      {project.credit && (
+        <p class="project-spotlight-credit"><span>协作署名</span>{project.credit}</p>
+      )}
+      <nav class="project-spotlight-actions" aria-label={`${project.title}相关链接`}>
+        {project.detailHref && <a class="is-primary" href={project.detailHref}>查看项目档案 <b aria-hidden="true">↗</b></a>}
+        {project.liveHref && (
+          <a href={project.liveHref} target="_blank" rel="noopener noreferrer">
+            {project.liveLabel ?? '打开项目'} <b aria-hidden="true">↗</b>
+            <span class="sr-only">（新窗口，需授权访问）</span>
+          </a>
+        )}
+      </nav>
+      {project.accessNote && <p class="project-spotlight-access">{project.accessNote}</p>}
+    </div>
+
+    <aside class="project-spotlight-capabilities" aria-label="平台能力">
+      <p class="project-spotlight-side-title">WORKBENCH INDEX</p>
+      <ol>
+        <li><span>01</span><div><strong>集中检索</strong><small>按学校、方向与截止状态收束信息</small></div></li>
+        <li><span>02</span><div><strong>来源核验</strong><small>保留更新时间、来源类型与缺失字段</small></div></li>
+        <li><span>03</span><div><strong>本机进度</strong><small>收藏、投递与参营日程只留在浏览器</small></div></li>
+      </ol>
+    </aside>
+  </div>
+</article>

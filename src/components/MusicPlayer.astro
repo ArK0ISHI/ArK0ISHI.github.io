@@ -15,7 +15,7 @@ const serializedConfig = JSON.stringify({
   class="music-dock"
   data-music-dock
   transition:persist="night-signal"
-  aria-label="夜间网易云音乐播放器"
+  aria-label="夜间声音档案播放器"
 >
   <audio data-music-audio preload="metadata"></audio>
 
@@ -29,7 +29,7 @@ const serializedConfig = JSON.stringify({
     >
       <span class="signal-orbit" aria-hidden="true"><i></i><i></i></span>
       <span class="music-open-copy">
-        <small>NETEASE SIGNAL</small>
+        <small>NIGHT SIGNAL</small>
         <strong data-compact-title>{firstTrack?.title || '夜间信号'}</strong>
         <span data-compact-lyric>歌词链路准备中</span>
       </span>
@@ -43,8 +43,8 @@ const serializedConfig = JSON.stringify({
   <section class="music-panel" id="night-signal-panel" data-music-panel hidden>
     <header class="music-panel-header">
       <div>
-        <p class="music-kicker"><span></span>NETEASE SIGNAL · 31°N</p>
-        <p class="music-state" data-music-state>正在读取同源歌单与歌词</p>
+        <p class="music-kicker"><span></span>NIGHT SIGNAL · 31°N</p>
+        <p class="music-state" data-music-state>正在读取声音档案与歌词</p>
       </div>
       <button class="music-collapse" type="button" data-music-toggle aria-label="收起音乐播放器">
         <span aria-hidden="true"></span>
@@ -129,6 +129,9 @@ const serializedConfig = JSON.stringify({
 <script>
   type PlayMode = 'list' | 'single' | 'shuffle';
   type Drawer = 'playlist' | 'lyrics' | null;
+  type MusicProvider = 'netease' | 'local' | 'fallback';
+  type CollectionKind = 'album' | 'playlist';
+  type LyricKind = 'instrumental' | 'timed' | 'none';
   type TrackSeed = {
     id: string;
     title: string;
@@ -137,14 +140,25 @@ const serializedConfig = JSON.stringify({
     albumId?: string;
     albumTitle?: string;
     trackNumber?: number;
-    lyricKind?: string;
+    collectionKind?: CollectionKind;
+    playlistId?: string;
+    cover?: string;
+    src?: string;
+    source?: string;
+    sourceLabel?: string;
+    sourceKind?: string;
+    lrc?: string;
+    provider?: MusicProvider;
+    lyricKind?: LyricKind;
+    durationMs?: number;
   };
   type Track = TrackSeed & {
     cover: string;
     src: string;
     source: string;
+    sourceLabel?: string;
     lrc: string;
-    provider: 'netease' | 'fallback';
+    provider: MusicProvider;
   };
   type LyricLine = { time: number; text: string };
   type PlayerConfig = { manifest: string; tracks: TrackSeed[]; fallback: Track };
@@ -290,14 +304,22 @@ const serializedConfig = JSON.stringify({
     if (!Array.isArray(config.tracks) || config.tracks.length === 0) return;
     dock.dataset.ready = 'true';
 
-    const makeSeedTrack = (seed: TrackSeed): Track => ({
-      ...seed,
-      cover: '',
-      src: `https://music.163.com/song/media/outer/url?id=${seed.id}.mp3`,
-      source: `https://music.163.com/#/song?id=${seed.id}`,
-      lrc: '',
-      provider: 'netease',
-    });
+    const normalizeProvider = (provider: unknown): MusicProvider =>
+      provider === 'local' || provider === 'fallback' ? provider : 'netease';
+
+    const makeSeedTrack = (seed: TrackSeed): Track => {
+      const provider = normalizeProvider(seed.provider);
+      const neteaseSource = `https://music.163.com/#/song?id=${seed.id}`;
+      return {
+        ...seed,
+        cover: seed.cover || '',
+        src: seed.src || (provider === 'netease' ? `https://music.163.com/song/media/outer/url?id=${seed.id}.mp3` : ''),
+        source: seed.source || (provider === 'netease' ? neteaseSource : ''),
+        sourceLabel: seed.sourceLabel,
+        lrc: seed.lrc || '',
+        provider,
+      };
+    };
     let tracks = config.tracks.map(makeSeedTrack);
     const saved = readState();
     const positions: Record<string, number> = { ...(saved.positions || {}) };
@@ -352,11 +374,14 @@ const serializedConfig = JSON.stringify({
 
     const updateMediaSession = (track: Track) => {
       if (!('mediaSession' in navigator) || !('MediaMetadata' in window)) return;
+      const artwork = track.cover
+        ? [{ src: new URL(track.cover, document.baseURI).href }]
+        : [];
       navigator.mediaSession.metadata = new MediaMetadata({
         title: track.title,
         artist: track.artist,
-        album: track.provider === 'netease' ? '亚略Ar · 网易云夜间信号' : '亚略Ar · 备用声音档案',
-        artwork: track.cover ? [{ src: track.cover }] : [],
+        album: track.albumTitle || '亚略Ar · 夜间声音档案',
+        artwork,
       });
     };
 
@@ -399,19 +424,20 @@ const serializedConfig = JSON.stringify({
 
     const renderPlaylist = () => {
       playlistNode.replaceChildren();
-      let previousAlbumKey = '';
+      let previousCollectionKey = '';
       tracks.forEach((track, index) => {
-        const albumKey = track.albumId || track.albumTitle || '';
-        if (albumKey && albumKey !== previousAlbumKey) {
+        const collectionKey = track.albumId || track.albumTitle || '';
+        if (collectionKey && collectionKey !== previousCollectionKey) {
           const group = document.createElement('li');
           group.className = 'music-playlist-group';
           const label = document.createElement('small');
-          label.textContent = 'ALBUM / 专辑';
+          label.textContent = track.collectionKind === 'playlist' ? 'PLAYLIST / 歌单' : 'ALBUM / 专辑';
           const title = document.createElement('strong');
-          title.textContent = track.albumTitle || `专辑 ${track.albumId}`;
+          const collectionName = track.collectionKind === 'playlist' ? '歌单' : '专辑';
+          title.textContent = track.albumTitle || `${collectionName} ${track.albumId}`;
           group.append(label, title);
           playlistNode.append(group);
-          previousAlbumKey = albumKey;
+          previousCollectionKey = collectionKey;
         }
         const item = document.createElement('li');
         const button = document.createElement('button');
@@ -419,7 +445,7 @@ const serializedConfig = JSON.stringify({
         button.dataset.trackIndex = String(index);
         if (index === currentIndex) button.setAttribute('aria-current', 'true');
         const number = document.createElement('span');
-        number.textContent = String(index + 1).padStart(2, '0');
+        number.textContent = String(track.trackNumber || index + 1).padStart(2, '0');
         const copy = document.createElement('span');
         const title = document.createElement('strong');
         title.textContent = track.title;
@@ -517,11 +543,25 @@ const serializedConfig = JSON.stringify({
       setText('[data-compact-title]', track.title);
       setText('[data-music-title]', track.title);
       setText('[data-music-artist]', track.artist);
-      setText('[data-music-note]', track.note);
-      setText('[data-music-lyric-label]', track.lyricKind === 'instrumental' ? 'INSTRUMENTAL / 器乐曲目' : 'CURRENT LYRIC / 当前歌词');
-      setText('[data-music-provider]', track.provider === 'netease' ? '网易云音乐 · 部署时同步歌词' : 'CC0 · 备用声音档案');
+      setText('[data-music-note]', track.note || '收录于亚略Ar的夜间声音档案。');
+      const lyricLabel = track.lyricKind === 'instrumental'
+        ? 'INSTRUMENTAL / 器乐曲目'
+        : track.lyricKind === 'none'
+          ? 'NO TIMED LYRIC / 暂无逐行歌词'
+          : 'CURRENT LYRIC / 当前歌词';
+      setText('[data-music-lyric-label]', lyricLabel);
+      const providerLabels: Record<MusicProvider, string> = {
+        netease: '网易云音乐 · 部署时同步歌词',
+        local: '站内音源 · 原始出处见右侧链接',
+        fallback: 'CC0 · 备用声音档案',
+      };
+      setText('[data-music-provider]', providerLabels[track.provider]);
       const source = dock.querySelector<HTMLAnchorElement>('[data-music-source]');
-      if (source) source.href = track.source;
+      if (source) {
+        source.href = track.source || '#';
+        source.textContent = `${track.sourceLabel || (track.provider === 'netease' ? '歌曲页面与版权信息' : track.provider === 'local' ? '原始发布页与作者信息' : '音源与版权信息')} ↗`;
+        source.hidden = !track.source;
+      }
       const cover = dock.querySelector<HTMLImageElement>('[data-music-cover]');
       if (cover) {
         if (track.cover) {
@@ -541,16 +581,35 @@ const serializedConfig = JSON.stringify({
       const playing = !audio.paused && !audio.ended;
       const track = currentTrack();
       dock.classList.toggle('is-playing', playing);
+      try {
+        if ('mediaSession' in navigator) navigator.mediaSession.playbackState = playing ? 'playing' : 'paused';
+      } catch { /* unsupported media session state */ }
       playButtons.forEach((button) => {
         button.setAttribute('aria-label', `${playing ? '暂停' : '播放'} ${track.title}`);
         button.setAttribute('aria-pressed', String(playing));
       });
       if (terminalError) stateLabel.textContent = terminalError;
-      else if (playing) stateLabel.textContent = track.provider === 'netease' ? '网易云信号接收中' : '备用声音档案播放中';
+      else if (playing) {
+        const playingLabels: Record<MusicProvider, string> = {
+          netease: '网易云信号接收中',
+          local: '站内声音档案播放中',
+          fallback: '备用声音档案播放中',
+        };
+        stateLabel.textContent = playingLabels[track.provider];
+      }
       else if (audio.currentTime > 1) stateLabel.textContent = `停在 ${formatTime(audio.currentTime)} · ${track.title}`;
       else if (track.provider === 'fallback') stateLabel.textContent = '已切换至备用音源';
       else if (manifestStatus === 'failed') stateLabel.textContent = '歌词同步文件暂不可用，音频仍可尝试播放';
-      else if (manifestStatus === 'ready') stateLabel.textContent = `已接入 ${tracks.filter(item => item.provider === 'netease').length} 首曲目与 LRC 信息`;
+      else if (manifestStatus === 'ready') {
+        const primaryTracks = tracks.filter(item => item.provider !== 'fallback');
+        const neteaseCount = primaryTracks.filter(item => item.provider === 'netease').length;
+        const localCount = primaryTracks.filter(item => item.provider === 'local').length;
+        const providerSummary = [
+          neteaseCount > 0 ? `网易云 ${neteaseCount}` : '',
+          localCount > 0 ? `站内 ${localCount}` : '',
+        ].filter(Boolean).join(' · ');
+        stateLabel.textContent = `已接入 ${primaryTracks.length} 首${providerSummary ? `（${providerSummary}）` : ''}`;
+      }
       else stateLabel.textContent = '等待一次主动的播放';
     };
 
@@ -563,6 +622,15 @@ const serializedConfig = JSON.stringify({
       durationNode.textContent = total > 0 ? formatTime(total) : '–:––';
       progress.setAttribute('aria-valuetext', `${formatTime(audio.currentTime)} / ${total > 0 ? formatTime(total) : '未知时长'}`);
       updateLyric();
+      if (total > 0 && Number.isFinite(audio.currentTime)) {
+        try {
+          navigator.mediaSession?.setPositionState({
+            duration: total,
+            playbackRate: audio.playbackRate,
+            position: Math.min(total, Math.max(0, audio.currentTime)),
+          });
+        } catch { /* unsupported media session position state */ }
+      }
 
       const wholeSecond = Math.floor(audio.currentTime);
       if (wholeSecond !== lastStoredSecond && wholeSecond % 2 === 0) {
@@ -680,7 +748,7 @@ const serializedConfig = JSON.stringify({
         return;
       }
       if (!tracks.some(track => track.id === config.fallback.id)) tracks.push(config.fallback);
-      stateLabel.textContent = '网易云链路不可用，已切换备用音源';
+      stateLabel.textContent = '主声音链路不可用，已切换备用音源';
       changeTrack(tracks.findIndex(track => track.id === config.fallback.id), autoplay, false, false, false);
     };
 
@@ -711,12 +779,12 @@ const serializedConfig = JSON.stringify({
         const manifest = await response.json() as { tracks?: Track[] };
         if (requestGeneration !== manifestGeneration) return;
         const resolved = Array.isArray(manifest.tracks)
-          ? manifest.tracks.filter(track => track && /^\d{1,20}$/.test(String(track.id)) && track.src)
+          ? manifest.tracks.filter(track => track && /^[\w.:-]{1,128}$/.test(String(track.id)) && track.src)
           : [];
         if (resolved.length === 0) throw new Error('empty manifest');
         const selectedTrack = currentTrack();
         const selectedId = audio.dataset.trackId || selectedTrack.id;
-        const resolvedTracks = resolved.map(track => ({ ...track, provider: 'netease' as const }));
+        const resolvedTracks = resolved.map(track => ({ ...track, provider: normalizeProvider(track.provider) }));
         const resolvedById = new Map(resolvedTracks.map(track => [track.id, track]));
         const merged = tracks.map(track => track.provider === 'fallback' ? track : (resolvedById.get(track.id) || track));
         resolvedTracks.forEach(track => {
@@ -730,7 +798,8 @@ const serializedConfig = JSON.stringify({
         }
         const track = currentTrack();
         manifestStatus = 'ready';
-        if (audio.dataset.trackId === track.id && audio.src !== track.src) {
+        const resolvedSource = new URL(track.src, document.baseURI).href;
+        if (audio.dataset.trackId === track.id && audio.src !== resolvedSource) {
           positions[track.id] = Number.isFinite(audio.currentTime) ? audio.currentTime : 0;
           changeTrack(currentIndex, playbackRequested, true, false, false);
         } else {
@@ -741,8 +810,12 @@ const serializedConfig = JSON.stringify({
       } catch {
         if (requestGeneration !== manifestGeneration) return;
         manifestStatus = 'failed';
-        setText('[data-music-lyric]', '♪ 歌词链路暂时离线 ♪');
-        setText('[data-compact-lyric]', '歌词链路暂时离线');
+        if (currentTrack().provider === 'netease') {
+          setText('[data-music-lyric]', '♪ 歌词链路暂时离线 ♪');
+          setText('[data-compact-lyric]', '歌词链路暂时离线');
+        } else {
+          applyLyrics(currentTrack());
+        }
         setPlayingUI();
       }
     };

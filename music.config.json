@@ -38,5 +38,56 @@
         { "id": "22765943", "title": "向こう側の月" }
       ]
     }
+  ],
+  "playlists": [
+    {
+      "id": "7868610441",
+      "title": "solstice",
+      "artist": "亚略Ar",
+      "creatorId": "2062574",
+      "note": "从私人收藏里挑出的二十三段夜间信号；其中 Moment 由站点本地音源补入。",
+      "snapshotSource": "https://music.163.com/api/v6/playlist/detail?id=7868610441",
+      "tracks": [
+        { "id": "521144", "title": "Memory~きみのいない世界で~", "artist": "Secret Messenger", "album": "幻想の境界-the Garden of phantasmagoria-", "cover": "https://p2.music.126.net/nBxC0cPMEtVTs5os_6MIGA==/903798558032108.jpg", "durationMs": 333897 },
+        { "id": "565890695", "title": "Lazy Girl", "artist": "ichigo", "album": "ORIENTAL-GIRLFRIEND", "cover": "https://p2.music.126.net/Z5jO3lPZLoVm0eUuYEvq2w==/109951163312870358.jpg", "durationMs": 230386 },
+        { "id": "864053", "title": "红楼にて", "artist": "Morrigan / 霜月はるか", "album": "ARCHIV-EAST", "cover": "https://p2.music.126.net/i3kaF5xVty2xX4bxmeIKLw==/819136162693375.jpg", "durationMs": 290253 },
+        { "id": "550539", "title": "箱庭~ミニチュアガーデン~", "artist": "天野月", "album": "箱庭 〜ミニチュアガーデン〜", "cover": "https://p2.music.126.net/1hCY8w-drxtrEtLC9RiuFQ==/4445325511106542.jpg", "durationMs": 263000 },
+        { "id": "28954188", "title": "Zen ～然～", "artist": "茶太", "album": "レス", "cover": "https://p2.music.126.net/JFQFGOsn7yyTZDMJXvHvlg==/8904944673749102.jpg", "durationMs": 229960 },
+        { "id": "22709526", "title": "Starlight Vision", "artist": "三澤秋", "album": "Starlight Vision", "cover": "https://p2.music.126.net/McIfe-dHMi5goNjw2h9AGA==/775155697604384.jpg", "durationMs": 316506 },
+        { "id": "26624655", "title": "眠れない夜に、眠らない夜は", "artist": "Y", "album": "縁紫 -Enishi-", "cover": "https://p2.music.126.net/UNaBtu3Y5OwotDHIxxwLhw==/2498090418370386.jpg", "durationMs": 276000 },
+        { "id": "737966", "title": "Samsara（輪迴）", "artist": "みぃ", "album": "AQ -永久-", "cover": "https://p2.music.126.net/NFPqcHhAuqf99whTDCLJdw==/920291232448746.jpg", "durationMs": 311586 },
+        { "id": "34916733", "title": "Unbind", "artist": "みぃ", "album": "An ordinary life", "cover": "https://p2.music.126.net/-epPXAxyh-m7ALkjDie8mA==/7952767606343428.jpg", "durationMs": 243693 },
+        { "id": "852226", "title": "现梦 -genmu-", "artist": "みぃ / yukina", "album": "现梦 -genmu-", "cover": "https://p2.music.126.net/zapxxGzthA9V3-uMWtYIRA==/925788790587622.jpg", "durationMs": 306946 },
+        { "id": "412785578", "title": "始符「博麗命名決闘法布告ノ儀」", "artist": "凋叶棕", "album": "掲", "cover": "https://p2.music.126.net/RwHE7qAo5LD_i-k8SE0m6A==/109951173517939516.jpg", "durationMs": 446000 },
+        { "id": "33035002", "title": "ほしぞら", "artist": "KAKO♪", "album": "120円の春 Original SOUND TRACKS", "cover": "https://p2.music.126.net/QgKQ5wnP9M_hf_HxuQrkTA==/109951168518823811.jpg", "durationMs": 189779 },
+        { "id": "746327", "title": "待チ人ハ来ズ。", "artist": "豚乙女", "album": "東方回転木馬", "cover": "https://p2.music.126.net/Mx8U-Yo5A-zvjrxcsGOBkA==/109951173517850043.jpg", "durationMs": 233986 },
+        { "id": "1453431134", "title": "インスタントブルー", "artist": "あよ", "album": "デンデラパーティーナイト", "cover": "https://p2.music.126.net/AGOYJLf_HD8G5QxJ6V361Q==/109951165041845944.jpg", "durationMs": 309293 },
+        { "id": "454711470", "title": "none", "artist": "紫咲ほたる", "album": "Innocent Affection", "cover": "https://p2.music.126.net/Eoo_Gu78Y2ndM6g11yuIJw==/18521273371590198.jpg", "durationMs": 159000 },
+        { "id": "30089470", "title": "おれんぢ☆でぃず", "artist": "Yellow-Zebra", "album": "いえろ～ぜぶら コレクションBOX", "cover": "https://p2.music.126.net/3HQNog1yv7LG_qh2rKPhcw==/7747158929310265.jpg", "durationMs": 212573 },
+        { "id": "34880148", "title": "インモータル フィロソフィー", "artist": "lily-an", "album": "インモータル フィロソフィー", "cover": "https://p2.music.126.net/Dv8EOYormiHY8yLhmMjBng==/109951173516225231.jpg", "durationMs": 260906 },
+        { "id": "40729733", "title": "OUR SHIP", "artist": "舞花", "album": "Spatial Moving", "cover": "https://p2.music.126.net/75G1aCcY6BDttMxgeVLeGQ==/3287539770533915.jpg", "durationMs": 258920 },
+        { "id": "705620", "title": "苍衣 - タマシイノオト", "artist": "C-CLAYS", "album": "想奏 オモイカネ", "cover": "https://p2.music.126.net/xmUHOANObYB3W6m2BmUkGg==/2492592860193487.jpg", "durationMs": 282306 },
+        { "id": "498286570", "title": "ヨスズメロディハート", "artist": "あよ", "album": "シンクロ", "cover": "https://p2.music.126.net/OkVfa50DKhvkzJkVypZ4cw==/109951173517781058.jpg", "durationMs": 299000 },
+        { "id": "40729947", "title": "まっしろな雪", "artist": "Halozy", "album": "Bayside Beat", "cover": "https://p2.music.126.net/UFc8xbeHSqK9Lt1bNdK6NA==/109951173518391865.jpg", "durationMs": 322453 },
+        { "id": "32098252", "title": "打出の小槌の残滓", "artist": "豚乙女", "album": "鈴のそら音", "cover": "https://p2.music.126.net/NUKPipNXV8GtOy4w_8uCZQ==/109951173517718127.jpg", "durationMs": 239133 }
+      ]
+    }
+  ],
+  "localTracks": [
+    {
+      "id": "9900000033119556",
+      "title": "Moment:_【Sailor of Time】",
+      "artist": "らみー",
+      "src": "/audio/music/moment-sailor-of-time.mp3",
+      "cover": "/images/music/moment-sailor-of-time.jpg",
+      "source": "https://www.bilibili.com/video/BV1jb411e7Hu/",
+      "sourceLabel": "哔哩哔哩 · BV1jb411e7Hu",
+      "durationMs": 268000,
+      "lyricKind": "instrumental",
+      "lrc": "",
+      "playlistId": "7868610441",
+      "insertAfterId": "22709526",
+      "note": "由用户提供、用于本站本地播放的音源；原发布页面保留在来源链接中。"
+    }
   ]
 }

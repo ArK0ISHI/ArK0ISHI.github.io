@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import HomeHero from '../components/HomeHero.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import ArticleRow from '../components/ArticleRow.astro';
 import { projects } from '../data/projects';
@@ -22,34 +23,7 @@ const honors = [
 ---
 
 <BaseLayout>
-  <section class="home-hero">
-    <div class="hero-copy" data-reveal>
-      <p class="hero-overline">Field Notes · Shanghai · 31°N</p>
-      <h1 class="hero-title">
-        亚略<span class="latin">Ar</span>
-        <span class="line">物理、计算与幻想叙事</span>
-      </h1>
-      <p class="hero-lede">白天与器件、数据相处，夜里读故事、修文字，<br />也记下那些暂时无法被测量的感受。</p>
-      <p class="hero-human-note">愿每一条公式都有来处，也愿每一个故事都有人同行。</p>
-      <div class="hero-actions">
-        <a class="primary-link" href="/notes/">开始阅读 <span>↗</span></a>
-        <a class="text-link" href="/about/">认识亚略Ar <span>→</span></a>
-      </div>
-    </div>
-
-    <div class="hero-visual" aria-hidden="true">
-      <div class="visual-axis"></div>
-      <div class="orbit one"></div>
-      <div class="orbit two"></div>
-      <div class="orbit three"></div>
-      <span class="observer-dot primary"></span>
-      <span class="observer-dot secondary"></span>
-      <div class="hero-monogram">Ar</div>
-      <p class="coordinate top">OBSERVATION ARCHIVE<br />SHANGHAI · 31°N</p>
-      <p class="coordinate bottom">TWO POINTS / ONE HORIZON<br />VISIBLE &amp; INVISIBLE</p>
-    </div>
-    <div class="hero-scroll"><i></i><span>向下阅读 / Scroll</span></div>
-  </section>
+  <HomeHero />
 
   <section class="intro-strip">
     <div class="intro-inner page-width" data-reveal>
@@ -69,7 +43,7 @@ const honors = [
     </div>
   </section>
 
-  <section class="home-section tonight-section" data-reveal>
+  <section id="tonight-log" class="home-section tonight-section" data-reveal>
     <SectionHeading index="00" title="书桌上的三条线索" en="Three Threads on the Desk" />
     <div class="tonight-log">
       <article class="log-entry">
@@ -85,7 +59,7 @@ const honors = [
       <article class="log-entry is-listening">
         <p class="log-index">03 · SOUND ARCHIVE</p>
         <h3>给阅读留一段声音</h3>
-        <p>声音档案收进《卯酉東海道》与《大空魔術》的全部 21 首曲目。它默认安静，等你主动按下播放，再沿着车窗、月面与夜色慢慢远行。</p>
+        <p>声音档案现收进《卯酉東海道》、《大空魔術》与我的 solstice 歌单，共 44 首。它默认安静，等你主动按下播放，再沿着车窗、月面与夜色慢慢远行。</p>
         <button class="now-playing-link" type="button" data-open-music>打开夜间信号 <span>→</span></button>
       </article>
     </div>
@@ -99,7 +73,7 @@ const honors = [
     </figure>
   </section>
 
-  <section class="home-section" data-reveal>
+  <section id="first-visit" class="home-section" data-reveal>
     <SectionHeading index="01" title="如果你第一次来" en="Three Ways into the Archive" />
     <div class="welcome-paths">
       {welcomeRoutes.map((route, index) => route.post && (
@@ -112,7 +86,7 @@ const honors = [
     </div>
   </section>
 
-  <section class="home-section" data-reveal>
+  <section id="projects" class="home-section" data-reveal>
     <SectionHeading index="02" title="精选项目" en="Selected Projects" href="/projects/" />
     <div class="featured-projects">
       {featuredProjects.map((project) => (
@@ -128,7 +102,7 @@ const honors = [
     </div>
   </section>
 
-  <section class="home-section" data-reveal>
+  <section id="latest" class="home-section" data-reveal>
     <SectionHeading index="03" title="最近文章" en="Latest Notes & Essays" href="/notes/" />
     <div class="latest-list">
       {latest.map((post, index) => <ArticleRow post={post} number={String(index + 1).padStart(2, '0')} />)}

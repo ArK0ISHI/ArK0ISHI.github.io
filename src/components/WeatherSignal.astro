@@ -1,0 +1,563 @@
+<aside
+  class="weather-signal"
+  data-weather-signal
+  data-weather-state="fallback"
+  data-weather-source="shanghai"
+  data-weather-tone="cloud"
+  aria-label="上海备用天气"
+  aria-busy="false"
+>
+  <div class="weather-signal__content">
+    <p class="weather-signal__station">
+      <span data-weather-station>SHANGHAI · 31°N</span>
+      <span data-weather-link-state>BASE</span>
+    </p>
+
+    <div class="weather-signal__reading">
+      <p data-weather-condition>上海 · 暮色观测</p>
+      <strong>
+        <span data-weather-temperature>—</span><small data-weather-temperature-unit>°C</small>
+      </strong>
+    </div>
+
+    <p class="weather-signal__details">
+      <span>风 <b data-weather-wind>— km/h</b></span>
+      <span class="weather-signal__divider" aria-hidden="true">/</span>
+      <span>日落 <time data-weather-sunset>待测</time></span>
+    </p>
+  </div>
+
+  <div class="weather-signal__action">
+    <p id="weather-location-status" data-weather-status role="status" aria-live="polite" aria-atomic="true">
+      当前显示上海；访客定位只在点击后请求。
+    </p>
+    <button
+      type="button"
+      class="weather-signal__locate"
+      data-weather-locate
+      aria-describedby="weather-location-status"
+    >
+      使用我的位置
+    </button>
+  </div>
+</aside>
+
+<script>
+  type WeatherTone = 'clear' | 'cloud' | 'fog' | 'rain' | 'snow' | 'storm';
+  type WeatherSource = 'visitor' | 'shanghai';
+
+  type WeatherReading = {
+    temperature: number;
+    temperatureUnit: string;
+    weatherCode: number;
+    windSpeed: number;
+    windUnit: string;
+    sunset: string;
+    timezone: string;
+    receivedAt: number;
+  };
+
+  type OpenMeteoResponse = {
+    timezone?: string;
+    current?: {
+      temperature_2m?: number;
+      weather_code?: number;
+      wind_speed_10m?: number;
+    };
+    current_units?: {
+      temperature_2m?: string;
+      wind_speed_10m?: string;
+    };
+    daily?: {
+      sunset?: string[];
+    };
+  };
+
+  type WeatherSignalState = {
+    lifecycleBound: boolean;
+    sequence: number;
+    shanghaiReading?: WeatherReading;
+    shanghaiInflight?: Promise<WeatherReading>;
+  };
+
+  type WeatherWindow = Window & {
+    __arVisitorWeatherSignalV2?: WeatherSignalState;
+  };
+
+  const SHANGHAI = { latitude: 31.23, longitude: 121.47, timezone: 'Asia/Shanghai' } as const;
+  const REQUEST_TIMEOUT_MS = 8_000;
+  const GEOLOCATION_TIMEOUT_MS = 10_000;
+  const CACHE_TTL_MS = 10 * 60 * 1_000;
+
+  const weatherWindow = window as WeatherWindow;
+  const signalState = weatherWindow.__arVisitorWeatherSignalV2 ??= {
+    lifecycleBound: false,
+    sequence: 0,
+  };
+
+  const describeWeather = (code: number): { label: string; tone: WeatherTone } => {
+    if (code === 0) return { label: '晴朗', tone: 'clear' };
+    if (code === 1) return { label: '大部晴朗', tone: 'clear' };
+    if (code === 2) return { label: '局部多云', tone: 'cloud' };
+    if (code === 3) return { label: '阴', tone: 'cloud' };
+    if (code === 45 || code === 48) return { label: '雾', tone: 'fog' };
+    if ([51, 53, 55, 56, 57].includes(code)) return { label: '毛毛雨', tone: 'rain' };
+    if ([61, 63, 65, 66, 67].includes(code)) return { label: '雨', tone: 'rain' };
+    if ([71, 73, 75, 77].includes(code)) return { label: '雪', tone: 'snow' };
+    if ([80, 81, 82].includes(code)) return { label: '阵雨', tone: 'rain' };
+    if (code === 85 || code === 86) return { label: '阵雪', tone: 'snow' };
+    if ([95, 96, 99].includes(code)) return { label: '雷暴', tone: 'storm' };
+    return { label: '天气变化中', tone: 'cloud' };
+  };
+
+  const setText = (root: HTMLElement, selector: string, value: string) => {
+    const node = root.querySelector<HTMLElement>(selector);
+    if (node) node.textContent = value;
+  };
+
+  const setButton = (root: HTMLElement, label: string, disabled = false) => {
+    const button = root.querySelector<HTMLButtonElement>('[data-weather-locate]');
+    if (!button) return;
+    button.textContent = label;
+    button.disabled = disabled;
+  };
+
+  const sunsetClock = (sunset: string) => {
+    const localTime = sunset.split('T')[1];
+    return localTime?.slice(0, 5) || '待测';
+  };
+
+  const compactTimezone = (timezone: string) => {
+    const city = timezone.split('/').at(-1) || 'LOCAL';
+    return city.replaceAll('_', ' ').toUpperCase();
+  };
+
+  const renderReading = (
+    root: HTMLElement,
+    reading: WeatherReading,
+    source: WeatherSource,
+    status?: string,
+  ) => {
+    const description = describeWeather(reading.weatherCode);
+    const temperature = Math.round(reading.temperature).toString();
+    const wind = Math.round(reading.windSpeed).toString();
+    const sunset = sunsetClock(reading.sunset);
+    const place = source === 'visitor' ? '当前位置' : '上海';
+    const station = source === 'visitor'
+      ? `VISITOR · ${compactTimezone(reading.timezone)}`
+      : 'SHANGHAI · 31°N';
+
+    root.dataset.weatherState = 'ready';
+    root.dataset.weatherSource = source;
+    root.dataset.weatherTone = description.tone;
+    root.setAttribute('aria-busy', 'false');
+    root.setAttribute(
+      'aria-label',
+      `${place}当前${description.label}，${temperature}${reading.temperatureUnit || '°C'}，风速 ${wind} ${reading.windUnit || 'km/h'}，日落 ${sunset}`,
+    );
+    setText(root, '[data-weather-station]', station);
+    setText(root, '[data-weather-link-state]', source === 'visitor' ? 'LOCAL' : 'BASE');
+    setText(root, '[data-weather-condition]', `${place} · ${description.label}`);
+    setText(root, '[data-weather-temperature]', temperature);
+    setText(root, '[data-weather-temperature-unit]', reading.temperatureUnit || '°C');
+    setText(root, '[data-weather-wind]', `${wind} ${reading.windUnit || 'km/h'}`);
+    setText(
+      root,
+      '[data-weather-status]',
+      status || (source === 'visitor' ? '访客天气已接入 · 坐标未保存' : '上海备用天气已接入'),
+    );
+    setButton(root, source === 'visitor' ? '更新我的天气' : '使用我的位置');
+
+    const sunsetNode = root.querySelector<HTMLTimeElement>('[data-weather-sunset]');
+    if (sunsetNode) {
+      sunsetNode.textContent = sunset;
+      sunsetNode.dateTime = reading.sunset;
+    }
+  };
+
+  const renderPending = (root: HTMLElement, kind: 'shanghai' | 'visitor') => {
+    root.dataset.weatherState = 'loading';
+    root.setAttribute('aria-busy', 'true');
+    setText(root, '[data-weather-link-state]', kind === 'visitor' ? 'LOCATE' : 'LINK');
+    setText(
+      root,
+      '[data-weather-status]',
+      kind === 'visitor'
+        ? '正在读取访客位置；坐标仅舍入后发送给天气服务，不会保存。'
+        : '上海天气连接中；定位只会在点击后请求。',
+    );
+    setButton(
+      root,
+      kind === 'visitor' ? '正在定位' : '使用我的位置',
+      kind === 'visitor',
+    );
+  };
+
+  const renderUnavailable = (root: HTMLElement, status: string) => {
+    root.dataset.weatherState = 'fallback';
+    root.dataset.weatherSource = 'shanghai';
+    root.dataset.weatherTone = 'cloud';
+    root.setAttribute('aria-busy', 'false');
+    root.setAttribute('aria-label', status);
+    setText(root, '[data-weather-station]', 'SHANGHAI · 31°N');
+    setText(root, '[data-weather-link-state]', 'REST');
+    setText(root, '[data-weather-condition]', '上海 · 暮色观测');
+    setText(root, '[data-weather-temperature]', '—');
+    setText(root, '[data-weather-temperature-unit]', '°C');
+    setText(root, '[data-weather-wind]', '— km/h');
+    setText(root, '[data-weather-status]', status);
+    setButton(root, '使用我的位置');
+
+    const sunsetNode = root.querySelector<HTMLTimeElement>('[data-weather-sunset]');
+    if (sunsetNode) {
+      sunsetNode.textContent = '待测';
+      sunsetNode.removeAttribute('datetime');
+    }
+  };
+
+  const parseReading = (payload: OpenMeteoResponse, requestedTimezone: string): WeatherReading => {
+    const temperature = payload.current?.temperature_2m;
+    const weatherCode = payload.current?.weather_code;
+    const windSpeed = payload.current?.wind_speed_10m;
+    const sunset = payload.daily?.sunset?.[0];
+
+    if (
+      !Number.isFinite(temperature) ||
+      !Number.isFinite(weatherCode) ||
+      !Number.isFinite(windSpeed) ||
+      typeof sunset !== 'string'
+    ) {
+      throw new Error('Open-Meteo returned an incomplete weather reading.');
+    }
+
+    return {
+      temperature: temperature as number,
+      temperatureUnit: payload.current_units?.temperature_2m || '°C',
+      weatherCode: weatherCode as number,
+      windSpeed: windSpeed as number,
+      windUnit: payload.current_units?.wind_speed_10m || 'km/h',
+      sunset,
+      timezone: payload.timezone || requestedTimezone,
+      receivedAt: Date.now(),
+    };
+  };
+
+  const requestWeather = async (latitude: number, longitude: number, timezone: string) => {
+    const params = new URLSearchParams({
+      latitude: latitude.toFixed(2),
+      longitude: longitude.toFixed(2),
+      current: 'temperature_2m,weather_code,wind_speed_10m',
+      daily: 'sunset',
+      timezone,
+      forecast_days: '1',
+    });
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+    try {
+      const response = await fetch(`https://api.open-meteo.com/v1/forecast?${params.toString()}`, {
+        signal: controller.signal,
+        cache: 'no-store',
+        headers: { Accept: 'application/json' },
+      });
+      if (!response.ok) throw new Error(`Open-Meteo request failed with ${response.status}.`);
+      return parseReading(await response.json() as OpenMeteoResponse, timezone);
+    } finally {
+      window.clearTimeout(timeoutId);
+    }
+  };
+
+  const requestShanghai = () => {
+    if (
+      signalState.shanghaiReading &&
+      Date.now() - signalState.shanghaiReading.receivedAt < CACHE_TTL_MS
+    ) {
+      return Promise.resolve(signalState.shanghaiReading);
+    }
+    if (signalState.shanghaiInflight) return signalState.shanghaiInflight;
+
+    const request = requestWeather(SHANGHAI.latitude, SHANGHAI.longitude, SHANGHAI.timezone)
+      .then(reading => {
+        signalState.shanghaiReading = reading;
+        return reading;
+      })
+      .finally(() => {
+        if (signalState.shanghaiInflight === request) signalState.shanghaiInflight = undefined;
+      });
+    signalState.shanghaiInflight = request;
+    return request;
+  };
+
+  const beginOperation = (root: HTMLElement) => {
+    const token = ++signalState.sequence;
+    root.dataset.weatherOperation = token.toString();
+    return token;
+  };
+
+  const isCurrentOperation = (root: HTMLElement, token: number) =>
+    root.isConnected && root.dataset.weatherOperation === token.toString();
+
+  const fallbackToShanghai = async (root: HTMLElement, token: number, reason: string) => {
+    const cleanReason = reason.replace(/[。；\s]+$/u, '');
+    try {
+      const reading = await requestShanghai();
+      if (isCurrentOperation(root, token)) {
+        renderReading(root, reading, 'shanghai', `${cleanReason}；已继续显示上海天气。`);
+      }
+    } catch {
+      if (isCurrentOperation(root, token)) {
+        renderUnavailable(root, `${cleanReason}；上海天气网络也暂时不可用。`);
+      }
+    }
+  };
+
+  const geolocationFailureReason = (error: GeolocationPositionError) => {
+    if (error.code === error.PERMISSION_DENIED) return '定位权限未授予。';
+    if (error.code === error.POSITION_UNAVAILABLE) return '暂时无法取得访客位置。';
+    if (error.code === error.TIMEOUT) return '访客定位超时。';
+    return '访客定位未完成。';
+  };
+
+  const locateVisitor = (root: HTMLElement) => {
+    const token = beginOperation(root);
+    renderPending(root, 'visitor');
+
+    if (!('geolocation' in navigator)) {
+      void fallbackToShanghai(root, token, '浏览器不支持访客定位。');
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        if (!isCurrentOperation(root, token)) return;
+
+        // Only these rounded, function-local values leave the browser; neither value is stored.
+        const latitude = Math.round(position.coords.latitude * 100) / 100;
+        const longitude = Math.round(position.coords.longitude * 100) / 100;
+        // Let Open-Meteo resolve the location's own timezone so sunset stays local
+        // even when the visitor's device timezone has not been updated while travelling.
+        const timezone = 'auto';
+
+        if (
+          !Number.isFinite(latitude) ||
+          !Number.isFinite(longitude) ||
+          Math.abs(latitude) > 90 ||
+          Math.abs(longitude) > 180
+        ) {
+          void fallbackToShanghai(root, token, '访客位置数据无效。');
+          return;
+        }
+
+        void requestWeather(latitude, longitude, timezone)
+          .then(reading => {
+            if (isCurrentOperation(root, token)) renderReading(root, reading, 'visitor');
+          })
+          .catch(() => {
+            void fallbackToShanghai(root, token, '当前位置天气暂时不可用。');
+          });
+      },
+      error => {
+        if (isCurrentOperation(root, token)) {
+          void fallbackToShanghai(root, token, geolocationFailureReason(error));
+        }
+      },
+      {
+        enableHighAccuracy: false,
+        timeout: GEOLOCATION_TIMEOUT_MS,
+        maximumAge: 5 * 60 * 1_000,
+      },
+    );
+  };
+
+  const setupWeatherSignal = () => {
+    document.querySelectorAll<HTMLElement>('[data-weather-signal]').forEach(root => {
+      if (root.dataset.weatherInitialized === 'true') return;
+      root.dataset.weatherInitialized = 'true';
+      const token = beginOperation(root);
+
+      if (
+        signalState.shanghaiReading &&
+        Date.now() - signalState.shanghaiReading.receivedAt < CACHE_TTL_MS
+      ) {
+        renderReading(root, signalState.shanghaiReading, 'shanghai');
+        return;
+      }
+
+      renderPending(root, 'shanghai');
+      void requestShanghai()
+        .then(reading => {
+          if (isCurrentOperation(root, token)) renderReading(root, reading, 'shanghai');
+        })
+        .catch(() => {
+          if (isCurrentOperation(root, token)) {
+            renderUnavailable(root, '上海天气网络暂时不可用；仍可尝试访客位置。');
+          }
+        });
+    });
+  };
+
+  const handleWeatherClick = (event: Event) => {
+    const element = event.target instanceof Element ? event.target : null;
+    const button = element?.closest<HTMLButtonElement>('[data-weather-locate]');
+    const root = button?.closest<HTMLElement>('[data-weather-signal]');
+    if (button && root && !button.disabled) locateVisitor(root);
+  };
+
+  if (!signalState.lifecycleBound) {
+    document.addEventListener('astro:page-load', setupWeatherSignal);
+    document.addEventListener('click', handleWeatherClick);
+    signalState.lifecycleBound = true;
+  }
+
+  setupWeatherSignal();
+</script>
+
+<style>
+  .weather-signal {
+    position: relative;
+    display: block;
+    min-width: min(304px, calc(100vw - 40px));
+    padding: 14px 16px 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 252, 244, 0.3);
+    border-radius: 2px;
+    background:
+      linear-gradient(115deg, rgba(17, 29, 43, 0.5), rgba(17, 29, 43, 0.18)),
+      rgba(28, 43, 59, 0.12);
+    box-shadow: 0 14px 44px rgba(9, 16, 25, 0.13);
+    color: rgba(255, 252, 244, 0.94);
+    text-shadow: 0 1px 16px rgba(9, 16, 25, 0.48);
+    backdrop-filter: blur(13px) saturate(0.82);
+    -webkit-backdrop-filter: blur(13px) saturate(0.82);
+  }
+
+  .weather-signal__content { min-width: 0; }
+
+  .weather-signal__station,
+  .weather-signal__details,
+  .weather-signal__reading p {
+    margin: 0;
+  }
+
+  .weather-signal__station {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    color: rgba(255, 252, 244, 0.7);
+    font: 400 8px/1.2 var(--mono, monospace);
+    letter-spacing: 0.16em;
+  }
+
+  .weather-signal__reading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 18px;
+    margin-top: 7px;
+  }
+
+  .weather-signal__reading p {
+    padding-bottom: 3px;
+    font-family: var(--serif, serif);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+  }
+
+  .weather-signal__reading strong {
+    display: flex;
+    align-items: start;
+    flex: none;
+    font: 300 28px/0.9 var(--mono, monospace);
+    letter-spacing: -0.06em;
+  }
+
+  .weather-signal__reading small {
+    margin: 1px 0 0 4px;
+    color: rgba(255, 252, 244, 0.72);
+    font: 400 8px/1 var(--mono, monospace);
+    letter-spacing: 0;
+  }
+
+  .weather-signal__details {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 9px;
+    color: rgba(255, 252, 244, 0.68);
+    font: 400 9px/1.3 var(--mono, monospace);
+    letter-spacing: 0.07em;
+  }
+
+  .weather-signal__divider { color: rgba(255, 252, 244, 0.34); }
+
+  .weather-signal__details b,
+  .weather-signal__details time {
+    color: rgba(255, 252, 244, 0.92);
+    font-weight: 400;
+  }
+
+  .weather-signal__action {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 12px;
+    margin-top: 12px;
+    padding-top: 9px;
+    border-top: 1px solid rgba(255, 252, 244, 0.19);
+  }
+
+  .weather-signal__action p {
+    margin: 0;
+    color: rgba(255, 252, 244, 0.62);
+    font: 400 9px/1.45 var(--sans, sans-serif);
+    letter-spacing: 0.04em;
+  }
+
+  .weather-signal__locate {
+    appearance: none;
+    padding: 0 0 2px;
+    border: 0;
+    border-bottom: 1px solid rgba(255, 252, 244, 0.52);
+    border-radius: 0;
+    background: transparent;
+    color: rgba(255, 252, 244, 0.9);
+    font: 500 10px/1.35 var(--sans, sans-serif);
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .weather-signal__locate:hover { border-bottom-color: rgba(255, 252, 244, 0.9); }
+
+  .weather-signal__locate:focus-visible {
+    outline: 2px solid rgba(255, 252, 244, 0.92);
+    outline-offset: 4px;
+  }
+
+  .weather-signal__locate:disabled {
+    opacity: 0.56;
+    cursor: wait;
+  }
+
+  @media (max-width: 520px) {
+    .weather-signal {
+      min-width: min(282px, calc(100vw - 32px));
+      padding: 12px 13px 11px;
+    }
+
+    .weather-signal__reading strong { font-size: 24px; }
+    .weather-signal__action { grid-template-columns: 1fr; }
+    .weather-signal__locate { justify-self: start; }
+  }
+
+  @media (prefers-contrast: more) {
+    .weather-signal {
+      border-color: rgba(255, 255, 255, 0.72);
+      background: rgba(13, 25, 38, 0.8);
+    }
+
+    .weather-signal__action { border-top-color: rgba(255, 255, 255, 0.56); }
+  }
+</style>

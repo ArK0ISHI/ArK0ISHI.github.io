@@ -1,0 +1,246 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import '../../styles/invisible-distance.css';
+
+const title = '看不见的远方：在120日元的价差里，触摸可见性的盲点';
+const description = '以梅洛-庞蒂与德里达的视觉思想，重读《120日元之冬》中观看、身体、幽灵与远方，并保存文章在《Backlog Vol.2》中的实体刊载形态。';
+const gallery = [
+  {
+    src: '/images/works/invisible-distance/article-opening.jpg',
+    alt: '《看不见的远方》在《Backlog Vol.2》中的第62至63页开篇跨页',
+    index: 'P.62—63',
+    caption: '开篇：从最低票价的慢速列车出发，把“远方”从地理距离转向观看方式。',
+    wide: true,
+    page: false,
+  },
+  {
+    src: '/images/works/invisible-distance/article-spread-02.jpg',
+    alt: '《看不见的远方》第64至65页跨页',
+    index: 'P.64—65',
+    caption: '身体：镜头不再是透明窗口，观看重新落回姿态、触感与相遇。',
+    wide: false,
+    page: false,
+  },
+  {
+    src: '/images/works/invisible-distance/article-spread-03.jpg',
+    alt: '《看不见的远方》第66至67页跨页',
+    index: 'P.66—67',
+    caption: '幽灵：缺席不是空白，而是持续介入当下、改变可见之物的痕迹。',
+    wide: false,
+    page: false,
+  },
+  {
+    src: '/images/works/invisible-distance/article-spread-04.jpg',
+    alt: '《看不见的远方》第68至69页跨页',
+    index: 'P.68—69',
+    caption: '盲点：在“如何看”之外，也追问“如何被看”与观看自身的限度。',
+    wide: true,
+    page: false,
+  },
+  {
+    src: '/images/works/invisible-distance/article-page-70.jpg',
+    alt: '《看不见的远方》第70页结语与参考文献',
+    index: 'P.70',
+    caption: '结语：从远方的价格返回价值，让未被看见的经验重新进入叙述。',
+    wide: false,
+    page: true,
+  },
+];
+---
+
+<BaseLayout title={title} description={description} image="/images/works/invisible-distance/backlog-cover-photo.jpg">
+  <article class="work-archive" data-work-archive>
+    <header class="work-hero">
+      <div class="work-hero-copy">
+        <a class="work-breadcrumb" href="/writing/">← WRITING / 返回写作</a>
+        <p class="work-eyebrow">BACKLOG VOL.2 · 2026 / P.62—70</p>
+        <h1>
+          <span class="work-title-main">看不见的远方</span>
+          <span class="work-title-sub">在 120 日元的价差里，<br />触摸可见性的盲点</span>
+        </h1>
+        <p class="work-deck">以梅洛-庞蒂与德里达的视觉思想浅析《120日元之冬》。这不是旧网页文章的修补，而是对真实刊载作品、论题与纸页形态的一次重新归档。</p>
+        <div class="work-actions">
+          <a href="#work-thesis">进入作品档案</a>
+          <button type="button" data-open-work-gallery>打开书页浏览</button>
+        </div>
+      </div>
+
+      <figure class="work-hero-visual">
+        <img src="/images/works/invisible-distance/backlog-cover-photo.jpg" width="1800" height="1197" alt="《Backlog Vol.2》实体社刊封面照片" fetchpriority="high" />
+        <figcaption>《Backlog Vol.2》实体成品 · 东华大学 Galgame 研究室群刊</figcaption>
+      </figure>
+
+      <dl class="work-meta" aria-label="作品信息">
+        <div><dt>文章写作</dt><dd>亚略 Ar</dd></div>
+        <div><dt>刊载</dt><dd>《Backlog Vol.2》</dd></div>
+        <div><dt>页码 / 介质</dt><dd>62—70 · 哑粉纸彩印</dd></div>
+        <div><dt>站内归档</dt><dd>2026.08 · 上海</dd></div>
+      </dl>
+    </header>
+
+    <section class="work-section" id="work-thesis" aria-labelledby="work-thesis-title">
+      <div class="work-section-heading">
+        <p class="work-section-kicker">01 / THE QUESTION</p>
+        <h2 id="work-thesis-title">远方并不只在地图尽头，<br />它也藏在观看的转身里。</h2>
+      </div>
+
+      <div class="work-lead-grid">
+        <div class="work-abstract">
+          <p>《120日元之冬》把一个成年人和一个仍想“再远一点”的孩子放进冬夜慢车：隐形眼镜遗失，检票规则悬在身后，厕所、座位与无人站台共同构成临时的庇护所。故事看似围绕一张最低票价展开，真正被重新衡量的却是观看世界的方式。</p>
+          <p>文章沿着“踩碎隐形眼镜”“厕所躲检票”“红绿双星”“站牌记录”等场景，观察视觉如何离开全景式、抽离式的理性位置，回到身体的局限、偶遇的温度和无法被消除的盲点。</p>
+          <p>梅洛-庞蒂让观看重新成为一种身体经验；德里达则让缺席、痕迹与幽灵进入可见之物。两条思想线索在这部短小的视觉小说中交汇，最终把“远方的价格”转写成“远方的价值”。</p>
+        </div>
+        <blockquote class="work-pullquote">
+          远方不是距离的无限延伸，而是观看方式发生转向之后，世界重新显露的部分。
+          <cite>站内摘要 · 依据刊载文章整理</cite>
+        </blockquote>
+      </div>
+
+      <div class="work-coordinates" aria-label="文章的三个论题坐标">
+        <article class="work-coordinate">
+          <span>01 / BODY</span>
+          <h3>身体性的观看</h3>
+          <p>观看者从来不在世界之外。眼睛、姿势、疲惫和移动共同决定我们能够看见什么。</p>
+        </article>
+        <article class="work-coordinate">
+          <span>02 / TRACE</span>
+          <h3>缺席留下的痕迹</h3>
+          <p>未抵达的人、被覆盖的记录与幽灵般的在场，让“不可见”持续影响现在。</p>
+        </article>
+        <article class="work-coordinate">
+          <span>03 / VALUE</span>
+          <h3>价格之外的远方</h3>
+          <p>120 日元规定了车票的价格，却无法穷尽同行、偶遇与继续向前所拥有的价值。</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="work-section" id="work-pages" aria-labelledby="work-pages-title">
+      <div class="work-section-heading">
+        <p class="work-section-kicker">02 / PRINTED PAGES</p>
+        <h2 id="work-pages-title">让论述真正住进纸页，<br />而不是悬在网页摘要里。</h2>
+      </div>
+      <p class="work-gallery-intro">以下展示文章在社刊中的四个跨页与结尾单页。深色底、细金线与图像节点沿着“看见—遮蔽—记录”的线索展开；点击任一书页可以放大浏览。</p>
+
+      <div class="work-gallery">
+        {gallery.map((item, index) => (
+          <figure class:list={['work-gallery-item', { 'is-wide': item.wide, 'is-page': item.page }]}>
+            <button
+              class="work-gallery-trigger"
+              type="button"
+              data-work-gallery-trigger
+              data-gallery-index={index}
+              data-gallery-src={item.src}
+              data-gallery-alt={item.alt}
+              data-gallery-caption={`${item.index} · ${item.caption}`}
+              aria-label={`放大查看 ${item.index} 跨页`}
+            >
+              <span class="work-gallery-frame"><img src={item.src} width={item.page ? 1000 : 1800} height={item.page ? 1378 : 1240} alt={item.alt} loading={index === 0 ? 'eager' : 'lazy'} decoding="async" /></span>
+              <figcaption class="work-gallery-caption"><span class="work-caption-index">{item.index}</span><span>{item.caption}</span></figcaption>
+            </button>
+          </figure>
+        ))}
+      </div>
+    </section>
+
+    <section class="work-section" id="work-object" aria-labelledby="work-object-title">
+      <div class="work-section-heading">
+        <p class="work-section-kicker">03 / THE OBJECT</p>
+        <h2 id="work-object-title">它首先是一本可以被拿起、<br />翻动与偶然发现的书。</h2>
+      </div>
+
+      <div class="work-object-grid">
+        <figure><img src="/images/works/invisible-distance/book-mark.jpg" width="1280" height="851" alt="《Backlog Vol.2》背封与书脊的实体细节" loading="lazy" decoding="async" /><figcaption>封底与书脊</figcaption></figure>
+        <figure><img src="/images/works/invisible-distance/book-index.jpg" width="1280" height="851" alt="《Backlog Vol.2》目录和紫色纹样内页" loading="lazy" decoding="async" /><figcaption>目录与纹样</figcaption></figure>
+        <figure><img src="/images/works/invisible-distance/book-layout.jpg" width="1280" height="851" alt="《Backlog Vol.2》彩色内页的文字与人物排版" loading="lazy" decoding="async" /><figcaption>图文版式</figcaption></figure>
+        <figure><img src="/images/works/invisible-distance/book-game.jpg" width="1280" height="851" alt="《Backlog Vol.2》填空小游戏实体内页" loading="lazy" decoding="async" /><figcaption>填空小游戏</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="work-section" id="work-publication" aria-labelledby="work-publication-title">
+      <div class="work-history">
+        <div>
+          <p class="work-history-label">04 / PUBLICATION MEMORY</p>
+          <h2 id="work-publication-title">一本社刊的半年，<br />与许多人留下的手温。</h2>
+        </div>
+        <div class="work-history-copy">
+          <p>《Backlog Vol.2》的制作周期接近半年。它不只收录文学批评与作品鉴赏，也容纳电波小品、旅行记录和填空小游戏；从版面、封绘到哑粉纸全彩印刷，每一层都在把社团成员的兴趣变成可以共同翻阅的实体。</p>
+          <p>这个页面只聚焦我写下的《看不见的远方》，但不会把整本书的成果归给一个人。封面、整刊设计、协力、美工与编辑校对均由社刊团队共同完成，具体署名以《Backlog Vol.2》版权页为准。</p>
+
+          <aside class="work-history-note">
+            <strong>关于当时的预订公告</strong>
+            <p>首批预订曾附赠专属色纸、吧唧与随机 to 签色纸，公告中的预订群号为 <code>860332651</code>。这里将它保留为出版过程的历史记录；是否仍开放、赠品是否仍有效，请以研究室后续通知为准。</p>
+          </aside>
+        </div>
+      </div>
+
+      <div class="work-credits" aria-label="作品与出版署名说明">
+        <div class="work-credit"><span class="work-credit-label">TEXT / 文章</span><strong>亚略 Ar</strong><p>《看不见的远方》写作与本页作品整理。</p></div>
+        <div class="work-credit"><span class="work-credit-label">DESIGN / 整体设计与排版</span><strong>RLt</strong><p>《Backlog Vol.2》总体风格、文本样式与图文布局。</p></div>
+        <div class="work-credit"><span class="work-credit-label">COVER / 封面绘制</span><strong>虾滑馆破奇</strong><p>社刊封面绘制；封面照片用于呈现实物成品。</p></div>
+        <div class="work-credit"><span class="work-credit-label">EDIT / 编辑校对</span><strong>坂上白菜</strong><p>社刊编辑校对；刊物由东华大学 Galgame 研究室共同制作。</p></div>
+      </div>
+    </section>
+
+    <footer class="work-ending">
+      <p>旧网页把“看不见的远方”写成了另一篇泛泛的元叙事文章；现在，这个名字重新回到了它真正讨论的对象、真实的纸页与共同完成它的人身边。</p>
+      <nav aria-label="作品页后续导航"><a href="/writing/">继续阅读写作</a><a href="/">回到小屋首页</a></nav>
+    </footer>
+
+    <dialog class="work-lightbox" data-work-lightbox aria-label="文章跨页浏览器">
+      <div class="work-lightbox-inner">
+        <div class="work-lightbox-toolbar"><span class="work-lightbox-count" data-lightbox-count>01 / 05</span><button class="work-lightbox-close" type="button" data-lightbox-close aria-label="关闭跨页浏览器">关闭</button></div>
+        <figure><img data-lightbox-image src="/images/works/invisible-distance/article-opening.jpg" alt="" /><figcaption data-lightbox-caption></figcaption></figure>
+        <button class="work-lightbox-nav is-prev" type="button" data-lightbox-prev aria-label="上一幅跨页">←</button>
+        <button class="work-lightbox-nav is-next" type="button" data-lightbox-next aria-label="下一幅跨页">→</button>
+      </div>
+    </dialog>
+  </article>
+</BaseLayout>
+
+<script>
+  const workWindow = window as Window & { __arWorkArchiveController?: AbortController };
+
+  function setupWorkArchive() {
+    workWindow.__arWorkArchiveController?.abort();
+    const controller = new AbortController();
+    workWindow.__arWorkArchiveController = controller;
+
+    const dialog = document.querySelector<HTMLDialogElement>('[data-work-lightbox]');
+    const triggers = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-work-gallery-trigger]'));
+    const image = dialog?.querySelector<HTMLImageElement>('[data-lightbox-image]');
+    const caption = dialog?.querySelector<HTMLElement>('[data-lightbox-caption]');
+    const count = dialog?.querySelector<HTMLElement>('[data-lightbox-count]');
+    if (!dialog || !image || !caption || !count || triggers.length === 0) return;
+
+    let current = 0;
+    const render = (index: number) => {
+      current = (index + triggers.length) % triggers.length;
+      const trigger = triggers[current];
+      image.src = trigger.dataset.gallerySrc || '';
+      image.alt = trigger.dataset.galleryAlt || '';
+      caption.textContent = trigger.dataset.galleryCaption || '';
+      count.textContent = `${String(current + 1).padStart(2, '0')} / ${String(triggers.length).padStart(2, '0')}`;
+    };
+    const open = (index: number) => {
+      render(index);
+      dialog.showModal();
+      dialog.querySelector<HTMLButtonElement>('[data-lightbox-close]')?.focus();
+    };
+
+    triggers.forEach((trigger, index) => trigger.addEventListener('click', () => open(index), { signal: controller.signal }));
+    document.querySelector<HTMLButtonElement>('[data-open-work-gallery]')?.addEventListener('click', () => open(0), { signal: controller.signal });
+    dialog.querySelector<HTMLButtonElement>('[data-lightbox-close]')?.addEventListener('click', () => dialog.close(), { signal: controller.signal });
+    dialog.querySelector<HTMLButtonElement>('[data-lightbox-prev]')?.addEventListener('click', () => render(current - 1), { signal: controller.signal });
+    dialog.querySelector<HTMLButtonElement>('[data-lightbox-next]')?.addEventListener('click', () => render(current + 1), { signal: controller.signal });
+    dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); }, { signal: controller.signal });
+    document.addEventListener('keydown', (event) => {
+      if (!dialog.open) return;
+      if (event.key === 'ArrowLeft') render(current - 1);
+      if (event.key === 'ArrowRight') render(current + 1);
+    }, { signal: controller.signal });
+  }
+
+  document.addEventListener('astro:page-load', setupWorkArchive);
+  setupWorkArchive();
+</script>

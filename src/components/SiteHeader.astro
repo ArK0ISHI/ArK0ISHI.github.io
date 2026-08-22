@@ -2,10 +2,11 @@
 import { navItems, site } from '../data/site';
 
 const pathname = Astro.url.pathname;
+const isHome = pathname === '/';
 const isActive = (href: string) => href === '/' ? pathname === '/' : pathname.startsWith(href);
 ---
 
-<header class="site-header" data-header>
+<header class:list={['site-header', { 'is-home': isHome }]} data-header>
   <a class="skip-link" href="#main">跳至正文</a>
   <div class="header-inner">
     <a class="brand" href="/" aria-label={`${site.name} 首页`}>
@@ -24,6 +25,8 @@ const isActive = (href: string) => href === '/' ? pathname === '/' : pathname.st
 
     <div class="header-actions">
       <button class="icon-button search-toggle" type="button" data-search-trigger aria-label="检索文章与项目" title="检索（Ctrl/⌘ + K）">
+        <span class="search-label">检索</span>
+        <kbd>⌘ K</kbd>
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.4"></circle><path d="m15.5 15.5 4 4"></path></svg>
       </button>
       <button class="icon-button theme-toggle" type="button" aria-label="切换深浅色模式" title="切换深浅色模式">
@@ -86,14 +89,16 @@ const isActive = (href: string) => href === '/' ? pathname === '/' : pathname.st
     }, { signal: controller.signal });
     menu?.querySelectorAll('a').forEach(link => link.addEventListener('click', () => setMenu(false), { signal: controller.signal }));
 
-    let lastY = window.scrollY;
     const header = document.querySelector<HTMLElement>('[data-header]');
-    window.addEventListener('scroll', () => {
+    let lastY = window.scrollY;
+    const updateHeader = () => {
       const y = window.scrollY;
       header?.classList.toggle('scrolled', y > 16);
       header?.classList.toggle('hidden-header', y > lastY && y > 180 && !document.body.classList.contains('menu-open'));
       lastY = y;
-    }, { passive: true, signal: controller.signal });
+    };
+    updateHeader();
+    window.addEventListener('scroll', updateHeader, { passive: true, signal: controller.signal });
   }
 
   document.addEventListener('astro:page-load', setupHeader);

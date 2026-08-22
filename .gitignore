@@ -7,3 +7,5 @@ dist/
 .env.*
 !.env.example
 public/data/music.json
+qa-artifacts/
+design-audit/

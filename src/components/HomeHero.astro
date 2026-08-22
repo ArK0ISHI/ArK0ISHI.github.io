@@ -1,0 +1,124 @@
+---
+import WeatherSignal from './WeatherSignal.astro';
+import { neteaseMusic } from '../data/music';
+import '../styles/home-a.css';
+
+const initialTrackCount = neteaseMusic.tracks.length;
+---
+
+<section class="home-a" aria-labelledby="home-a-title">
+  <div class="home-a-scene">
+    <img
+      class="home-a-art"
+      src="/images/home/dusk-observers.png"
+      alt="暮色云层与山野之间，两位同行者望向远方"
+      width="2500"
+      height="1450"
+      loading="eager"
+      fetchpriority="high"
+      decoding="async"
+    />
+    <div class="home-a-wash" aria-hidden="true"></div>
+
+    <div class="home-a-copy" data-reveal>
+      <p class="home-a-overline"><span>PRIVATE OBSERVATORY</span><span>SHANGHAI · 31°N</span></p>
+      <h1 id="home-a-title">亚略 <i>Ar</i></h1>
+      <p class="home-a-role">物理、计算与幻想叙事</p>
+      <p class="home-a-lede">白天与器件、数据相处，夜里读故事、修文字。<br />在方程与故事之间，留下那些暂时无法被测量的感受。</p>
+      <div class="home-a-actions">
+        <a class="home-a-primary" href="/blog/why-this-site/">从一篇文章开始</a>
+        <a class="home-a-secondary" href="#tonight-log">推开小屋的门</a>
+      </div>
+    </div>
+
+    <aside class="home-a-signals" aria-label="今晚的小屋信号" data-reveal>
+      <WeatherSignal />
+      <button class="home-a-music" type="button" data-open-music aria-label="打开声音档案">
+        <span class="home-a-signal-kicker" data-home-signal-kicker>NIGHT SIGNAL / 声音档案</span>
+        <strong data-home-track>等待夜间信号</strong>
+        <span class="home-a-track-meta" data-home-track-meta>{initialTrackCount} TRACKS · 点击打开播放器</span>
+      </button>
+    </aside>
+
+    <a class="home-a-scroll" href="#tonight-log">SCROLL TO THE ROOM</a>
+    <p class="home-a-credit">
+      本页插画预览 · <a href="https://www.pixiv.net/artworks/58419066" target="_blank" rel="noreferrer">wjstpwls4 / Pixiv 58419066</a>
+    </p>
+  </div>
+
+  <nav class="home-a-threshold" aria-label="小屋房间">
+    <div class="home-a-threshold-title">
+      <span>TONIGHT'S LOG</span>
+      <strong>今晚，想先去哪里？</strong>
+    </div>
+    <a href="#tonight-log"><span>01</span><strong>观测碎片</strong><small>短记录与近况</small></a>
+    <a href="/library/"><span>02</span><strong>光影札记</strong><small>照片、书与装帧</small></a>
+    <a href="/projects/"><span>03</span><strong>实验室</strong><small>项目与计算工具</small></a>
+    <a href="/about/"><span>04</span><strong>关于小屋</strong><small>身份、方法与边界</small></a>
+  </nav>
+</section>
+
+<script>
+  const heroWindow = window as Window & {
+    __arHomeSignalObserver?: MutationObserver;
+    __arHomeSignalController?: AbortController;
+  };
+
+  function setupHomeSignals() {
+    heroWindow.__arHomeSignalObserver?.disconnect();
+    heroWindow.__arHomeSignalController?.abort();
+
+    document.body.classList.remove('home-a-visible');
+    const root = document.querySelector<HTMLElement>('.home-a');
+    if (!root) return;
+
+    const controller = new AbortController();
+    heroWindow.__arHomeSignalController = controller;
+    const sourceTitle = document.querySelector<HTMLElement>('[data-music-title]');
+    const sourceArtist = document.querySelector<HTMLElement>('[data-music-artist]');
+    const sourceCount = document.querySelector<HTMLElement>('[data-music-count]');
+    const sourceAudio = document.querySelector<HTMLAudioElement>('[data-music-audio]');
+    const targetTitle = root.querySelector<HTMLElement>('[data-home-track]');
+    const targetMeta = root.querySelector<HTMLElement>('[data-home-track-meta]');
+    const targetKicker = root.querySelector<HTMLElement>('[data-home-signal-kicker]');
+    const musicButton = root.querySelector<HTMLButtonElement>('.home-a-music');
+    const scene = root.querySelector<HTMLElement>('.home-a-scene');
+
+    const syncHeroVisibility = () => {
+      const sceneBottom = scene?.getBoundingClientRect().bottom ?? 0;
+      document.body.classList.toggle('home-a-visible', sceneBottom > 120);
+    };
+
+    const sync = () => {
+      const title = sourceTitle?.textContent?.trim();
+      const artist = sourceArtist?.textContent?.trim();
+      const count = sourceCount?.textContent?.trim();
+      if (targetTitle && title) targetTitle.textContent = title;
+      if (targetMeta) {
+        targetMeta.textContent = [artist, count, '点击打开播放器'].filter(Boolean).join(' · ');
+      }
+      const playing = Boolean(sourceAudio && !sourceAudio.paused && !sourceAudio.ended);
+      if (targetKicker) targetKicker.textContent = playing ? 'NOW PLAYING / 正在播放' : 'NIGHT SIGNAL / 声音档案';
+      if (musicButton) musicButton.setAttribute('aria-label', `${playing ? '正在播放' : '打开声音档案'}${title ? `：${title}` : ''}`);
+    };
+
+    sync();
+    const observer = new MutationObserver(sync);
+    [sourceTitle, sourceArtist, sourceCount].forEach((node) => {
+      if (node) observer.observe(node, { childList: true, characterData: true, subtree: true });
+    });
+    ['play', 'pause', 'ended'].forEach((eventName) => {
+      sourceAudio?.addEventListener(eventName, sync, { signal: controller.signal });
+    });
+    heroWindow.__arHomeSignalObserver = observer;
+    syncHeroVisibility();
+    window.addEventListener('scroll', syncHeroVisibility, { passive: true, signal: controller.signal });
+
+    root.querySelector('.home-a-primary')?.addEventListener('click', () => {
+      try { sessionStorage.setItem('ar-entry-path', 'hero-article'); } catch { /* optional */ }
+    }, { signal: controller.signal });
+  }
+
+  document.addEventListener('astro:page-load', setupHomeSignals);
+  setupHomeSignals();
+</script>

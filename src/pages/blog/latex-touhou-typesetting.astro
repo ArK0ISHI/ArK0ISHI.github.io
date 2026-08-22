@@ -1,0 +1,290 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import '../../styles/ziyudie.css';
+
+const title = '《东方紫雨幽蝶》个人整理版｜文本校订与 LaTeX 长篇排印';
+const description = '原作 coolcate；亚略 Ar 负责整理校订、LaTeX 排印与版式设计。一份 88 章、1293 页、A5 开本的非商业长篇阅读档案。';
+
+const gallery = [
+  {
+    src: '/images/works/ziyudie/title-page.webp',
+    alt: '《东方紫雨幽蝶》v2.0 整理版的扉页',
+    code: 'P.003',
+    title: '扉页',
+    caption: '先把原作者与整理者的身份分开，再让书名进入纸页。',
+  },
+  {
+    src: '/images/works/ziyudie/rights-page.webp',
+    alt: '《东方紫雨幽蝶》v2.0 整理版的责任与权利说明页',
+    code: 'P.004',
+    title: '责任页',
+    caption: '记录版本、介质与非商业边界，让整理与原作的权利关系可以被看见。',
+  },
+  {
+    src: '/images/works/ziyudie/contents-page.webp',
+    alt: '《东方紫雨幽蝶》v2.0 整理版的双栏目录页',
+    code: 'P.007',
+    title: '双栏目录',
+    caption: '长篇内容先被变成可导航的结构；密度很高，但翻找仍然安静。',
+  },
+  {
+    src: '/images/works/ziyudie/chapter-01.webp',
+    alt: '《东方紫雨幽蝶》v2.0 整理版的第一章章首',
+    code: 'P.011',
+    title: '章首',
+    caption: 'CHAPTER 编号、中文章名、抽象蝶翼和大段留白，共同建立翻页后的停顿。',
+  },
+  {
+    src: '/images/works/ziyudie/body-page.webp',
+    alt: '《东方紫雨幽蝶》v2.0 整理版的普通正文页',
+    code: 'P.075',
+    title: '正文网格',
+    caption: 'A5 双面版心、1.56 倍行距、外侧页码和安静页眉，让长时间阅读不被装饰打断。',
+  },
+  {
+    src: '/images/works/ziyudie/interlude-page.webp',
+    alt: '《东方紫雨幽蝶》v2.0 整理版的间奏页',
+    code: 'P.076',
+    title: '间奏',
+    caption: '不用另一套夸张样式，而是在同一层级系统中，为特殊转场留出差异。',
+  },
+  {
+    src: '/images/works/ziyudie/editors-afterword.webp',
+    alt: '《东方紫雨幽蝶》v2.0 整理版的整理校订记章首',
+    code: 'P.1287',
+    title: '整理校订记',
+    caption: '把整理缘起、文本问题与版本责任放进书中，而不是让它们隐身。',
+  },
+  {
+    src: '/images/works/ziyudie/version-record.webp',
+    alt: '《东方紫雨幽蝶》v2.0 整理版的版本记录页',
+    code: 'P.1291',
+    title: '版本记录',
+    caption: '以版本号、日期、引擎与开本收束整本书，为之后的继续修订留下起点。',
+  },
+];
+---
+
+<BaseLayout title={title} description={description} image="/images/works/ziyudie/chapter-01.webp">
+  <article class="zy-archive" data-ziyudie-archive>
+    <header class="zy-hero">
+      <div class="zy-hero-copy">
+        <a class="zy-breadcrumb" href="/library/">← LIBRARY / 返回书架</a>
+        <p class="zy-eyebrow">EDITORIAL ARCHIVE · V2.0 / 2026.08</p>
+        <h1><span>东方紫雨幽蝶</span><small>个人整理版</small></h1>
+        <p class="zy-deck">把一部长篇从网络文本重新整理为可以连续阅读的 A5 数字合订本。不改写故事，而是清理断行、繁简混杂、缺字与标点问题，再为 88 章和一篇间奏重建纸面秩序。</p>
+        <div class="zy-actions">
+          <a href="#why">进入整理档案</a>
+          <button type="button" data-open-zy-gallery>浏览精选书页</button>
+        </div>
+      </div>
+
+      <figure class="zy-page-stage" aria-label="《东方紫雨幽蝶》整理版的扉页、目录与章首组合">
+        <img class="zy-stage-page is-contents" src="/images/works/ziyudie/contents-page.webp" width="1108" height="1571" alt="双栏目录页" fetchpriority="high" />
+        <img class="zy-stage-page is-title" src="/images/works/ziyudie/title-page.webp" width="1108" height="1571" alt="作品扉页" fetchpriority="high" />
+        <img class="zy-stage-page is-chapter" src="/images/works/ziyudie/chapter-01.webp" width="1108" height="1571" alt="第一章章首与正文页" fetchpriority="high" />
+        <figcaption><span>THREE LEAVES / 三种纸面节奏</span><b>扉页 · 目录 · 章首</b></figcaption>
+      </figure>
+
+      <dl class="zy-meta" aria-label="项目核心信息">
+        <div><dt>ORIGINAL / 原作</dt><dd>coolcate</dd></div>
+        <div><dt>EDITORIAL / 整理</dt><dd>亚略 Ar<br /><span>校订 · 排印 · 版式设计</span></dd></div>
+        <div><dt>EDITION / 版本</dt><dd>v2.0 · 2026.08<br /><span>XeLaTeX 数字阅读本</span></dd></div>
+        <div><dt>SCALE / 体量</dt><dd>88 章 · 1293 页<br /><span>A5 · 1 篇间奏</span></dd></div>
+      </dl>
+    </header>
+
+    <section class="zy-section zy-why" id="why" aria-labelledby="zy-why-title">
+      <div class="zy-section-mark"><span>01</span><p>WHY REBUILD<br />为什么重新整理</p></div>
+      <div class="zy-section-body">
+        <p class="zy-intro">不是替故事再加一层风格，<br />而是把被格式打断的阅读重新接起来。</p>
+        <div class="zy-prose-pair">
+          <div>
+            <p>整理前的网络文本留有固定宽度换行、繁简混杂、缺字或吞字，以及部分标点和段落不连贯等痕迹。对一部五十万字量级的长篇而言，它们不只是“格式不整齐”，而会一次次中断读者与故事的连接。</p>
+            <p>因此，清理文本与设计书页必须是同一件事：先让语句重新连续，再让目录、章首、间奏、页眉和留白共同承担阅读的方向感。</p>
+          </div>
+          <aside class="zy-responsibility">
+            <span>RESPONSIBILITY / 责任边界</span>
+            <p>整理者可以改善可读性，却不应在不知不觉中成为另一位作者。能确认的文字错误与格式问题被修正；涉及原意的地方，保留谨慎与界线。</p>
+          </aside>
+        </div>
+        <div class="zy-principles" aria-label="整理中的三项原则">
+          <article><span>01 / CONTINUITY</span><h3>先恢复阅读连续性</h3><p>清理断行、异体字、标点与段落，使修正可以被追踪，而不是边排边猜。</p></article>
+          <article><span>02 / HIERARCHY</span><h3>让结构为长篇导航</h3><p>88 章、间奏、后记与版本记录拥有各自的层级，又属于同一本书。</p></article>
+          <article><span>03 / RESTRAINT</span><h3>让装饰停在边缘</h3><p>蝶翼、樱粉与墨紫只用于建立节奏，正文的安静始终比视觉表演更重要。</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="zy-section zy-versions" id="versions" aria-labelledby="zy-versions-title">
+      <div class="zy-section-mark"><span>02</span><p>VERSION STUDY<br />版本如何生长</p></div>
+      <div class="zy-section-body">
+        <header class="zy-heading">
+          <h2 id="zy-versions-title">从“完成一本”，<br />到“让它更经得起长时间阅读”。</h2>
+          <p>v1.0 证明了长篇可以被完整排入书籍；v2.0 则回到字体、版心、层级和编译记录，重新打磨每一个会被阅读时间放大的细节。</p>
+        </header>
+
+        <div class="zy-version-track">
+          <article class="zy-version-card is-v1">
+            <div><span>V1.0</span><time datetime="2026-05">2026.05</time></div>
+            <h3>首个完整数字合订本</h3>
+            <strong>1349 <small>PAGES</small></strong>
+            <p>完成 A5 双面书页、88 章正文与前后付层级。它是结构成形的起点，也暴露了页眉高度、字体回退与缺字等编译问题。</p>
+          </article>
+          <div class="zy-version-change" aria-label="v1 到 v2 的页数变化"><span>− 56 PAGES</span><i aria-hidden="true">→</i><p>更紧凑的章节节奏<br />更稳定的编译结果</p></div>
+          <article class="zy-version-card is-v2">
+            <div><span>V2.0</span><time datetime="2026-08">2026.08</time></div>
+            <h3>面向长时间阅读的再设计</h3>
+            <strong>1293 <small>PAGES</small></strong>
+            <p>重建字体回退、双栏目录、章首节奏、页眉与寡行控制。现有编译记录未发现页面溢出、缺字、页眉高度或字体替代警告。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="zy-section zy-pages" id="pages" aria-labelledby="zy-pages-title">
+      <div class="zy-section-mark"><span>03</span><p>READING PAGES<br />精选书页</p></div>
+      <div class="zy-section-body">
+        <header class="zy-heading">
+          <h2 id="zy-pages-title">版式不在一张“最美的页”里，<br />而在不同纸页之间的连续性里。</h2>
+          <p>以下只展示扉页、目录、章首、正文、间奏与版本记录等少量样张；点击书页可以放大查看版式细节。</p>
+        </header>
+
+        <div class="zy-gallery">
+          {gallery.map((item, index) => (
+            <figure class:list={['zy-gallery-item', `is-item-${index + 1}`]} data-reveal>
+              <button
+                type="button"
+                class="zy-gallery-trigger"
+                data-zy-gallery-trigger
+                data-gallery-index={index}
+                data-gallery-src={item.src}
+                data-gallery-alt={item.alt}
+                data-gallery-caption={`${item.code} · ${item.title} — ${item.caption}`}
+                aria-label={`放大查看 ${item.code} ${item.title}`}
+              >
+                <span class="zy-page-frame"><img src={item.src} width="1108" height="1571" alt={item.alt} loading={index < 2 ? 'eager' : 'lazy'} decoding="async" /></span>
+                <figcaption><span>{item.code}</span><div><strong>{item.title}</strong><p>{item.caption}</p></div></figcaption>
+              </button>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="zy-section zy-system" id="system" aria-labelledby="zy-system-title">
+      <div class="zy-section-mark"><span>04</span><p>TYPE SYSTEM<br />排印系统</p></div>
+      <div class="zy-section-body">
+        <header class="zy-heading">
+          <h2 id="zy-system-title">几个毫米、一点五六倍行距，<br />最终都要回到“能不能继续读下去”。</h2>
+        </header>
+
+        <div class="zy-system-grid">
+          <div class="zy-specimen" aria-label="v2 排版参数">
+            <div class="zy-specimen-title"><span>PAGE SPEC / V2.0</span><strong>A5</strong></div>
+            <dl>
+              <div><dt>TRIM / 开本</dt><dd>148 × 210 mm</dd></div>
+              <div><dt>INNER / 内侧</dt><dd>24 mm</dd></div>
+              <div><dt>OUTER / 外侧</dt><dd>18 mm</dd></div>
+              <div><dt>TOP / 上边</dt><dd>23 mm</dd></div>
+              <div><dt>BOTTOM / 下边</dt><dd>24 mm</dd></div>
+              <div><dt>BINDING / 装订补偿</dt><dd>3 mm</dd></div>
+              <div><dt>LEADING / 行距</dt><dd>1.56</dd></div>
+              <div><dt>INDENT / 首行</dt><dd>2 em</dd></div>
+            </dl>
+            <pre><code>\documentclass[UTF8, zihao=5,
+  twoside, openany, fontset=none]&#123;ctexbook&#125;
+
+\usepackage[
+  a5paper, inner=24mm, outer=18mm,
+  top=23mm, bottom=24mm,
+  bindingoffset=3mm
+]&#123;geometry&#125;</code></pre>
+          </div>
+
+          <div class="zy-system-notes">
+            <article><span>A / TEXT</span><h3>文本先于样式</h3><p>章节文件与版式定义分离，让标点、缺字、断行和段落修订不被视觉代码淹没。</p></article>
+            <article><span>B / TYPE</span><h3>中西文字形的稳定回退</h3><p>拉丁文使用 TeX Gyre Pagella；中文宋、楷、黑体设置多级回退，并保留 PDF 复制与检索能力。</p></article>
+            <article><span>C / RHYTHM</span><h3>把翻页当作叙事停顿</h3><p>章首、间奏、原作者感言和整理校订记用不同层级呼吸，普通正文页则尽量消失。</p></article>
+            <article><span>D / NAVIGATION</span><h3>长篇也需要定位感</h3><p>双栏目录、书签、安静页眉与外侧页码同时存在，让 1293 页不变成无边的滚动文档。</p></article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="zy-boundary" aria-labelledby="zy-boundary-title">
+      <div class="zy-boundary-copy">
+        <p class="zy-eyebrow">05 / CREDITS &amp; BOUNDARIES</p>
+        <h2 id="zy-boundary-title">把谁写下故事、谁整理书页，<br />以及什么不应被擅自公开，一起留在档案里。</h2>
+        <p>本项目是东方 Project 二次创作长篇第一部〈白玉楼阁〉的非官方、非商业个人整理本。网页只展示少量排版样张，不提供完整 PDF、章节正文或可供重制的高分辨率文件。</p>
+      </div>
+      <div class="zy-credits" aria-label="作品与整理署名">
+        <article><span>ORIGINAL TEXT / 原作</span><strong>coolcate</strong><p>《东方紫雨幽蝶》原作文本。</p></article>
+        <article><span>EDITORIAL / 整理校订</span><strong>亚略 Ar</strong><p>文本清理、校订、LaTeX 排印与版式设计。</p></article>
+        <article><span>EDITION / 项目性质</span><strong>NON-COMMERCIAL</strong><p>个人阅读、学习与 LaTeX 排版研究档案。</p></article>
+        <article><span>IMAGE NOTE / 图像说明</span><strong>封面暂不展示</strong><p>现有封面素材尚缺完整作者与公开许可记录，核实后再补入站内档案。</p></article>
+      </div>
+    </section>
+
+    <footer class="zy-ending">
+      <p>一本长篇整理本的成就，不只是“编译成功”。它更像一段长时间的陪伴：把一个故事从不断中断的屏幕里接回来，再让它以安静、可导航的方式留在纸页上。</p>
+      <nav aria-label="作品页后续导航"><a href="/library/">继续翻阅书架</a><a href="/writing/">查看其他写作</a><a href="/">回到小屋首页</a></nav>
+    </footer>
+
+    <dialog class="zy-lightbox" data-zy-lightbox aria-label="《东方紫雨幽蝶》精选书页浏览器">
+      <div class="zy-lightbox-inner">
+        <header><span data-zy-lightbox-count>01 / 08</span><button type="button" data-zy-lightbox-close aria-label="关闭书页浏览器">关闭</button></header>
+        <figure><img data-zy-lightbox-image src="/images/works/ziyudie/title-page.webp" alt="" /><figcaption data-zy-lightbox-caption></figcaption></figure>
+        <button class="zy-lightbox-nav is-prev" type="button" data-zy-lightbox-prev aria-label="上一页">←</button>
+        <button class="zy-lightbox-nav is-next" type="button" data-zy-lightbox-next aria-label="下一页">→</button>
+      </div>
+    </dialog>
+  </article>
+</BaseLayout>
+
+<script>
+  const zyWindow = window as Window & { __arZiyudieController?: AbortController };
+
+  function setupZiyudieArchive() {
+    zyWindow.__arZiyudieController?.abort();
+    const controller = new AbortController();
+    zyWindow.__arZiyudieController = controller;
+
+    const dialog = document.querySelector<HTMLDialogElement>('[data-zy-lightbox]');
+    const triggers = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-zy-gallery-trigger]'));
+    const image = dialog?.querySelector<HTMLImageElement>('[data-zy-lightbox-image]');
+    const caption = dialog?.querySelector<HTMLElement>('[data-zy-lightbox-caption]');
+    const count = dialog?.querySelector<HTMLElement>('[data-zy-lightbox-count]');
+    if (!dialog || !image || !caption || !count || triggers.length === 0) return;
+
+    let current = 0;
+    const render = (index: number) => {
+      current = (index + triggers.length) % triggers.length;
+      const trigger = triggers[current];
+      image.src = trigger.dataset.gallerySrc || '';
+      image.alt = trigger.dataset.galleryAlt || '';
+      caption.textContent = trigger.dataset.galleryCaption || '';
+      count.textContent = `${String(current + 1).padStart(2, '0')} / ${String(triggers.length).padStart(2, '0')}`;
+    };
+    const open = (index: number) => {
+      render(index);
+      dialog.showModal();
+      dialog.querySelector<HTMLButtonElement>('[data-zy-lightbox-close]')?.focus();
+    };
+
+    triggers.forEach((trigger, index) => trigger.addEventListener('click', () => open(index), { signal: controller.signal }));
+    document.querySelector<HTMLButtonElement>('[data-open-zy-gallery]')?.addEventListener('click', () => open(0), { signal: controller.signal });
+    dialog.querySelector<HTMLButtonElement>('[data-zy-lightbox-close]')?.addEventListener('click', () => dialog.close(), { signal: controller.signal });
+    dialog.querySelector<HTMLButtonElement>('[data-zy-lightbox-prev]')?.addEventListener('click', () => render(current - 1), { signal: controller.signal });
+    dialog.querySelector<HTMLButtonElement>('[data-zy-lightbox-next]')?.addEventListener('click', () => render(current + 1), { signal: controller.signal });
+    dialog.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); }, { signal: controller.signal });
+    document.addEventListener('keydown', (event) => {
+      if (!dialog.open) return;
+      if (event.key === 'ArrowLeft') render(current - 1);
+      if (event.key === 'ArrowRight') render(current + 1);
+    }, { signal: controller.signal });
+  }
+
+  document.addEventListener('astro:page-load', setupZiyudieArchive);
+  setupZiyudieArchive();
+</script>

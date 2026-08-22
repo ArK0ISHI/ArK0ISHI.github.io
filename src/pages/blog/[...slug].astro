@@ -4,7 +4,7 @@ import PostLayout from '../../layouts/PostLayout.astro';
 
 export async function getStaticPaths() {
   const posts = (await getCollection('blog', ({ data }) => !data.draft))
-    .filter((post) => post.id !== 'invisible-distance')
+    .filter((post) => !['invisible-distance', 'latex-touhou-typesetting'].includes(post.id))
     .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
   return posts.map((post, index) => ({
     params: { slug: post.id },

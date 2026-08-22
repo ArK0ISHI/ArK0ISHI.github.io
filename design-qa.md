@@ -62,4 +62,53 @@
 - Music sync during the production build: 44 tracks, 1 local track, 43 LRC records, 0 degraded items.
 - Deployed-page smoke test remains required after the GitHub Pages workflow completes.
 
+## 《东方紫雨幽蝶》作品档案追加验收
+
+### Scope and source truth
+
+- Build under review: dedicated `/blog/latex-touhou-typesetting/` editorial archive, replacing the previous generic Markdown article while retaining its public slug and search/RSS/library propagation.
+- Source visual truth: selected pages rendered from the supplied v2.0 PDF—physical PDF pages 3 (title), 7 (contents), 11 (chapter opener), 75 (body), 76 (interlude), 1287 (editorial afterword), and 1291 (version record).
+- Full comparison input: `design-audit/ziyudie/qa-comparison.png`, combining source pages P.3/P.7/P.11 and the 1440 × 1000 implementation viewport in one image.
+- Desktop implementation capture: `design-audit/ziyudie/implementation-desktop.png` at a 1440 × 1000 CSS viewport.
+- Mobile implementation capture: `design-audit/ziyudie/implementation-mobile.png` at a 390 × 844 CSS viewport.
+- Mobile interaction capture: `design-audit/ziyudie/lightbox-mobile.png`, showing the native dialog with visible close, previous, and next controls.
+
+### Fidelity and layout review
+
+- The implementation derives its palette, spacing, chapter rhythm, and restrained ornament directly from the v2.0 title, contents, and chapter pages. No generated illustration, CSS drawing, placeholder, or unverified cover artwork appears in the public page.
+- Desktop hero uses three actual book pages as the dominant composition. Title, responsibility boundary, two calls to action, page stack, and four metadata cells remain visible without overlap at 1440 × 1000.
+- Mobile hero preserves the title, project explanation, both actions, and the beginning of the page stack. The measured document width equals the viewport width, and no broken image or horizontal overflow was detected.
+- Gallery images keep their original portrait ratio and use `object-fit: cover` only at the exact source aspect ratio. The native dialog displays the complete page with `object-fit: contain`.
+- The lightbox arrow controls were initially low-contrast over the white mobile page. They now use a bordered dark backing and remain visible on both edges; `lightbox-mobile.png` is the post-fix evidence.
+- Page-specific footer background now continues the warm paper / dark violet archive field instead of jumping to the site's default blue-black footer.
+
+### Content and rights review
+
+- Authorship is explicit: original text by `coolcate`; text cleanup, proofreading, XeLaTeX typesetting, and layout design by `亚略 Ar`.
+- The archive describes the first part `〈白玉楼阁〉`, 88 chapters, one interlude, A5 format, 1293-page v2.0 PDF, and 2026.08 version date. It does not present the work as a formal publication.
+- v1.0/v2.0 figures and typesetting parameters match the supplied PDFs, source, and existing compilation logs. The page distinguishes recorded build evidence from design interpretation.
+- Full PDFs, chapter files, high-resolution body text, and covers with incomplete creator/licensing records are not copied to the public site. The page states the non-official, non-commercial nature and explains why the cover is temporarily withheld.
+- Only nine low-resolution layout samples were copied into `public/images/works/ziyudie/`; the source PDF and TeX project remain outside the repository.
+
+### Interaction and runtime checks
+
+- `进入整理档案` anchors to the first editorial section.
+- `浏览精选书页` opens the native dialog; close and previous/next actions work, count and alt text update, and mobile controls remain reachable.
+- Eight gallery triggers are exposed with specific accessible names; all nine page images loaded with non-zero natural dimensions.
+- ClientRouter lifecycle is protected with an AbortController, preventing duplicate handlers on page navigation.
+- Browser console review after desktop, mobile, and dialog checks returned no warnings or errors.
+- The generic catch-all blog route excludes this slug, preventing duplicate route generation while keeping writing, library, tag, search, RSS, and sitemap discovery intact.
+
+### Build verification
+
+- `pnpm check`: 35 files, 0 errors, 0 warnings, 0 hints.
+- `pnpm build`: exit 0; 39 static pages built, including `/blog/latex-touhou-typesetting/`.
+- Music sync during the production build: 44 tracks, 1 local track, 43 LRC records, 0 degraded items.
+- Production asset output contains all nine optimized WebP samples; no source PDF, TeX auxiliary file, chapter directory, or unverified cover file is present.
+
+### Remaining findings
+
+- No actionable P0, P1, or P2 visual, content, interaction, or accessibility findings remain.
+- P3: the persistent collapsed music dock occupies the lower edge of small screens, but it does not cover either hero action and remains user-collapsible/expandable by design.
+
 final result: passed

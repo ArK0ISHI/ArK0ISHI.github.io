@@ -35,7 +35,7 @@ export const projects: Project[] = [
     title: '滴水龙头液滴特性的实验研究',
     subtitle: 'Nonlinear dynamics of a dripping faucet',
     description: '围绕液滴形成、分岔与混沌行为开展实验观测与数据分析，尝试从时间序列中辨认周期窗口和非线性演化。',
-    reflection: '怎样把“看起来杂乱”的序列，变成能够区分噪声、暂态与确定性结构的证据？',
+    reflection: '怎样从杂乱的序列中区分噪声、暂态与确定性结构？',
     tags: ['非线性动力学', '实验物理', '数据分析'],
     result: 'CUPT 全国一等奖 · 最佳实验图片奖',
     articleHref: '/blog/dripping-faucet-chaos/',

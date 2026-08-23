@@ -16,7 +16,7 @@ const { tag, posts } = Astro.props;
 posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 
-<BaseLayout title={`标签：${tag}`} description={`收录在“${tag}”标签下的文章。`}>
+<BaseLayout title={`标签：${tag}`} description={`收录在 ${tag} 标签下的文章。`}>
   <header class="page-hero">
     <div class="page-hero-grid">
       <div><p class="eyebrow">TAG / 标签</p><h1>#{tag}</h1></div>

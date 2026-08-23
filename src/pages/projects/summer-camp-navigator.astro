@@ -17,7 +17,7 @@ const capabilities = [
     index: '02',
     en: 'DEADLINE',
     title: '把截止日期变成每天能看懂的紧迫度',
-    body: '页面会按访问当天动态计算今日截止、三天内和一周内项目；没有明确日期的记录不会被伪装成确定信息，而是保留“待确认”状态。',
+    body: '页面会按访问当天动态计算今日截止、三天内和一周内项目；日期缺失时直接标注待确认。',
   },
   {
     index: '03',
@@ -41,13 +41,13 @@ const capabilities = [
         <a class="portal-breadcrumb" href="/projects/">← PROJECTS / 返回项目</a>
         <p class="portal-eyebrow">STUDENT UTILITY · 2026 / CONTROLLED ACCESS</p>
         <p class="portal-product-name">主界面：东华大学物理学院｜保研申请工作台</p>
-        <h1>让信息不只被收集，<br /><em>也能被每天使用。</em></h1>
+        <h1>把散落的申请信息，<br /><em>整理成每天能用的工作台。</em></h1>
         <p class="portal-deck">面向东华大学物理学院相关专业同学的非官方信息工具。它把分散的夏令营与预推免通知，整理成一套可以检索、核验、标记和安排日程的申请工作流。</p>
         <div class="portal-actions">
           <a class="is-primary" href={liveHref} target="_blank" rel="noopener noreferrer">进入工作台 <span>需授权 ↗</span></a>
           <a href="#portal-method">查看项目方法</a>
         </div>
-        <p class="portal-access-note"><span aria-hidden="true"></span>部署入口“东华物理保研导航”在线 · 登录权限由平台单独管理</p>
+        <p class="portal-access-note"><span aria-hidden="true"></span>东华物理保研导航在线 · 登录权限由平台单独管理</p>
       </div>
 
       <figure class="portal-hero-visual">
@@ -69,12 +69,12 @@ const capabilities = [
     <section class="portal-section portal-intro" id="portal-method" aria-labelledby="portal-method-title">
       <div class="portal-section-mark"><p>01 / THE PROBLEM</p><span>INFORMATION → DECISION</span></div>
       <div class="portal-intro-main">
-        <h2 id="portal-method-title">真正消耗精力的，往往不是信息太少，<br />而是不知道哪一条此刻值得行动。</h2>
+        <h2 id="portal-method-title">通知很多，申请者仍要反复判断：<br />此刻该先处理哪一条？</h2>
         <div class="portal-lead">
-          <p>夏令营与预推免通知散落在学院官网、报名系统和转载页面里。截止日期写法不一，研究方向需要再次判断，很多项目还缺少参营时间。单纯把链接堆成表格，并不能回答“今天先做什么”。</p>
+          <p>夏令营与预推免通知散落在学院官网、报名系统和转载页面里。截止日期写法不一，研究方向需要再次判断，很多项目还缺少参营时间。链接堆满表格之后，今天先做什么仍要重新判断。</p>
           <p>因此，这个页面从申请者的日常动作反推结构：先找项目，再核对来源；决定关注后记录进度；时间明确后排入日程；遇到缺失字段时，明确提示尚待确认。</p>
         </div>
-        <blockquote>信息设计在这里不是装饰，而是把不确定性摆到正确的位置。</blockquote>
+        <blockquote>信息设计要做的，是让确定的日期、缺失的字段和待办的动作各归其位。</blockquote>
       </div>
     </section>
 
@@ -98,7 +98,7 @@ const capabilities = [
       <header>
         <p class="portal-eyebrow">03 / RESPONSIVE VIEWS</p>
         <h2 id="portal-snapshots-title">同一套判断路径，<br />在深夜与手机上仍然成立。</h2>
-        <p>桌面端保留筛选、结果和详情的并列关系；小屏幕把动作收进底部导航与抽屉。深色界面不是另一套产品，只是为长时间查看通知降低光线负担。</p>
+        <p>桌面端保留筛选、结果和详情的并列关系；小屏幕把动作收进底部导航与抽屉。深色界面沿用同一套结构，适合在低照度环境里长时间查看通知。</p>
       </header>
       <div class="portal-snapshot-stage">
         <figure class="is-desktop">
@@ -132,9 +132,9 @@ const capabilities = [
       </div>
       <div class="portal-credit-grid" aria-label="项目署名与边界">
         <article><span>INTERFACE / 网页整理与界面制作</span><strong>亚略 Ar</strong><p>信息架构、响应式界面与本机申请工作流。</p></article>
-        <article><span>DATA SCRIPT / 信息抓取脚本</span><strong>和谐号</strong><p>原始信息的抓取脚本；本站不将这部分工作归于亚略 Ar。</p></article>
+        <article><span>DATA SCRIPT / 信息抓取脚本</span><strong>和谐号</strong><p>负责原始信息抓取脚本，与网页整理和界面制作分工协作。</p></article>
         <article><span>PRIVACY / 个人状态</span><strong>LOCAL ONLY</strong><p>关注、投递与日程保存在访问者自己的浏览器，不上传个人进度。</p></article>
-        <article><span>ACCESS / 访问方式</span><strong>AUTH REQUIRED</strong><p>部署入口显示“东华物理保研导航”；授权后进入申请工作台。个人主页不会公开访问凭据。</p></article>
+        <article><span>ACCESS / 访问方式</span><strong>AUTH REQUIRED</strong><p>部署入口显示东华物理保研导航；授权后进入申请工作台。个人主页不会公开访问凭据。</p></article>
       </div>
     </section>
 

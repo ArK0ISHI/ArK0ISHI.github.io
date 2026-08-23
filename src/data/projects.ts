@@ -78,4 +78,15 @@ export const projects: Project[] = [
     credit: '信息抓取脚本：和谐号｜网页整理与界面制作：亚略Ar',
     accessNote: '学生整理 · 非官方信息工具 · 需授权访问',
   },
+  {
+    id: 'huashu-cup-a-2026',
+    number: 'P.06',
+    title: '从像素到战术：世界杯任意球轨迹重建与防守策略',
+    subtitle: 'Free-kick trajectory reconstruction and defensive strategy design',
+    description: '从双视角比赛视频中重建任意球三维轨迹，比较不同空气动力学模型，并用蒙特卡洛模拟搜索人墙与守门员的协同防守位置。',
+    reflection: '二维视频中的像素测量，经过怎样的标定与误差检验，才能支撑三维轨迹和战术判断？',
+    tags: ['数学建模', '三维重建', '蒙特卡洛模拟'],
+    result: '2026 年“华数杯”国际大学生数学建模竞赛一等奖',
+    articleHref: '/blog/huashu-cup-a-2026/',
+  },
 ];

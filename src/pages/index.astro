@@ -20,7 +20,7 @@ const studentToolProject = projects.find(project => project.id === 'summer-camp-
 const honors = [
   { year: '2025', title: '全国大学生物理实验竞赛创新赛全国一等奖', scope: 'PHYSICS EXPERIMENT' },
   { year: '2025', title: 'CUPT 全国一等奖、全国最佳实验图片奖', scope: 'CUPT' },
-  { year: '2026', title: '“华数杯”国际大学生数学建模竞赛一等奖', scope: 'MODELING' },
+  { year: '2026', title: '“华数杯”国际大学生数学建模竞赛一等奖', scope: 'MODELING', href: '/blog/huashu-cup-a-2026/' },
 ];
 ---
 
@@ -138,9 +138,15 @@ const honors = [
       </div>
       <div class="honor-list">
         {honors.map(honor => (
-          <div class="honor-item">
-            <span>{honor.year}</span><strong>{honor.title}</strong><small>{honor.scope}</small>
-          </div>
+          honor.href ? (
+            <a class="honor-item honor-item-link" href={honor.href} aria-label={`阅读相关文章：${honor.title}`}>
+              <span>{honor.year}</span><strong>{honor.title}</strong><small>{honor.scope}</small>
+            </a>
+          ) : (
+            <div class="honor-item">
+              <span>{honor.year}</span><strong>{honor.title}</strong><small>{honor.scope}</small>
+            </div>
+          )
         ))}
       </div>
     </div>

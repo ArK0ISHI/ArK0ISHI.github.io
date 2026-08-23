@@ -39,7 +39,7 @@ const searchItems: SearchItem[] = [
     href: `/blog/${post.id}/`,
     type: post.data.kind === 'note' ? '笔记' as const : '写作' as const,
     meta: `${post.data.category} · ${post.data.tags.slice(0, 2).join(' · ')}`,
-    searchText: [post.data.title, post.data.description, post.data.category, ...post.data.tags, cleanBody(post.body)].join(' '),
+    searchText: [post.data.title, post.data.description, post.data.category, ...post.data.tags, cleanBody(post.body).slice(0, 8000)].join(' '),
     rank: 100 - index,
   })),
   ...projects.map((project, index) => ({

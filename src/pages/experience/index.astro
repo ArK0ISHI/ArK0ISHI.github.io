@@ -2,7 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const items = [
-  { year: '2026', title: '“华数杯”国际大学生数学建模竞赛一等奖', note: '数学建模与协作研究' },
+  { year: '2026', title: '“华数杯”国际大学生数学建模竞赛一等奖', note: '数学建模与协作研究', href: '/blog/huashu-cup-a-2026/' },
   { year: '2026', title: '《当代中国高校筹款的伦理问题诊断及其对策建议》', note: '发表于《高教探索》2026年第1期 · 学生第一作者' },
   { year: '2025', title: '国家奖学金', note: '本科生国家奖学金' },
   { year: '2025', title: '全国大学生物理实验竞赛创新赛全国一等奖', note: '融合机器学习的差动式电容微位移测量' },
@@ -22,7 +22,13 @@ const items = [
     <div class="page-controls"><span class="page-count">SELECTED · 2024—2026</span></div>
     <div class="experience-list">
       {items.map(item => (
-        <div class="experience-row"><time>{item.year}</time><h2>{item.title}</h2><p>{item.note}</p></div>
+        item.href ? (
+          <a class="experience-row experience-row-link" href={item.href} aria-label={`阅读相关文章：${item.title}`}>
+            <time>{item.year}</time><h2>{item.title}</h2><p>{item.note}</p>
+          </a>
+        ) : (
+          <div class="experience-row"><time>{item.year}</time><h2>{item.title}</h2><p>{item.note}</p></div>
+        )
       ))}
     </div>
     <aside class="privacy-note">

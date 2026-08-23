@@ -417,6 +417,10 @@ main { position: relative; z-index: 1; min-height: 70vh; overflow: hidden; }
 .honor-item span { color: #c66a75; font: 300 10px/1 var(--mono); }
 .honor-item strong { font-size: clamp(15px, 1.5vw, 19px); font-weight: 500; }
 .honor-item small { color: #aeb7bc; font: 300 9px/1 var(--mono); }
+.honor-item-link { transition: background-color .25s ease, transform .25s ease; }
+.honor-item-link:hover { background: rgba(236,232,222,.055); transform: translateX(6px); }
+.honor-item-link:hover strong { color: #fff; }
+.honor-item-link:focus-visible { outline: 1px solid #c66a75; outline-offset: 4px; }
 
 /* Inner pages */
 .page-hero { width: var(--page); margin: 0 auto; padding: 170px 0 72px; border-bottom: 1px solid var(--line-strong); }
@@ -507,6 +511,10 @@ main { position: relative; z-index: 1; min-height: 70vh; overflow: hidden; }
 .experience-row time { color: var(--red); font: 300 11px/1 var(--mono); }
 .experience-row h2 { margin: 0; font-size: 18px; font-weight: 600; }
 .experience-row p { margin: 0; color: var(--ink-soft); font-size: 12px; }
+.experience-row-link { transition: background-color .25s ease, transform .25s ease; }
+.experience-row-link:hover { background: var(--wash); transform: translateX(6px); }
+.experience-row-link:hover h2 { color: var(--red); }
+.experience-row-link:focus-visible { outline: 1px solid var(--red); outline-offset: 4px; }
 .privacy-note { margin-top: 70px; padding: 30px; border: 1px solid var(--line); border-left: 3px solid var(--red); }
 .privacy-note h2 { margin: 0 0 10px; font-size: 18px; }
 .privacy-note p { margin: 0; color: var(--ink-soft); font-size: 13px; }
@@ -551,6 +559,9 @@ main { position: relative; z-index: 1; min-height: 70vh; overflow: hidden; }
 .prose th, .prose td { min-width: 120px; padding: 11px 14px; border: 1px solid var(--line); text-align: left; }
 .prose th { background: var(--wash); }
 .prose img { width: 100%; margin: 2em 0; }
+.prose figure { margin: 2.3em 0; }
+.prose figure img { display: block; width: 100%; height: auto; margin: 0; object-fit: contain; }
+.prose figcaption { margin-top: .8em; color: var(--ink-soft); font-size: 12px; line-height: 1.75; text-align: center; }
 .prose .katex-display { margin: 2em 0; overflow-x: auto; overflow-y: hidden; }
 .post-end { max-width: 740px; margin: 90px auto 0; padding-top: 36px; border-top: 1px solid var(--line-strong); text-align: center; }
 .post-end span { color: var(--red); font-size: 24px; }

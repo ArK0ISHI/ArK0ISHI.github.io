@@ -12,6 +12,9 @@ const {
   category,
   tags,
   kind = 'note',
+  author = '亚略Ar',
+  authorLabel = 'WORDS BY',
+  scopeNote,
   headings = [] as Heading[],
   readingMinutes = 1,
   newerPost,
@@ -24,6 +27,9 @@ const {
   category: string;
   tags: string[];
   kind?: 'note' | 'writing';
+  author?: string;
+  authorLabel?: string;
+  scopeNote?: string;
   headings?: Heading[];
   readingMinutes?: number;
   newerPost?: Neighbor;
@@ -33,6 +39,8 @@ const displayDate = date.toLocaleDateString('zh-CN', { year: 'numeric', month: '
 const archiveHref = kind === 'writing' ? '/writing/' : '/notes/';
 const archiveLabel = kind === 'writing' ? '返回写作' : '返回笔记';
 const kindLabel = kind === 'writing' ? 'ESSAY / 写作' : 'NOTE / 笔记';
+const defaultScopeNote = '本文用于整理方法、推导与问题意识，不替代完整项目报告；其中示意代码与参数不等同于项目原始实现。';
+const displayedScopeNote = scopeNote ?? (kind === 'note' ? defaultScopeNote : undefined);
 ---
 
 <BaseLayout title={title} description={description}>
@@ -46,7 +54,7 @@ const kindLabel = kind === 'writing' ? 'ESSAY / 写作' : 'NOTE / 笔记';
       <h1>{title}</h1>
       <p class="post-description">{description}</p>
       <div class="post-byline">
-        <div><span>WORDS BY</span><strong>亚略Ar</strong></div>
+        <div><span>{authorLabel}</span><strong>{author}</strong></div>
         <div><span>站内整理</span><time datetime={date.toISOString()}>{displayDate}</time></div>
         <div><span>预计阅读</span><strong>{readingMinutes} 分钟</strong></div>
         {updated && <div><span>REVISED</span><time datetime={updated.toISOString()}>{updated.toLocaleDateString('zh-CN')}</time></div>}
@@ -82,8 +90,8 @@ const kindLabel = kind === 'writing' ? 'ESSAY / 写作' : 'NOTE / 笔记';
             </nav>
           </details>
         )}
-        {kind === 'note' && (
-          <aside class="post-scope"><strong>公开版说明</strong><p>本文用于整理方法、推导与问题意识，不替代完整项目报告；其中示意代码与参数不等同于项目原始实现。</p></aside>
+        {displayedScopeNote && (
+          <aside class="post-scope"><strong>公开版说明</strong><p>{displayedScopeNote}</p></aside>
         )}
         <slot />
       </div>

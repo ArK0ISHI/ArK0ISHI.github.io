@@ -20,4 +20,17 @@ const blog = defineCollection({
   }),
 });
 
-export const collections = { blog };
+const novel = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/novel' }),
+  schema: z.object({
+    title: z.string(),
+    book: z.string(),
+    order: z.number().int().positive(),
+    kind: z.enum(['chapter', 'interlude', 'afterword']),
+    chapterNumber: z.number().int().positive().optional(),
+    sourceFile: z.string(),
+    description: z.string(),
+  }),
+});
+
+export const collections = { blog, novel };

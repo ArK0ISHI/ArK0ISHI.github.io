@@ -50,6 +50,7 @@ export const projects: Project[] = [
     reflection: '磁矩守恒在什么尺度与步长下仍然成立，粒子又在什么条件下进入损失锥？',
     tags: ['计算物理', '电磁学', 'MATLAB'],
     result: '三维场计算与粒子轨道模拟',
+    articleHref: '/blog/magnetic-mirror-orbits/',
     featured: true,
   },
   {

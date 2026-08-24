@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import PostLayout from '../../layouts/PostLayout.astro';
+import Trajectory3D from '../../components/Trajectory3D.astro';
 
 export async function getStaticPaths() {
   const posts = (await getCollection('blog', ({ data }) => !data.draft))
@@ -32,4 +33,5 @@ const readingMinutes = Math.max(1, Math.ceil(cjkCount / 450 + latinCount / 220))
   olderPost={olderPost}
 >
   <Content />
+  {post.id === 'huashu-cup-a-2026' && <Trajectory3D />}
 </PostLayout>

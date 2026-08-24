@@ -395,6 +395,17 @@ main { position: relative; z-index: 1; min-height: 70vh; overflow: hidden; }
 .featured-project h3 { margin: 0; font-size: 22px; font-weight: 600; line-height: 1.55; }
 .featured-project > p { margin: 14px 0 18px; color: var(--ink-soft); font-size: 13px; line-height: 1.8; }
 .fp-result { padding-top: 14px; border-top: 1px solid var(--line); color: var(--red); font-size: 10px; }
+.fp-link {
+  width: fit-content;
+  margin-top: 16px;
+  color: var(--ink);
+  font: 400 10px/1.5 var(--mono);
+  letter-spacing: .08em;
+  text-decoration: none;
+}
+.fp-link b { color: var(--red); font-weight: 400; }
+.fp-link:hover { color: var(--red); }
+.fp-link:focus-visible { outline: 2px solid var(--red); outline-offset: 5px; }
 
 .latest-list { margin-top: 8px; }
 .focus-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: clamp(50px, 8vw, 130px); padding: 52px 0 30px; }

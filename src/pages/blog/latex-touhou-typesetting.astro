@@ -7,8 +7,19 @@ const description = '原作 coolcate；亚略 Ar 负责整理校订、LaTeX 排�
 
 const gallery = [
   {
+    src: '/images/works/ziyudie/front-cover.webp',
+    alt: '《东方紫雨幽蝶》v2.0 整理版封面',
+    width: 1055,
+    height: 1491,
+    code: 'COVER',
+    title: '封面',
+    caption: '樱色、蝶影与夜空组成第一眼的阅读气氛；由亚略 Ar 构思并整理定稿。',
+  },
+  {
     src: '/images/works/ziyudie/title-page.webp',
     alt: '《东方紫雨幽蝶》v2.0 整理版的扉页',
+    width: 1108,
+    height: 1571,
     code: 'P.003',
     title: '扉页',
     caption: '先把原作者与整理者的身份分开，再让书名进入纸页。',
@@ -16,6 +27,8 @@ const gallery = [
   {
     src: '/images/works/ziyudie/rights-page.webp',
     alt: '《东方紫雨幽蝶》v2.0 整理版的责任与权利说明页',
+    width: 1108,
+    height: 1571,
     code: 'P.004',
     title: '责任页',
     caption: '记录版本、介质与非商业边界，让整理与原作的权利关系可以被看见。',
@@ -23,6 +36,8 @@ const gallery = [
   {
     src: '/images/works/ziyudie/contents-page.webp',
     alt: '《东方紫雨幽蝶》v2.0 整理版的双栏目录页',
+    width: 1108,
+    height: 1571,
     code: 'P.007',
     title: '双栏目录',
     caption: '长篇内容先被变成可导航的结构；密度很高，但翻找仍然安静。',
@@ -30,6 +45,8 @@ const gallery = [
   {
     src: '/images/works/ziyudie/chapter-01.webp',
     alt: '《东方紫雨幽蝶》v2.0 整理版的第一章章首',
+    width: 1108,
+    height: 1571,
     code: 'P.011',
     title: '章首',
     caption: 'CHAPTER 编号、中文章名、抽象蝶翼和大段留白，共同建立翻页后的停顿。',
@@ -37,6 +54,8 @@ const gallery = [
   {
     src: '/images/works/ziyudie/body-page.webp',
     alt: '《东方紫雨幽蝶》v2.0 整理版的普通正文页',
+    width: 1108,
+    height: 1571,
     code: 'P.075',
     title: '正文网格',
     caption: 'A5 双面版心、1.56 倍行距、外侧页码和安静页眉，让长时间阅读不被装饰打断。',
@@ -44,13 +63,26 @@ const gallery = [
   {
     src: '/images/works/ziyudie/interlude-page.webp',
     alt: '《东方紫雨幽蝶》v2.0 整理版的间奏页',
+    width: 1108,
+    height: 1571,
     code: 'P.076',
     title: '间奏',
     caption: '间奏沿用全书的层级系统，只为特殊转场留出一处轻微变化。',
   },
   {
+    src: '/images/works/ziyudie/author-afterword.webp',
+    alt: '《东方紫雨幽蝶》v2.0 整理版的原作者感言章首',
+    width: 1108,
+    height: 1571,
+    code: 'P.1285',
+    title: '原作者感言',
+    caption: '正文结束后先回到创作者的声音，再进入整理者留下的版本记录。',
+  },
+  {
     src: '/images/works/ziyudie/editors-afterword.webp',
     alt: '《东方紫雨幽蝶》v2.0 整理版的整理校订记章首',
+    width: 1108,
+    height: 1571,
     code: 'P.1287',
     title: '整理校订记',
     caption: '整理缘起、文本问题与版本责任都写进书中，供读者查阅。',
@@ -58,32 +90,44 @@ const gallery = [
   {
     src: '/images/works/ziyudie/version-record.webp',
     alt: '《东方紫雨幽蝶》v2.0 整理版的版本记录页',
+    width: 1108,
+    height: 1571,
     code: 'P.1291',
     title: '版本记录',
     caption: '以版本号、日期、引擎与开本收束整本书，为之后的继续修订留下起点。',
   },
+  {
+    src: '/images/works/ziyudie/back-cover.webp',
+    alt: '《东方紫雨幽蝶》v2.0 整理版封底',
+    width: 1055,
+    height: 1491,
+    code: 'BACK',
+    title: '封底',
+    caption: '淡色花枝和故事简介收住全书，保留读完之后的余白。',
+  },
 ];
 ---
 
-<BaseLayout title={title} description={description} image="/images/works/ziyudie/chapter-01.webp">
+<BaseLayout title={title} description={description} image="/images/works/ziyudie/front-cover.webp">
   <article class="zy-archive" data-ziyudie-archive>
     <header class="zy-hero">
       <div class="zy-hero-copy">
         <a class="zy-breadcrumb" href="/library/">← LIBRARY / 返回书架</a>
         <p class="zy-eyebrow">EDITORIAL ARCHIVE · V2.0 / 2026.08</p>
         <h1><span>东方紫雨幽蝶</span><small>个人整理版</small></h1>
-        <p class="zy-deck">把一部长篇网络文本整理为可以连续阅读的 A5 数字合订本。工作范围包括断行、繁简混杂、缺字与标点清理，以及 88 章和一篇间奏的纸面结构设计；整理不改写情节与叙事内容。</p>
+        <p class="zy-deck">从网络文本到 A5 数字合订本，我校订了断行、繁简混杂、缺字与标点，并重做 88 章、间奏和后记的阅读结构。这里保留装帧档案，也开放小说全文的分章阅读。</p>
         <div class="zy-actions">
+          <a href="/library/ziyudie/">开始阅读全文</a>
           <a href="#why">进入整理档案</a>
           <button type="button" data-open-zy-gallery>浏览精选书页</button>
         </div>
       </div>
 
-      <figure class="zy-page-stage" aria-label="《东方紫雨幽蝶》整理版的扉页、目录与章首组合">
-        <img class="zy-stage-page is-contents" src="/images/works/ziyudie/contents-page.webp" width="1108" height="1571" alt="双栏目录页" fetchpriority="high" />
+      <figure class="zy-page-stage" aria-label="《东方紫雨幽蝶》整理版的封面、扉页与封底组合">
+        <img class="zy-stage-page is-back" src="/images/works/ziyudie/back-cover.webp" width="1055" height="1491" alt="作品封底" fetchpriority="high" />
         <img class="zy-stage-page is-title" src="/images/works/ziyudie/title-page.webp" width="1108" height="1571" alt="作品扉页" fetchpriority="high" />
-        <img class="zy-stage-page is-chapter" src="/images/works/ziyudie/chapter-01.webp" width="1108" height="1571" alt="第一章章首与正文页" fetchpriority="high" />
-        <figcaption><span>THREE LEAVES / 三种纸面节奏</span><b>扉页 · 目录 · 章首</b></figcaption>
+        <img class="zy-stage-page is-cover" src="/images/works/ziyudie/front-cover.webp" width="1055" height="1491" alt="作品封面" fetchpriority="high" />
+        <figcaption><span>BOOK OBJECT / 从封面到书页</span><b>封面 · 扉页 · 封底</b></figcaption>
       </figure>
 
       <dl class="zy-meta" aria-label="项目核心信息">
@@ -147,7 +191,7 @@ const gallery = [
       <div class="zy-section-body">
         <header class="zy-heading">
           <h2 id="zy-pages-title">一页可以好看，<br />一本书还要前后连贯。</h2>
-          <p>以下只展示扉页、目录、章首、正文、间奏与版本记录等少量样张；点击书页可以放大查看版式细节。</p>
+          <p>从封面、扉页到章首、正文和后记，十一张书页记录了这本合订本的完整视觉结构；点击图片可以放大查看。</p>
         </header>
 
         <div class="zy-gallery">
@@ -160,10 +204,10 @@ const gallery = [
                 data-gallery-index={index}
                 data-gallery-src={item.src}
                 data-gallery-alt={item.alt}
-                data-gallery-caption={`${item.code} · ${item.title} — ${item.caption}`}
+                data-gallery-caption={`${item.code} · ${item.title}｜${item.caption}`}
                 aria-label={`放大查看 ${item.code} ${item.title}`}
               >
-                <span class="zy-page-frame"><img src={item.src} width="1108" height="1571" alt={item.alt} loading={index < 2 ? 'eager' : 'lazy'} decoding="async" /></span>
+                <span class="zy-page-frame"><img src={item.src} width={item.width} height={item.height} alt={item.alt} loading={index < 2 ? 'eager' : 'lazy'} decoding="async" /></span>
                 <figcaption><span>{item.code}</span><div><strong>{item.title}</strong><p>{item.caption}</p></div></figcaption>
               </button>
             </figure>
@@ -216,25 +260,25 @@ const gallery = [
       <div class="zy-boundary-copy">
         <p class="zy-eyebrow">05 / CREDITS &amp; BOUNDARIES</p>
         <h2 id="zy-boundary-title">把谁写下故事、谁整理书页，<br />以及公开到哪里，一起留在档案里。</h2>
-        <p>本项目是东方 Project 二次创作长篇第一部〈白玉楼阁〉的非官方、非商业个人整理本。网页只展示少量排版样张，不提供完整 PDF、章节正文或可供重制的高分辨率文件。</p>
+        <p>本项目收录东方 Project 二次创作长篇第一部〈白玉楼阁〉的非官方、非商业个人整理本。正文已按章公开阅读；制作工程和高分辨率印刷素材不随站点发布。</p>
       </div>
       <div class="zy-credits" aria-label="作品与整理署名">
         <article><span>ORIGINAL TEXT / 原作</span><strong>coolcate</strong><p>《东方紫雨幽蝶》原作文本。</p></article>
         <article><span>EDITORIAL / 整理校订</span><strong>亚略 Ar</strong><p>文本清理、校订、LaTeX 排印与版式设计。</p></article>
-        <article><span>EDITION / 项目性质</span><strong>NON-COMMERCIAL</strong><p>个人阅读、学习与 LaTeX 排版研究档案。</p></article>
-        <article><span>IMAGE NOTE / 图像说明</span><strong>封面暂不展示</strong><p>现有封面素材尚缺完整作者与公开许可记录，核实后再补入站内档案。</p></article>
+        <article><span>COVER ART / 封面与封底</span><strong>亚略 Ar · AI-ASSISTED</strong><p>由亚略 Ar 构思并借助生成式图像完成，整理定稿后获本人同意公开。</p></article>
+        <article><span>EDITION / 项目性质</span><strong>NON-COMMERCIAL</strong><p>全文按章开放阅读，保留个人学习与排版研究用途。</p></article>
       </div>
     </section>
 
     <footer class="zy-ending">
-      <p>编译成功只是这份长篇整理本的起点。更长的工作，是把故事从不断中断的屏幕里接回来，再让它以安静、可导航的方式留在纸页上。</p>
-      <nav aria-label="作品页后续导航"><a href="/library/">继续翻阅书架</a><a href="/writing/">查看其他写作</a><a href="/">回到小屋首页</a></nav>
+      <p>这份整理本会随校订记录继续更新。读者可以从第一章开始，也可以回到书架查看其他作品。</p>
+      <nav aria-label="作品页后续导航"><a href="/library/ziyudie/">阅读全文</a><a href="/library/">继续翻阅书架</a><a href="/writing/">查看其他写作</a><a href="/">回到小屋首页</a></nav>
     </footer>
 
     <dialog class="zy-lightbox" data-zy-lightbox aria-label="《东方紫雨幽蝶》精选书页浏览器">
       <div class="zy-lightbox-inner">
-        <header><span data-zy-lightbox-count>01 / 08</span><button type="button" data-zy-lightbox-close aria-label="关闭书页浏览器">关闭</button></header>
-        <figure><img data-zy-lightbox-image src="/images/works/ziyudie/title-page.webp" alt="" /><figcaption data-zy-lightbox-caption></figcaption></figure>
+        <header><span data-zy-lightbox-count>{`01 / ${String(gallery.length).padStart(2, '0')}`}</span><button type="button" data-zy-lightbox-close aria-label="关闭书页浏览器">关闭</button></header>
+        <figure><img data-zy-lightbox-image src={gallery[0].src} alt="" /><figcaption data-zy-lightbox-caption></figcaption></figure>
         <button class="zy-lightbox-nav is-prev" type="button" data-zy-lightbox-prev aria-label="上一页">←</button>
         <button class="zy-lightbox-nav is-next" type="button" data-zy-lightbox-next aria-label="下一页">→</button>
       </div>

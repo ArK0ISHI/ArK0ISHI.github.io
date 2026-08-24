@@ -1,0 +1,154 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import '../../../styles/ziyudie-reader.css';
+
+const entries = (await getCollection('novel', ({ data }) => data.book === '东方紫雨幽蝶'))
+  .sort((a, b) => a.data.order - b.data.order);
+
+const slugOf = (id: string) => id.split('/').at(-1)?.replace(/\.md$/, '') ?? id;
+const hrefOf = (id: string) => `/library/ziyudie/${slugOf(id)}/`;
+const chapters = entries.filter(entry => entry.data.kind === 'chapter');
+const interludes = entries.filter(entry => entry.data.kind === 'interlude');
+const afterwords = entries.filter(entry => entry.data.kind === 'afterword');
+
+const kindLabel = {
+  chapter: '正文',
+  interlude: '间奏',
+  afterword: '后记',
+} as const;
+---
+
+<BaseLayout
+  title="《东方紫雨幽蝶》全文"
+  description="coolcate 长篇小说《东方紫雨幽蝶》第一部〈白玉楼阁〉全文阅读。亚略 Ar 整理校订并排印。"
+  image="/images/works/ziyudie/front-cover.webp"
+>
+  <novel-library class="zy-library">
+    <header class="zy-library-hero">
+      <div class="zy-library-cover" aria-label="《东方紫雨幽蝶》封面与书目信息">
+        <img
+          src="/images/works/ziyudie/front-cover.webp"
+          width="1055"
+          height="1491"
+          alt="淡紫花影与蝶翼构成的《东方紫雨幽蝶》封面"
+          fetchpriority="high"
+          decoding="async"
+        />
+      </div>
+      <div class="zy-library-intro">
+        <p class="eyebrow">FULL TEXT / 全文阅读</p>
+        <h1>东方<br /><em>紫雨幽蝶</em></h1>
+        <p class="zy-library-subtitle">第一部〈白玉楼阁〉</p>
+        <p class="zy-library-lede">一部围绕西行寺幽幽子展开的东方 Project 长篇二次创作。这里保存按章整理后的全文，也留下原作者与整理者各自写在故事末尾的话。</p>
+        <dl class="zy-library-credits">
+          <div><dt>原作</dt><dd>coolcate</dd></div>
+          <div><dt>整理校订、排印</dt><dd>亚略 Ar</dd></div>
+          <div><dt>当前整理版</dt><dd>v2.0 · 2026.08</dd></div>
+          <div><dt>篇幅</dt><dd>{chapters.length} 章 · {interludes.length} 间奏 · {afterwords.length} 后记</dd></div>
+        </dl>
+        <div class="zy-library-actions">
+          <a class="zy-primary-action" href={hrefOf(entries[0].id)}>从第一章开始 <span aria-hidden="true">→</span></a>
+          <a class="zy-secondary-action" href="/blog/latex-touhou-typesetting/">查看装帧档案</a>
+        </div>
+      </div>
+    </header>
+
+    <section class="zy-resume" data-resume hidden aria-labelledby="zy-resume-title">
+      <div>
+        <p class="eyebrow">BOOKMARK / 上次读到</p>
+        <h2 id="zy-resume-title" data-resume-title>继续阅读</h2>
+        <p data-resume-copy></p>
+      </div>
+      <a data-resume-link href={hrefOf(entries[0].id)}>回到书页 <span aria-hidden="true">→</span></a>
+    </section>
+
+    <section class="zy-catalogue" aria-labelledby="zy-catalogue-title">
+      <div class="zy-catalogue-heading">
+        <div>
+          <p class="eyebrow">CONTENTS / 目录</p>
+          <h2 id="zy-catalogue-title">白玉楼阁</h2>
+        </div>
+        <label class="zy-catalogue-search">
+          <span>检索目录</span>
+          <input type="search" inputmode="search" placeholder="章名、间奏或后记" data-novel-search autocomplete="off" />
+        </label>
+      </div>
+      <p class="zy-search-status" data-search-status aria-live="polite">共 {entries.length} 篇</p>
+
+      <ol class="zy-chapter-list" data-chapter-list>
+        {entries.map(entry => (
+          <li
+            data-chapter-item
+            data-index-text={`${entry.data.title} ${entry.data.description} ${kindLabel[entry.data.kind]}`.toLocaleLowerCase('zh-CN')}
+          >
+            <a href={hrefOf(entry.id)}>
+              <span class="zy-chapter-order">{String(entry.data.order).padStart(2, '0')}</span>
+              <span class="zy-chapter-title">
+                <strong>{entry.data.title}</strong>
+                <small>{entry.data.description}</small>
+              </span>
+              <span class={`zy-chapter-kind is-${entry.data.kind}`}>{kindLabel[entry.data.kind]}</span>
+              <span class="zy-chapter-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+      <p class="zy-empty-result" data-empty-result hidden>目录中没有匹配项。换一个短一些的词试试。</p>
+    </section>
+
+    <footer class="zy-library-note">
+      <p>本阅读页收录第一部〈白玉楼阁〉。小说原作归 coolcate；校订、网页整理与封面封底视觉由亚略 Ar 完成，封面制作使用了生成式图像辅助。</p>
+      <a href="/library/">返回书架</a>
+    </footer>
+  </novel-library>
+</BaseLayout>
+
+<script>
+  const RESUME_KEY = 'ar-ziyudie-resume:v1';
+
+  class NovelLibrary extends HTMLElement {
+    connectedCallback() {
+      if (this.dataset.ready === 'true') return;
+      this.dataset.ready = 'true';
+
+      const input = this.querySelector<HTMLInputElement>('[data-novel-search]');
+      const items = [...this.querySelectorAll<HTMLElement>('[data-chapter-item]')];
+      const status = this.querySelector<HTMLElement>('[data-search-status]');
+      const empty = this.querySelector<HTMLElement>('[data-empty-result]');
+
+      input?.addEventListener('input', () => {
+        const query = input.value.trim().toLocaleLowerCase('zh-CN');
+        let visible = 0;
+        items.forEach(item => {
+          const match = !query || (item.dataset.indexText ?? '').includes(query);
+          item.hidden = !match;
+          if (match) visible += 1;
+        });
+        if (status) status.textContent = query ? `找到 ${visible} 篇` : `共 ${items.length} 篇`;
+        if (empty) empty.hidden = visible !== 0;
+      });
+
+      try {
+        const raw = localStorage.getItem(RESUME_KEY);
+        if (!raw) return;
+        const saved = JSON.parse(raw) as { href?: unknown; title?: unknown; progress?: unknown };
+        if (typeof saved.href !== 'string' || !saved.href.startsWith('/library/ziyudie/')) return;
+        const resume = this.querySelector<HTMLElement>('[data-resume]');
+        const link = this.querySelector<HTMLAnchorElement>('[data-resume-link]');
+        const title = this.querySelector<HTMLElement>('[data-resume-title]');
+        const copy = this.querySelector<HTMLElement>('[data-resume-copy]');
+        if (!resume || !link || !title || !copy) return;
+        const progress = typeof saved.progress === 'number' && Number.isFinite(saved.progress)
+          ? Math.max(0, Math.min(100, Math.round(saved.progress)))
+          : 0;
+        link.href = `${saved.href}?resume=1`;
+        title.textContent = typeof saved.title === 'string' ? saved.title : '继续阅读';
+        copy.textContent = progress > 2 ? `上次停在本章约 ${progress}% 的位置。` : '上次刚刚翻开这一章。';
+        resume.hidden = false;
+      } catch (_) {}
+    }
+  }
+
+  if (!customElements.get('novel-library')) customElements.define('novel-library', NovelLibrary);
+</script>

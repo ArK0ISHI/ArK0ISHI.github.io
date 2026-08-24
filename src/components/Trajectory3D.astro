@@ -1,0 +1,472 @@
+---
+import { huashuCupTrajectory } from '../data/huashu-cup-a-trajectory';
+import '../styles/trajectory-explorer.css';
+
+const serializedData = JSON.stringify(huashuCupTrajectory).replace(/</g, '\\u003c');
+const highestIndex = huashuCupTrajectory.samples.reduce(
+  (best, sample, index, all) => sample.smooth[2] > all[best].smooth[2] ? index : best,
+  0,
+);
+const highest = huashuCupTrajectory.samples[highestIndex];
+---
+
+<section class="trajectory-explorer" data-trajectory-explorer hidden aria-labelledby="trajectory-title">
+  <header class="trajectory-header">
+    <div>
+      <p class="trajectory-kicker">INTERACTIVE FIGURE / 可交互轨迹</p>
+      <h3 id="trajectory-title">把三幅视角合成一个场景</h3>
+      <p class="trajectory-lede">拖动图面改变观察方向。轨迹、球门与禁区线全部由问题一的最终坐标重新绘制。</p>
+    </div>
+    <dl class="trajectory-facts" aria-label="轨迹摘要">
+      <div><dt>采样</dt><dd>{huashuCupTrajectory.samples.length} 点</dd></div>
+      <div><dt>时段</dt><dd>0.04–1.16 s</dd></div>
+      <div><dt>最高</dt><dd>{highest.smooth[2].toFixed(3)} m</dd></div>
+    </dl>
+  </header>
+
+  <div class="trajectory-toolbar" role="group" aria-label="观察方向">
+    <span>论文视角</span>
+    <button type="button" data-trajectory-view="oblique" aria-pressed="true">斜视</button>
+    <button type="button" data-trajectory-view="top" aria-pressed="false">俯视</button>
+    <button type="button" data-trajectory-view="side" aria-pressed="false">侧视</button>
+    <button type="button" data-trajectory-view="reset">复位</button>
+    <span class="trajectory-toolbar-spacer" aria-hidden="true"></span>
+    <button type="button" class="trajectory-zoom" data-trajectory-zoom="out" aria-label="缩小三维图">−</button>
+    <button type="button" class="trajectory-zoom" data-trajectory-zoom="in" aria-label="放大三维图">＋</button>
+    <label class="trajectory-raw-toggle">
+      <input type="checkbox" data-trajectory-raw />
+      <span>原始测量点</span>
+    </label>
+  </div>
+
+  <div
+    class="trajectory-stage"
+    data-trajectory-stage
+    tabindex="0"
+    role="group"
+    aria-label="可旋转三维足球轨迹"
+    aria-describedby="trajectory-operation-help"
+    aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown Home + -"
+  >
+    <svg viewBox="0 0 900 560" role="img" aria-labelledby="trajectory-svg-title trajectory-svg-desc">
+      <title id="trajectory-svg-title">任意球三维重建轨迹</title>
+      <desc id="trajectory-svg-desc">足球从场内飞向球门，最高点约三米，随后越过球门线。图面可拖动旋转。</desc>
+      <g data-trajectory-scene></g>
+    </svg>
+    <div class="trajectory-drag-cue" aria-hidden="true">DRAG TO ORBIT · 拖动旋转</div>
+  </div>
+
+  <div class="trajectory-timeline">
+    <label for="trajectory-time">沿轨迹查看采样点</label>
+    <input
+      id="trajectory-time"
+      data-trajectory-time
+      type="range"
+      min="0"
+      max={huashuCupTrajectory.samples.length - 1}
+      value={highestIndex}
+      step="1"
+      aria-valuetext={`第 ${highestIndex + 1} 点，${highest.t.toFixed(2)} 秒，高度 ${highest.smooth[2].toFixed(3)} 米`}
+    />
+    <output for="trajectory-time" data-trajectory-count>{String(highestIndex + 1).padStart(2, '0')} / {huashuCupTrajectory.samples.length}</output>
+  </div>
+
+  <dl class="trajectory-readout" aria-label="当前采样点数值">
+    <div><dt>t</dt><dd><strong data-trajectory-value="t">{highest.t.toFixed(2)}</strong><small>s</small></dd></div>
+    <div><dt>x</dt><dd><strong data-trajectory-value="x">{highest.smooth[0].toFixed(3)}</strong><small>m</small></dd></div>
+    <div><dt>y</dt><dd><strong data-trajectory-value="y">{highest.smooth[1].toFixed(3)}</strong><small>m</small></dd></div>
+    <div><dt>z</dt><dd><strong data-trajectory-value="z">{highest.smooth[2].toFixed(3)}</strong><small>m</small></dd></div>
+    <div><dt>双机位均值</dt><dd><strong data-trajectory-value="error">{highest.error.toFixed(2)}</strong><small>px</small></dd></div>
+  </dl>
+
+  <div class="trajectory-footer">
+    <ul class="trajectory-legend" aria-label="图例">
+      <li><span class="legend-smooth"></span>平滑轨迹</li>
+      <li><span class="legend-raw"></span>原始点</li>
+      <li><span class="legend-goal"></span>球门</li>
+      <li><span class="legend-field"></span>球场线</li>
+    </ul>
+    <p id="trajectory-operation-help">拖动图面改变方向；方向键微调，Home 复位，＋/− 缩放。坐标原点位于球门线中点，x 沿球门线，y 指向场内，z 竖直向上。逐点误差为两台相机像素回投距离的平均值。</p>
+  </div>
+
+  <p class="sr-only" data-trajectory-live aria-live="polite"></p>
+  <script is:inline type="application/json" data-trajectory-data set:html={serializedData}></script>
+</section>
+
+<script>
+  type Vec3 = readonly [number, number, number];
+  type Sample = { t: number; raw: Vec3; smooth: Vec3; error: number };
+  type Dataset = {
+    field: {
+      view: { xMin: number; xMax: number; yMin: number; yMax: number };
+      goal: { xMin: number; xMax: number; y: number; height: number };
+      smallArea: { xMin: number; xMax: number; yMin: number; yMax: number };
+      penaltyArea: { xMin: number; xMax: number; yMin: number; yMax: number };
+    };
+    samples: Sample[];
+  };
+  type Camera = { azimuth: number; elevation: number; zoom: number };
+  type Projected = { x: number; y: number };
+  type TrajectoryWindow = Window & {
+    __arTrajectoryLifecycleBound?: boolean;
+    __arTrajectoryState?: { controller?: AbortController };
+  };
+
+  const SVG_NS = 'http://www.w3.org/2000/svg';
+  const arWindow = window as TrajectoryWindow;
+
+  const createSvg = (tag: string, attributes: Record<string, string | number> = {}) => {
+    const node = document.createElementNS(SVG_NS, tag);
+    Object.entries(attributes).forEach(([name, value]) => node.setAttribute(name, String(value)));
+    return node;
+  };
+
+  const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+  const radians = (degrees: number) => degrees * Math.PI / 180;
+  const dot = (point: Vec3, basis: Vec3) => point[0] * basis[0] + point[1] * basis[1] + point[2] * basis[2];
+
+  function setupTrajectoryExplorer(root: HTMLElement, signal: AbortSignal) {
+    const source = root.querySelector<HTMLScriptElement>('[data-trajectory-data]');
+    const scene = root.querySelector<SVGGElement>('[data-trajectory-scene]');
+    const stage = root.querySelector<HTMLElement>('[data-trajectory-stage]');
+    const slider = root.querySelector<HTMLInputElement>('[data-trajectory-time]');
+    const rawToggle = root.querySelector<HTMLInputElement>('[data-trajectory-raw]');
+    const count = root.querySelector<HTMLOutputElement>('[data-trajectory-count]');
+    const live = root.querySelector<HTMLElement>('[data-trajectory-live]');
+    if (!source || !scene || !stage || !slider || !rawToggle || !count || !live) return false;
+
+    let data: Dataset;
+    try {
+      data = JSON.parse(source.textContent || '');
+    } catch {
+      return false;
+    }
+
+    const presets: Record<'oblique' | 'top' | 'side' | 'reset', Camera> = {
+      oblique: { azimuth: 45, elevation: 30, zoom: 1 },
+      top: { azimuth: -90, elevation: 89.5, zoom: 1 },
+      side: { azimuth: 0, elevation: 0, zoom: 1 },
+      reset: { azimuth: 45, elevation: 30, zoom: 1 },
+    };
+    let camera: Camera = { ...presets.oblique };
+    let selectedIndex = Number(slider.value);
+    let showRaw = rawToggle.checked;
+    let dragging = false;
+    let dragPointer = -1;
+    let dragX = 0;
+    let dragY = 0;
+    let pointerType = '';
+    let frame = 0;
+
+    const announce = (message: string) => { live.textContent = message; };
+    const setPressedPreset = (name?: string) => {
+      root.querySelectorAll<HTMLButtonElement>('[data-trajectory-view][aria-pressed]').forEach((button) => {
+        button.setAttribute('aria-pressed', String(button.dataset.trajectoryView === name));
+      });
+    };
+    const normalizeAzimuth = (value: number) => ((value + 540) % 360) - 180;
+
+    const cameraBasis = () => {
+      const azimuth = radians(camera.azimuth);
+      const elevation = radians(camera.elevation);
+      const right: Vec3 = [-Math.sin(azimuth), Math.cos(azimuth), 0];
+      const up: Vec3 = [
+        -Math.sin(elevation) * Math.cos(azimuth),
+        -Math.sin(elevation) * Math.sin(azimuth),
+        Math.cos(elevation),
+      ];
+      return { right, up };
+    };
+
+    const getProjector = () => {
+      const { right, up } = cameraBasis();
+      const projectUnit = (point: Vec3): Projected => ({ x: dot(point, right), y: -dot(point, up) });
+      const { view, goal } = data.field;
+      const bounds3d: Vec3[] = [
+        [view.xMin, view.yMin, 0], [view.xMax, view.yMin, 0],
+        [view.xMax, view.yMax, 0], [view.xMin, view.yMax, 0],
+        [goal.xMin, goal.y, goal.height], [goal.xMax, goal.y, goal.height],
+        ...data.samples.flatMap((sample) => [sample.raw, sample.smooth]),
+      ];
+      const projected = bounds3d.map(projectUnit);
+      const minX = Math.min(...projected.map((point) => point.x));
+      const maxX = Math.max(...projected.map((point) => point.x));
+      const minY = Math.min(...projected.map((point) => point.y));
+      const maxY = Math.max(...projected.map((point) => point.y));
+      const width = 900;
+      const height = 560;
+      const margins = { left: 48, right: 36, top: 34, bottom: 46 };
+      const scale = Math.min(
+        (width - margins.left - margins.right) / Math.max(1, maxX - minX),
+        (height - margins.top - margins.bottom) / Math.max(1, maxY - minY),
+      ) * camera.zoom;
+      const centerX = (minX + maxX) / 2;
+      const centerY = (minY + maxY) / 2;
+      return (point: Vec3): Projected => {
+        const unit = projectUnit(point);
+        return {
+          x: width / 2 + (unit.x - centerX) * scale,
+          y: height / 2 + (unit.y - centerY) * scale,
+        };
+      };
+    };
+
+    const pointsAttribute = (points: Vec3[], project: (point: Vec3) => Projected) => points
+      .map((point) => {
+        const projected = project(point);
+        return `${projected.x.toFixed(2)},${projected.y.toFixed(2)}`;
+      })
+      .join(' ');
+
+    const appendLine = (
+      parent: SVGElement,
+      from: Vec3,
+      to: Vec3,
+      project: (point: Vec3) => Projected,
+      className: string,
+    ) => {
+      const a = project(from);
+      const b = project(to);
+      parent.append(createSvg('line', { x1: a.x, y1: a.y, x2: b.x, y2: b.y, class: className }));
+    };
+
+    const appendText = (parent: SVGElement, point: Vec3, text: string, project: (point: Vec3) => Projected, className: string) => {
+      const position = project(point);
+      const label = createSvg('text', { x: position.x, y: position.y, class: className });
+      label.textContent = text;
+      parent.append(label);
+    };
+
+    const updateReadout = () => {
+      const sample = data.samples[selectedIndex];
+      const point = sample.smooth;
+      const values: Record<string, string> = {
+        t: sample.t.toFixed(2),
+        x: point[0].toFixed(3),
+        y: point[1].toFixed(3),
+        z: point[2].toFixed(3),
+        error: sample.error.toFixed(2),
+      };
+      Object.entries(values).forEach(([key, value]) => {
+        const target = root.querySelector<HTMLElement>(`[data-trajectory-value="${key}"]`);
+        if (target) target.textContent = value;
+      });
+      count.textContent = `${String(selectedIndex + 1).padStart(2, '0')} / ${data.samples.length}`;
+      slider.value = String(selectedIndex);
+      slider.setAttribute(
+        'aria-valuetext',
+        `第 ${selectedIndex + 1} 点，${sample.t.toFixed(2)} 秒，高度 ${point[2].toFixed(3)} 米`,
+      );
+    };
+
+    const render = () => {
+      const project = getProjector();
+      const { view, goal, smallArea, penaltyArea } = data.field;
+      const fragment = document.createDocumentFragment();
+      const ground = createSvg('g', { class: 'trajectory-ground' });
+      ground.append(createSvg('polygon', {
+        points: pointsAttribute([
+          [view.xMin, view.yMin, 0], [view.xMax, view.yMin, 0],
+          [view.xMax, view.yMax, 0], [view.xMin, view.yMax, 0],
+        ], project),
+        class: 'trajectory-grass',
+      }));
+      for (let x = -10; x <= 10; x += 2.5) appendLine(ground, [x, view.yMin, 0], [x, view.yMax, 0], project, 'trajectory-grid-line');
+      for (let y = -2.5; y <= 22.5; y += 2.5) appendLine(ground, [view.xMin, y, 0], [view.xMax, y, 0], project, 'trajectory-grid-line');
+      appendLine(ground, [view.xMin, 0, 0], [view.xMax, 0, 0], project, 'trajectory-field-line trajectory-goal-line');
+      const smallXMin = clamp(smallArea.xMin, view.xMin, view.xMax);
+      const smallXMax = clamp(smallArea.xMax, view.xMin, view.xMax);
+      const small: Vec3[] = [
+        [smallXMin, smallArea.yMin, 0], [smallXMin, smallArea.yMax, 0],
+        [smallXMax, smallArea.yMax, 0], [smallXMax, smallArea.yMin, 0],
+      ];
+      for (let index = 0; index < small.length - 1; index += 1) appendLine(ground, small[index], small[index + 1], project, 'trajectory-field-line');
+      appendLine(ground, [view.xMin, penaltyArea.yMax, 0], [view.xMax, penaltyArea.yMax, 0], project, 'trajectory-field-line trajectory-penalty-line');
+      fragment.append(ground);
+
+      const goalGroup = createSvg('g', { class: 'trajectory-goal' });
+      goalGroup.append(createSvg('polygon', {
+        points: pointsAttribute([
+          [goal.xMin, goal.y, 0], [goal.xMax, goal.y, 0],
+          [goal.xMax, goal.y, goal.height], [goal.xMin, goal.y, goal.height],
+        ], project),
+        class: 'trajectory-goal-plane',
+      }));
+      appendLine(goalGroup, [goal.xMin, goal.y, 0], [goal.xMin, goal.y, goal.height], project, 'trajectory-goal-frame');
+      appendLine(goalGroup, [goal.xMin, goal.y, goal.height], [goal.xMax, goal.y, goal.height], project, 'trajectory-goal-frame');
+      appendLine(goalGroup, [goal.xMax, goal.y, goal.height], [goal.xMax, goal.y, 0], project, 'trajectory-goal-frame');
+      fragment.append(goalGroup);
+
+      const axes = createSvg('g', { class: 'trajectory-axes', 'aria-hidden': 'true' });
+      appendLine(axes, [0, 0, 0], [2.8, 0, 0], project, 'trajectory-axis trajectory-axis-x');
+      appendLine(axes, [0, 0, 0], [0, 4, 0], project, 'trajectory-axis trajectory-axis-y');
+      appendLine(axes, [0, 0, 0], [0, 0, 2], project, 'trajectory-axis trajectory-axis-z');
+      appendText(axes, [3.05, 0, 0], 'x', project, 'trajectory-axis-label');
+      appendText(axes, [0, 4.35, 0], 'y', project, 'trajectory-axis-label');
+      appendText(axes, [0, 0, 2.2], 'z', project, 'trajectory-axis-label');
+      fragment.append(axes);
+
+      const paths = createSvg('g', { class: 'trajectory-paths' });
+      if (showRaw) {
+        paths.append(createSvg('polyline', {
+          points: pointsAttribute(data.samples.map((sample) => sample.raw), project),
+          class: 'trajectory-raw-path',
+        }));
+        data.samples.forEach((sample) => {
+          const point = project(sample.raw);
+          paths.append(createSvg('circle', { cx: point.x, cy: point.y, r: 3.1, class: 'trajectory-raw-point' }));
+        });
+      }
+      paths.append(createSvg('polyline', {
+        points: pointsAttribute(data.samples.map((sample) => sample.smooth), project),
+        class: 'trajectory-smooth-path',
+      }));
+      data.samples.forEach((sample, index) => {
+        const point = project(sample.smooth);
+        paths.append(createSvg('circle', {
+          cx: point.x,
+          cy: point.y,
+          r: index === selectedIndex ? 5.4 : 2.6,
+          class: index === selectedIndex ? 'trajectory-smooth-point is-current' : 'trajectory-smooth-point',
+        }));
+      });
+      const selected = data.samples[selectedIndex].smooth;
+      const selectedGround: Vec3 = [selected[0], selected[1], 0];
+      appendLine(paths, selectedGround, selected, project, 'trajectory-marker-guide');
+      const marker = project(selected);
+      paths.append(createSvg('circle', { cx: marker.x, cy: marker.y, r: 10, class: 'trajectory-marker-halo' }));
+      fragment.append(paths);
+
+      const highestIndex = data.samples.reduce((best, sample, index, all) => sample.smooth[2] > all[best].smooth[2] ? index : best, 0);
+      const highest = data.samples[highestIndex].smooth;
+      const annotations = createSvg('g', { class: 'trajectory-annotations', 'aria-hidden': 'true' });
+      appendLine(annotations, [highest[0], highest[1], 0], highest, project, 'trajectory-highest-guide');
+      appendText(annotations, highest, '最高点 3.009 m', project, 'trajectory-highest-label');
+      fragment.append(annotations);
+
+      scene.replaceChildren(fragment);
+      updateReadout();
+    };
+
+    const scheduleRender = () => {
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        render();
+      });
+    };
+
+    signal.addEventListener('abort', () => {
+      if (frame) cancelAnimationFrame(frame);
+      frame = 0;
+      dragging = false;
+      dragPointer = -1;
+      stage.classList.remove('is-dragging');
+    }, { once: true });
+
+    const describeCamera = () => `方位 ${Math.round(camera.azimuth)}°，俯仰 ${Math.round(camera.elevation)}°`;
+    const applyPreset = (name: keyof typeof presets) => {
+      camera = { ...presets[name] };
+      setPressedPreset(name === 'reset' ? 'oblique' : name);
+      scheduleRender();
+      announce(`${name === 'reset' ? '已复位。' : '已切换视角。'}${describeCamera()}`);
+    };
+
+    root.querySelectorAll<HTMLButtonElement>('[data-trajectory-view]').forEach((button) => {
+      button.addEventListener('click', () => applyPreset(button.dataset.trajectoryView as keyof typeof presets), { signal });
+    });
+    root.querySelectorAll<HTMLButtonElement>('[data-trajectory-zoom]').forEach((button) => {
+      button.addEventListener('click', () => {
+        camera.zoom = clamp(camera.zoom + (button.dataset.trajectoryZoom === 'in' ? 0.12 : -0.12), 0.72, 1.65);
+        setPressedPreset();
+        scheduleRender();
+        announce(`缩放 ${Math.round(camera.zoom * 100)}%。`);
+      }, { signal });
+    });
+    rawToggle.addEventListener('change', () => {
+      showRaw = rawToggle.checked;
+      scheduleRender();
+      announce(showRaw ? '已显示原始测量点。' : '已隐藏原始测量点。');
+    }, { signal });
+    slider.addEventListener('input', () => {
+      selectedIndex = clamp(Number(slider.value), 0, data.samples.length - 1);
+      scheduleRender();
+    }, { signal });
+    slider.addEventListener('change', () => {
+      const sample = data.samples[selectedIndex];
+      announce(`第 ${selectedIndex + 1} 个采样点，时间 ${sample.t.toFixed(2)} 秒，高度 ${sample.smooth[2].toFixed(3)} 米。`);
+    }, { signal });
+
+    stage.addEventListener('pointerdown', (event) => {
+      if (!event.isPrimary || (event.pointerType === 'mouse' && event.button !== 0)) return;
+      dragging = true;
+      dragPointer = event.pointerId;
+      pointerType = event.pointerType;
+      dragX = event.clientX;
+      dragY = event.clientY;
+      stage.setPointerCapture(event.pointerId);
+      stage.classList.add('is-dragging');
+    }, { signal });
+    stage.addEventListener('pointermove', (event) => {
+      if (!dragging || event.pointerId !== dragPointer) return;
+      const dx = event.clientX - dragX;
+      const dy = event.clientY - dragY;
+      dragX = event.clientX;
+      dragY = event.clientY;
+      camera.azimuth = normalizeAzimuth(camera.azimuth + dx * 0.42);
+      if (pointerType !== 'touch') camera.elevation = clamp(camera.elevation - dy * 0.34, -8, 88);
+      setPressedPreset();
+      scheduleRender();
+    }, { signal });
+    const endDrag = (event: PointerEvent) => {
+      if (!dragging || event.pointerId !== dragPointer) return;
+      dragging = false;
+      stage.classList.remove('is-dragging');
+      if (stage.hasPointerCapture(event.pointerId)) stage.releasePointerCapture(event.pointerId);
+      announce(describeCamera());
+    };
+    stage.addEventListener('pointerup', endDrag, { signal });
+    stage.addEventListener('pointercancel', endDrag, { signal });
+    stage.addEventListener('lostpointercapture', endDrag, { signal });
+    stage.addEventListener('keydown', (event) => {
+      let handled = true;
+      if (event.key === 'ArrowLeft') camera.azimuth -= 4;
+      else if (event.key === 'ArrowRight') camera.azimuth += 4;
+      else if (event.key === 'ArrowUp') camera.elevation = clamp(camera.elevation + 3, -8, 88);
+      else if (event.key === 'ArrowDown') camera.elevation = clamp(camera.elevation - 3, -8, 88);
+      else if (event.key === '+' || event.key === '=') camera.zoom = clamp(camera.zoom + 0.1, 0.72, 1.65);
+      else if (event.key === '-' || event.key === '_') camera.zoom = clamp(camera.zoom - 0.1, 0.72, 1.65);
+      else if (event.key === 'Home') camera = { ...presets.oblique };
+      else handled = false;
+      if (!handled) return;
+      event.preventDefault();
+      camera.azimuth = normalizeAzimuth(camera.azimuth);
+      setPressedPreset(event.key === 'Home' ? 'oblique' : undefined);
+      scheduleRender();
+      if (!event.repeat) announce(describeCamera());
+    }, { signal });
+
+    render();
+    return true;
+  }
+
+  function setupTrajectoryPage() {
+    const root = document.querySelector<HTMLElement>('[data-trajectory-explorer]');
+    const mount = document.querySelector<HTMLElement>('[data-huashu-trajectory-mount]');
+    if (!root || !mount || root.dataset.trajectoryReady === 'true') return;
+    arWindow.__arTrajectoryState?.controller?.abort();
+    const controller = new AbortController();
+    arWindow.__arTrajectoryState = { controller };
+    if (!setupTrajectoryExplorer(root, controller.signal)) return;
+    mount.replaceChildren(root);
+    root.hidden = false;
+    root.dataset.trajectoryReady = 'true';
+  }
+
+  if (!arWindow.__arTrajectoryLifecycleBound) {
+    arWindow.__arTrajectoryLifecycleBound = true;
+    document.addEventListener('astro:page-load', setupTrajectoryPage);
+    document.addEventListener('astro:before-swap', () => arWindow.__arTrajectoryState?.controller?.abort());
+  }
+  setupTrajectoryPage();
+</script>

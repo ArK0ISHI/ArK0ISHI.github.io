@@ -99,6 +99,11 @@ const honors = [
           <p>{project.description}</p>
           {project.reflection && <p class="fp-reflection"><span>问题意识</span>{project.reflection}</p>}
           <div class="fp-result">{project.result}</div>
+          {(project.articleHref || project.detailHref) && (
+            <a class="fp-link" href={project.articleHref ?? project.detailHref}>
+              查看项目札记 <b aria-hidden="true">↗</b>
+            </a>
+          )}
         </article>
       ))}
     </div>

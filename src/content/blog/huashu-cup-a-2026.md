@@ -51,31 +51,37 @@ $$
 t_2=t_1+\delta\Delta t.
 $$
 
-在足球离脚至触网前的自由飞行区间 $0.04\text{--}1.08\ \mathrm{s}$ 内，我们对第二路画面的足球像素和投影矩阵做线性插值。每给定一个 $\delta$，便重新三角测量并回投到两幅画面，以两侧重投影误差的平均值作为代价：
+在足球离脚至触网前的自由飞行区间 $0.04\text{--}1.08\ \mathrm{s}$ 内，我们对第二路画面的足球像素和投影矩阵做线性插值。每给定一个 $\delta$，便重新三角测量并回投到两幅画面，以两幅画面的回投残差平方和作为搜索代价：
 
 $$
-J(\delta)=\frac{1}{T}\sum_t\frac{1}{2}
+J(\delta)=\frac{1}{T}\sum_t
 \left(
 \left\|\pi(P_t^{(1)}X_\delta)-x_t^{(1)}\right\|_2^2+
 \left\|\pi(P_{t+\delta\Delta t}^{(2)}X_\delta)-x_{t+\delta\Delta t}^{(2)}\right\|_2^2
 \right).
 $$
 
-粗搜索与细搜索得到 $\delta^*=-0.83$ 帧，相当于 $-0.0332\ \mathrm{s}$。按论文采用的时间约定，相机 2 比相机 1 滞后约 $0.83$ 帧。校正后，足球点的平均重投影误差降至 $2.30\ \mathrm{px}$。
+粗搜索与细搜索得到 $\delta^*=-0.83$ 帧，相当于 $-0.0332\ \mathrm{s}$。按论文采用的时间约定，相机 2 比相机 1 滞后约 $0.83$ 帧。图 3 记录候选偏移与平方回投代价的关系；绘图虚线位于 $-0.85$ 帧，细化结果记为 $-0.83$ 帧。
 
 <figure>
-  <img src="/images/projects/huashu-cup-a-2026/temporal-offset-cost-fig7.webp" alt="候选时间偏移与足球平均重投影误差的代价曲线" width="1350" height="775" loading="lazy" decoding="async" />
+  <img src="/images/projects/huashu-cup-a-2026/temporal-offset-cost-fig7.webp" alt="候选时间偏移与平方回投代价曲线" width="1350" height="775" loading="lazy" decoding="async" />
   <figcaption>图 3　时间偏移的搜索曲线。虚线是绘图时采用的 −0.85 帧位置，细化搜索结果记为 −0.83 帧。</figcaption>
 </figure>
 
 ### 从像素得到米和米每秒
 
-同步后的两路射线通过线性三角测量相交，得到 $0.04\text{--}1.16\ \mathrm{s}$ 内的 29 个原始三维点。它们的重投影误差中位数为 $1.92\ \mathrm{px}$，最大值为 $5.51\ \mathrm{px}$，全部通过 $10\ \mathrm{px}$ 的筛选阈值。时间平滑后留下 28 个轨迹点。
+同步后的两路射线通过线性三角测量相交，得到 $0.04\text{--}1.16\ \mathrm{s}$ 内的 29 个原始三维点。逐点取两台相机像素回投距离的平均值，29 点均值为 $2.26\ \mathrm{px}$，中位数为 $2.17\ \mathrm{px}$，最大值为 $5.55\ \mathrm{px}$，全部通过 $10\ \mathrm{px}$ 的筛选阈值。随后用 7 点窗口的局部二次多项式平滑坐标，29 个采样点全部保留。
 
-<figure>
-  <img src="/images/projects/huashu-cup-a-2026/reconstructed-trajectory-fig9-11.webp" alt="平滑三维任意球轨迹的地面投影、斜视图和侧视图" width="1544" height="1984" loading="lazy" decoding="async" />
-  <figcaption>图 4　平滑轨迹的地面投影、三维斜视图与侧视图。三幅视图共同检查弯曲方向、过门位置和高度变化。</figcaption>
-</figure>
+### 在网页里转动这条轨迹
+
+论文把同一条轨迹拆成地面投影、斜视图和侧视图。下面的观察器直接读取制图所用的 29 组坐标。桌面端可以自由拖动；手机端左右拖动时改变方向，页面仍可上下滚动。三个视角按钮对应论文的主要观察方向，打开原始测量点后还能比较平滑前后的细小偏差。
+
+<div data-huashu-trajectory-mount>
+  <figure>
+    <img src="/images/projects/huashu-cup-a-2026/reconstructed-trajectory-fig9-11.webp" alt="平滑三维任意球轨迹的地面投影、斜视图和侧视图" width="1544" height="1984" loading="lazy" decoding="async" />
+    <figcaption>图 4　平滑轨迹的地面投影、三维斜视图与侧视图。交互脚本不可用时，这张论文原图会保留下来。</figcaption>
+  </figure>
+</div>
 
 地面投影用三次多项式概括：
 
@@ -112,7 +118,7 @@ $$
 | 视频帧率 | $25\ \mathrm{fps}$ | 时间采样间隔 $0.04\ \mathrm{s}$ |
 | 每帧标定点 | 9 个 | 估计时变投影矩阵 |
 | 最优时间偏移 | $-0.83$ 帧 | 对齐两路视频 |
-| 足球平均重投影误差 | $2.30\ \mathrm{px}$ | 衡量三角测量的一致性 |
+| 29 个重建点的平均回投误差 | $2.26\ \mathrm{px}$ | 衡量三角测量的一致性 |
 | 初速度大小 | $26.708\ \mathrm{m/s}$ | 三类动力学模型的初始条件 |
 | 过球门线时刻 | $1.0154\ \mathrm{s}$ | 检查重建结果的几何合理性 |
 

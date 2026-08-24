@@ -1,0 +1,264 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import '../../../styles/ziyudie-reader.css';
+
+type NovelEntry = CollectionEntry<'novel'>;
+
+const slugOf = (id: string) => id.split('/').at(-1)?.replace(/\.md$/, '') ?? id;
+const hrefOf = (entry: NovelEntry) => `/library/ziyudie/${slugOf(entry.id)}/`;
+
+export async function getStaticPaths() {
+  const entries = (await getCollection('novel', ({ data }) => data.book === '东方紫雨幽蝶'))
+    .sort((a, b) => a.data.order - b.data.order);
+
+  return entries.map((entry, index) => ({
+    params: { slug: slugOf(entry.id) },
+    props: {
+      entry,
+      previous: entries[index - 1],
+      next: entries[index + 1],
+      total: entries.length,
+    },
+  }));
+}
+
+interface Props {
+  entry: NovelEntry;
+  previous?: NovelEntry;
+  next?: NovelEntry;
+  total: number;
+}
+
+const { entry, previous, next, total } = Astro.props;
+const { Content } = await render(entry);
+const currentHref = hrefOf(entry);
+const kindLabel = entry.data.kind === 'chapter' ? '正文' : entry.data.kind === 'interlude' ? '间奏' : '后记';
+---
+
+<BaseLayout
+  title={`${entry.data.title}｜《东方紫雨幽蝶》`}
+  description={entry.data.description}
+  image="/images/works/ziyudie/front-cover.webp"
+>
+  <novel-reader
+    class="zy-reader"
+    data-current-href={currentHref}
+    data-current-title={entry.data.title}
+  >
+    <div class="zy-progress-track" role="progressbar" aria-label="本章阅读进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" data-progress-track>
+      <span data-reading-progress></span>
+    </div>
+
+    <header class="zy-reader-header">
+      <a class="zy-reader-back" href="/library/ziyudie/" aria-label="返回《东方紫雨幽蝶》目录">
+        <span aria-hidden="true">←</span> 目录
+      </a>
+      <div>
+        <p class="eyebrow">ZIYU YUDIE / 白玉楼阁</p>
+        <span>{String(entry.data.order).padStart(2, '0')} / {String(total).padStart(2, '0')}</span>
+      </div>
+      <a class="zy-reader-archive" href="/blog/latex-touhou-typesetting/">装帧档案</a>
+    </header>
+
+    <aside class="zy-reader-tools" aria-label="阅读设置">
+      <span class="zy-tool-label">阅读设置</span>
+      <div class="zy-tool-group" aria-label="字号">
+        <button type="button" data-font-decrease aria-label="减小字号">字−</button>
+        <button type="button" data-font-increase aria-label="增大字号">字＋</button>
+      </div>
+      <button type="button" data-leading aria-label="切换行距">行距</button>
+      <button type="button" data-measure aria-label="切换版心宽度">版心</button>
+      <output data-pref-status aria-live="polite">舒展行距 · 标准版心</output>
+    </aside>
+
+    <article class="zy-reader-sheet">
+      <header class="zy-chapter-header">
+        <p><span>{kindLabel}</span><span>ORDER {String(entry.data.order).padStart(2, '0')}</span></p>
+        <h1>{entry.data.title}</h1>
+        <p>{entry.data.description}</p>
+      </header>
+
+      <div class="novel-prose" data-novel-body>
+        <Content />
+      </div>
+
+      <footer class="zy-chapter-end" aria-label="本章结束">
+        <span aria-hidden="true">◇</span>
+        <p>{entry.data.kind === 'chapter' ? `第 ${entry.data.chapterNumber} 章完` : `${entry.data.title}完`}</p>
+      </footer>
+    </article>
+
+    <nav class="zy-reader-navigation" aria-label="章节翻页">
+      {previous ? (
+        <a class="is-previous" href={hrefOf(previous)} rel="prev">
+          <small>上一篇</small>
+          <strong>{previous.data.title}</strong>
+          <span aria-hidden="true">←</span>
+        </a>
+      ) : <span class="zy-nav-empty">这里是故事的第一页</span>}
+      {next ? (
+        <a class="is-next" href={hrefOf(next)} rel="next">
+          <small>下一篇</small>
+          <strong>{next.data.title}</strong>
+          <span aria-hidden="true">→</span>
+        </a>
+      ) : <a class="is-next" href="/library/ziyudie/"><small>阅读完毕</small><strong>回到目录</strong><span aria-hidden="true">→</span></a>}
+    </nav>
+
+    <footer class="zy-reader-credit">
+      <p>原作 coolcate · 整理校订与网页排印 亚略 Ar</p>
+    </footer>
+  </novel-reader>
+</BaseLayout>
+
+<script>
+  const PREFS_KEY = 'ar-ziyudie-prefs:v1';
+  const RESUME_KEY = 'ar-ziyudie-resume:v1';
+
+  type ReaderPrefs = { fontSize: number; lineHeight: number; measure: number };
+  const defaults: ReaderPrefs = { fontSize: 19, lineHeight: 2.05, measure: 720 };
+
+  class NovelReader extends HTMLElement {
+    private controller?: AbortController;
+    private frame = 0;
+    private restoreFrame = 0;
+    private lastSaved = 0;
+    private prefs: ReaderPrefs = { ...defaults };
+
+    connectedCallback() {
+      this.controller?.abort();
+      this.controller = new AbortController();
+      const { signal } = this.controller;
+      this.prefs = this.readPrefs();
+      this.applyPrefs(false);
+
+      this.querySelector('[data-font-decrease]')?.addEventListener('click', () => {
+        this.prefs.fontSize = Math.max(16, this.prefs.fontSize - 1);
+        this.applyPrefs(true, `字号 ${this.prefs.fontSize} 像素`);
+      }, { signal });
+      this.querySelector('[data-font-increase]')?.addEventListener('click', () => {
+        this.prefs.fontSize = Math.min(24, this.prefs.fontSize + 1);
+        this.applyPrefs(true, `字号 ${this.prefs.fontSize} 像素`);
+      }, { signal });
+      this.querySelector('[data-leading]')?.addEventListener('click', () => {
+        const options = [1.8, 2.05, 2.25];
+        const index = options.findIndex(value => Math.abs(value - this.prefs.lineHeight) < 0.02);
+        this.prefs.lineHeight = options[(index + 1) % options.length];
+        this.applyPrefs(true);
+      }, { signal });
+      this.querySelector('[data-measure]')?.addEventListener('click', () => {
+        const options = [640, 720, 800];
+        const index = options.indexOf(this.prefs.measure);
+        this.prefs.measure = options[(index + 1) % options.length];
+        this.applyPrefs(true);
+      }, { signal });
+
+      window.addEventListener('scroll', () => this.scheduleProgress(), { passive: true, signal });
+      window.addEventListener('resize', () => this.scheduleProgress(), { passive: true, signal });
+      window.addEventListener('pagehide', () => this.updateProgress(true), { signal });
+      document.addEventListener('astro:before-swap', () => this.updateProgress(true), { signal });
+      if (!this.restoreSavedPosition()) this.scheduleProgress();
+    }
+
+    disconnectedCallback() {
+      this.controller?.abort();
+      if (this.frame) cancelAnimationFrame(this.frame);
+      if (this.restoreFrame) cancelAnimationFrame(this.restoreFrame);
+      this.frame = 0;
+      this.restoreFrame = 0;
+    }
+
+    private readPrefs(): ReaderPrefs {
+      try {
+        const stored = JSON.parse(localStorage.getItem(PREFS_KEY) ?? '{}') as Partial<ReaderPrefs>;
+        return {
+          fontSize: Number.isFinite(stored.fontSize) ? Math.max(16, Math.min(24, Number(stored.fontSize))) : defaults.fontSize,
+          lineHeight: [1.8, 2.05, 2.25].includes(Number(stored.lineHeight)) ? Number(stored.lineHeight) : defaults.lineHeight,
+          measure: [640, 720, 800].includes(Number(stored.measure)) ? Number(stored.measure) : defaults.measure,
+        };
+      } catch (_) {
+        return { ...defaults };
+      }
+    }
+
+    private applyPrefs(save: boolean, announcement?: string) {
+      this.style.setProperty('--novel-font-size', `${this.prefs.fontSize}px`);
+      this.style.setProperty('--novel-line-height', String(this.prefs.lineHeight));
+      this.style.setProperty('--novel-measure', `${this.prefs.measure}px`);
+      if (save) {
+        try { localStorage.setItem(PREFS_KEY, JSON.stringify(this.prefs)); } catch (_) {}
+      }
+      const status = this.querySelector<HTMLOutputElement>('[data-pref-status]');
+      if (status) {
+        const leading = this.prefs.lineHeight < 1.9 ? '紧凑行距' : this.prefs.lineHeight > 2.1 ? '宽松行距' : '舒展行距';
+        const measure = this.prefs.measure < 700 ? '窄版心' : this.prefs.measure > 760 ? '宽版心' : '标准版心';
+        status.textContent = announcement ?? `${leading} · ${measure}`;
+      }
+    }
+
+    private scheduleProgress() {
+      if (this.frame) return;
+      this.frame = requestAnimationFrame(() => {
+        this.frame = 0;
+        this.updateProgress(false);
+      });
+    }
+
+    private restoreSavedPosition() {
+      const url = new URL(window.location.href);
+      if (url.searchParams.get('resume') !== '1') return false;
+      try {
+        const saved = JSON.parse(localStorage.getItem(RESUME_KEY) ?? '{}') as {
+          href?: unknown;
+          progress?: unknown;
+        };
+        const progress = Number(saved.progress);
+        if (saved.href !== this.dataset.currentHref || !Number.isFinite(progress) || progress <= 2) return false;
+        this.restoreFrame = requestAnimationFrame(() => {
+          this.restoreFrame = requestAnimationFrame(() => {
+            this.restoreFrame = 0;
+            const body = this.querySelector<HTMLElement>('[data-novel-body]');
+            if (!body || !this.isConnected) return;
+            const top = body.getBoundingClientRect().top + window.scrollY;
+            const readable = Math.max(1, body.offsetHeight - window.innerHeight * 0.65);
+            const target = top - window.innerHeight * 0.28 + readable * Math.max(0, Math.min(100, progress)) / 100;
+            window.scrollTo({ top: Math.max(0, target), behavior: 'auto' });
+            url.searchParams.delete('resume');
+            history.replaceState(history.state, '', url);
+            this.scheduleProgress();
+          });
+        });
+        return true;
+      } catch (_) {
+        return false;
+      }
+    }
+
+    private updateProgress(force: boolean) {
+      const body = this.querySelector<HTMLElement>('[data-novel-body]');
+      if (!body) return;
+      const top = body.getBoundingClientRect().top + window.scrollY;
+      const readable = Math.max(1, body.offsetHeight - window.innerHeight * 0.65);
+      const progress = Math.max(0, Math.min(100, ((window.scrollY - top + window.innerHeight * 0.28) / readable) * 100));
+      const bar = this.querySelector<HTMLElement>('[data-reading-progress]');
+      const track = this.querySelector<HTMLElement>('[data-progress-track]');
+      if (bar) bar.style.width = `${progress}%`;
+      track?.setAttribute('aria-valuenow', String(Math.round(progress)));
+
+      const now = Date.now();
+      if (!force && now - this.lastSaved < 700) return;
+      this.lastSaved = now;
+      try {
+        localStorage.setItem(RESUME_KEY, JSON.stringify({
+          href: this.dataset.currentHref,
+          title: this.dataset.currentTitle,
+          progress,
+          updatedAt: now,
+        }));
+      } catch (_) {}
+    }
+  }
+
+  if (!customElements.get('novel-reader')) customElements.define('novel-reader', NovelReader);
+</script>

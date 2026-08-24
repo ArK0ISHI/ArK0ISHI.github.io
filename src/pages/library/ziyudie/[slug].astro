@@ -5,10 +5,8 @@ import '../../../styles/ziyudie-reader.css';
 
 type NovelEntry = CollectionEntry<'novel'>;
 
-const slugOf = (id: string) => id.split('/').at(-1)?.replace(/\.md$/, '') ?? id;
-const hrefOf = (entry: NovelEntry) => `/library/ziyudie/${slugOf(entry.id)}/`;
-
 export async function getStaticPaths() {
+  const slugOf = (id: string) => id.split('/').at(-1)?.replace(/\.md$/, '') ?? id;
   const entries = (await getCollection('novel', ({ data }) => data.book === '东方紫雨幽蝶'))
     .sort((a, b) => a.data.order - b.data.order);
 
@@ -22,6 +20,11 @@ export async function getStaticPaths() {
     },
   }));
 }
+
+const hrefOf = (entry: NovelEntry) => {
+  const slug = entry.id.split('/').at(-1)?.replace(/\.md$/, '') ?? entry.id;
+  return `/library/ziyudie/${slug}/`;
+};
 
 interface Props {
   entry: NovelEntry;

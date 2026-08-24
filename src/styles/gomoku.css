@@ -1,0 +1,530 @@
+.gomoku-page {
+  --board-paper: #d9bf86;
+  --board-paper-light: #ead7aa;
+  --board-line: rgba(52, 39, 27, .58);
+  --stone-black: #18212a;
+  --stone-white: #f1eee5;
+  --console: color-mix(in srgb, var(--paper-deep) 72%, var(--paper));
+  padding-top: 84px;
+}
+
+:root[data-theme='dark'] .gomoku-page {
+  --board-paper: #9e8356;
+  --board-paper-light: #b69a67;
+  --board-line: rgba(18, 17, 15, .66);
+  --stone-black: #0b0e12;
+  --stone-white: #e8e4da;
+  --console: #101922;
+}
+
+.gomoku-hero {
+  min-height: 610px;
+  padding: clamp(96px, 12vw, 148px) 0 78px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(340px, .82fr);
+  grid-template-rows: 1fr auto;
+  column-gap: 8vw;
+  position: relative;
+}
+
+.gomoku-hero::before {
+  content: '';
+  position: absolute;
+  left: -10vw;
+  right: -10vw;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--line-strong) 18%, var(--line-strong) 82%, transparent);
+}
+
+.gomoku-breadcrumb {
+  display: inline-flex;
+  margin-bottom: 56px;
+  color: var(--ink-soft);
+  font: 400 9px/1.4 var(--mono);
+  letter-spacing: .13em;
+  transition: color .2s ease;
+}
+
+.gomoku-breadcrumb:hover { color: var(--red); }
+.gomoku-hero-kicker,
+.gomoku-section-index {
+  margin: 0 0 18px;
+  color: var(--red);
+  font: 400 10px/1.5 var(--mono);
+  letter-spacing: .17em;
+}
+
+.gomoku-hero h1 {
+  margin: 0;
+  font-size: clamp(62px, 9vw, 126px);
+  font-weight: 500;
+  line-height: .92;
+  letter-spacing: -.055em;
+}
+
+.gomoku-hero h1 em {
+  color: var(--red);
+  font-style: normal;
+}
+
+.gomoku-hero-deck {
+  max-width: 620px;
+  margin: 34px 0 0;
+  color: var(--ink-soft);
+  font-size: 15px;
+  line-height: 2;
+}
+
+.gomoku-hero-orbit {
+  width: min(36vw, 430px);
+  aspect-ratio: 1;
+  place-self: center;
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+}
+
+.gomoku-hero-orbit::before,
+.gomoku-hero-orbit::after,
+.gomoku-hero-orbit span {
+  content: '';
+  position: absolute;
+  inset: 14%;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+}
+
+.gomoku-hero-orbit::after {
+  inset: 50% -7% auto;
+  border: 0;
+  border-top: 1px solid var(--line-strong);
+  border-radius: 0;
+}
+
+.gomoku-hero-orbit span:first-child {
+  inset: -7% 50% -7% auto;
+  border: 0;
+  border-left: 1px solid var(--line-strong);
+  border-radius: 0;
+}
+
+.gomoku-hero-orbit span:nth-child(2) {
+  inset: 30%;
+  border-style: dashed;
+}
+
+.gomoku-hero-orbit i {
+  position: absolute;
+  width: 13px;
+  height: 13px;
+  top: 25%;
+  right: 13%;
+  border: 3px solid var(--paper);
+  border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 0 0 1px var(--red), -270px 155px 0 -2px var(--blue);
+}
+
+.gomoku-hero-orbit b {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  transform: translate(-50%, -50%);
+  font-size: clamp(72px, 10vw, 124px);
+  font-weight: 500;
+  line-height: 1;
+}
+
+.gomoku-hero-orbit small {
+  position: absolute;
+  right: 8%;
+  bottom: 5%;
+  color: var(--ink-soft);
+  font: 400 8px/1.4 var(--mono);
+  letter-spacing: .15em;
+}
+
+.gomoku-hero-meta {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin: 72px 0 0;
+  border-top: 1px solid var(--line);
+}
+
+.gomoku-hero-meta div { padding: 22px 24px 0 0; }
+.gomoku-hero-meta div + div { padding-left: 24px; border-left: 1px solid var(--line); }
+.gomoku-hero-meta dt { color: var(--ink-soft); font: 400 8px/1.4 var(--mono); letter-spacing: .14em; }
+.gomoku-hero-meta dd { margin: 7px 0 0; font-size: 12px; font-weight: 600; }
+
+.gomoku-room-wrap { margin-top: 82px; }
+.gomoku-room { display: block; }
+.gomoku-console {
+  border: 1px solid var(--line-strong);
+  background: var(--console);
+  box-shadow: var(--shadow);
+}
+
+.gomoku-console-head {
+  min-height: 104px;
+  padding: 24px 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.gomoku-console-head > div:first-child { display: flex; align-items: center; gap: 24px; }
+.gomoku-console-head h2 { margin: 0; font-size: clamp(24px, 2.4vw, 34px); font-weight: 600; letter-spacing: .04em; }
+.gomoku-kicker { margin: 0; color: var(--red); font: 400 9px/1.4 var(--mono); letter-spacing: .15em; }
+.gomoku-kicker i { display: inline-block; width: 7px; height: 7px; margin-right: 9px; border-radius: 50%; background: var(--red); box-shadow: 0 0 0 5px color-mix(in srgb, var(--red) 12%, transparent); }
+.gomoku-head-state { min-width: 160px; padding-left: 22px; border-left: 1px solid var(--line); display: grid; justify-items: end; }
+.gomoku-head-state span { color: var(--ink-soft); font: 400 8px/1.4 var(--mono); letter-spacing: .1em; }
+.gomoku-head-state b { margin-top: 5px; font-size: 13px; font-weight: 600; }
+
+.gomoku-workspace {
+  display: grid;
+  grid-template-columns: 238px minmax(420px, 1fr) 248px;
+  min-height: 770px;
+}
+
+.gomoku-setup,
+.gomoku-record {
+  padding: 27px 24px 30px;
+  min-width: 0;
+}
+
+.gomoku-setup { border-right: 1px solid var(--line); }
+.gomoku-record { border-left: 1px solid var(--line); }
+.gomoku-panel-heading,
+.gomoku-history-head,
+.gomoku-engine-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--ink-soft);
+  font: 400 8px/1.4 var(--mono);
+  letter-spacing: .12em;
+}
+
+.gomoku-panel-heading { margin-bottom: 28px; padding-bottom: 15px; border-bottom: 1px solid var(--line); }
+.gomoku-panel-heading small { color: var(--red); font: inherit; }
+.gomoku-field { display: block; margin-top: 24px; }
+.gomoku-field > span { display: block; margin-bottom: 8px; font-size: 12px; font-weight: 600; }
+.gomoku-field select {
+  width: 100%;
+  min-height: 43px;
+  padding: 8px 29px 8px 11px;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  color: var(--ink);
+  background: var(--paper) url("data:image/svg+xml,%3Csvg width='12' height='7' viewBox='0 0 12 7' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='m1 1 5 5 5-5' fill='none' stroke='%23526B7A'/%3E%3C/svg%3E") no-repeat right 10px center;
+  font: 400 11px/1.4 var(--serif);
+  appearance: none;
+}
+.gomoku-field small { display: block; margin-top: 8px; color: var(--ink-soft); font-size: 9px; line-height: 1.7; }
+.gomoku-switches { display: grid; gap: 10px; margin-top: 28px; }
+.gomoku-switches label { display: flex; align-items: center; gap: 9px; cursor: pointer; color: var(--ink-soft); font-size: 10px; }
+.gomoku-switches input { position: absolute; opacity: 0; pointer-events: none; }
+.gomoku-switches label span { width: 27px; height: 15px; padding: 2px; border: 1px solid var(--line-strong); border-radius: 10px; transition: background-color .2s ease; }
+.gomoku-switches label span::before { content: ''; display: block; width: 9px; height: 9px; border-radius: 50%; background: var(--ink-soft); transition: transform .2s ease, background-color .2s ease; }
+.gomoku-switches input:checked + span { background: color-mix(in srgb, var(--red) 15%, transparent); border-color: var(--red); }
+.gomoku-switches input:checked + span::before { transform: translateX(11px); background: var(--red); }
+.gomoku-switches input:focus-visible + span { outline: 2px solid var(--red); outline-offset: 3px; }
+
+.gomoku-new-game {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 28px;
+  padding: 0 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--red);
+  border-radius: 0;
+  background: var(--red);
+  color: var(--paper);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  transition: color .2s ease, background-color .2s ease;
+}
+.gomoku-new-game:hover { color: var(--red); background: transparent; }
+.gomoku-new-game b { font: 400 15px/1 var(--mono); }
+.gomoku-local-note { margin: 20px 0 0; color: var(--ink-soft); font-size: 8px; line-height: 1.7; }
+.gomoku-local-note i { display: inline-block; width: 5px; height: 5px; margin-right: 6px; border-radius: 50%; background: #5e8b66; }
+
+.gomoku-board-column {
+  min-width: 0;
+  padding: clamp(25px, 3.4vw, 48px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--blue) 4%, transparent), transparent 35%),
+    var(--paper);
+}
+
+.gomoku-status-card {
+  width: min(100%, 700px);
+  min-height: 66px;
+  margin-bottom: 24px;
+  padding: 10px 16px;
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+  gap: 13px;
+  align-items: center;
+  border-top: 1px solid var(--line-strong);
+  border-bottom: 1px solid var(--line);
+}
+.gomoku-turn-mark { width: 29px; height: 29px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 50%; }
+.gomoku-turn-mark i { width: 15px; height: 15px; border-radius: 50%; background: var(--stone-black); box-shadow: inset 2px 2px 4px rgba(255,255,255,.18), 0 1px 2px rgba(0,0,0,.28); }
+.gomoku-turn-mark[data-stone='white'] i { background: var(--stone-white); box-shadow: inset -2px -2px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.2); }
+.gomoku-status-card p { margin: 0; font-size: 12px; font-weight: 600; }
+.gomoku-status-card div:nth-child(2) span { display: block; overflow: hidden; color: var(--ink-soft); font-size: 9px; line-height: 1.6; text-overflow: ellipsis; white-space: nowrap; }
+.gomoku-move-count { color: var(--ink-soft); font: 300 18px/1 var(--mono); letter-spacing: .08em; }
+
+.gomoku-board-shell {
+  width: min(100%, 700px);
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  grid-template-rows: 18px minmax(0, 1fr);
+  gap: 5px;
+}
+.gomoku-axis { color: var(--ink-soft); font: 300 8px/1 var(--mono); }
+.gomoku-axis span { display: grid; place-items: center; }
+.gomoku-axis-top { grid-column: 2; display: grid; grid-template-columns: repeat(15, 1fr); }
+.gomoku-axis-left { grid-row: 2; display: grid; grid-template-rows: repeat(15, 1fr); }
+.gomoku-board {
+  grid-column: 2;
+  grid-row: 2;
+  width: 100%;
+  aspect-ratio: 1;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(56, 41, 26, .65);
+  background:
+    radial-gradient(circle at 28% 22%, rgba(255,255,255,.16), transparent 27%),
+    linear-gradient(135deg, var(--board-paper-light), var(--board-paper));
+  box-shadow: 0 20px 48px rgba(42, 33, 22, .15), inset 0 0 40px rgba(72, 43, 12, .08);
+  touch-action: manipulation;
+}
+.gomoku-board::after { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: .12; background-image: repeating-linear-gradient(5deg, transparent 0 13px, rgba(91,55,20,.18) 14px, transparent 15px 28px); mix-blend-mode: multiply; }
+.gomoku-lines {
+  position: absolute;
+  z-index: 0;
+  inset: calc(100% / 30);
+  background-image:
+    linear-gradient(to right, var(--board-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--board-line) 1px, transparent 1px);
+  background-size: calc(100% / 14) 100%, 100% calc(100% / 14);
+  background-position: 0 0;
+  pointer-events: none;
+}
+.gomoku-star {
+  --cell: calc(100% / 15);
+  position: absolute;
+  z-index: 1;
+  left: calc((var(--star-x) + .5) * var(--cell));
+  top: calc((var(--star-y) + .5) * var(--cell));
+  width: clamp(4px, .65vw, 7px);
+  height: clamp(4px, .65vw, 7px);
+  border-radius: 50%;
+  background: rgba(44, 32, 22, .8);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.gomoku-cells { position: absolute; z-index: 2; inset: 0; display: grid; grid-template-columns: repeat(15, 1fr); grid-template-rows: repeat(15, 1fr); }
+.gomoku-cell { position: relative; min-width: 0; min-height: 0; padding: 0; border: 0; border-radius: 0; background: transparent; cursor: pointer; }
+.gomoku-cell:disabled { cursor: default; }
+.gomoku-cell[data-locked='true'] { cursor: default; }
+.gomoku-cell::after { content: ''; position: absolute; inset: 10%; border: 1px solid transparent; border-radius: 50%; transition: border-color .12s ease, background-color .12s ease; }
+.gomoku-cell:not(:disabled):not([data-locked='true']):hover::after { border-color: rgba(154,39,53,.75); background: rgba(154,39,53,.09); }
+.gomoku-cell[data-outside='true']::after { inset: 0; border: 0; border-radius: 0; background: rgba(247,244,237,.3); }
+.gomoku-cell[data-outside='true'] .gomoku-stone { filter: saturate(.8); }
+.gomoku-cell:focus-visible { outline: none; }
+.gomoku-cell:focus-visible::after { border: 2px solid var(--red); box-shadow: 0 0 0 2px rgba(247,244,237,.72); }
+.gomoku-stone { position: absolute; z-index: 2; inset: 12%; border-radius: 50%; opacity: 0; transform: scale(.5); transition: opacity .14s ease, transform .18s cubic-bezier(.2,.8,.2,1); }
+.gomoku-cell[data-stone] .gomoku-stone,
+.gomoku-cell[data-proposal] .gomoku-stone { opacity: 1; transform: scale(1); }
+.gomoku-cell[data-stone='black'] .gomoku-stone { border: 1px solid rgba(0,0,0,.72); background: radial-gradient(circle at 35% 28%, #4f5962 0, var(--stone-black) 38%, #070a0d 100%); box-shadow: 0 2px 5px rgba(0,0,0,.38); }
+.gomoku-cell[data-stone='white'] .gomoku-stone { border: 1px solid rgba(43,38,32,.3); background: radial-gradient(circle at 34% 26%, #fff 0, var(--stone-white) 57%, #cbc5b8 100%); box-shadow: 0 2px 5px rgba(0,0,0,.22); }
+.gomoku-cell[data-proposal] .gomoku-stone { inset: 18%; border: 2px dashed var(--red); background: color-mix(in srgb, var(--board-paper-light) 66%, transparent); box-shadow: 0 0 0 3px rgba(247,244,237,.32); }
+.gomoku-cell .gomoku-stone b { position: absolute; inset: 28%; display: none; place-items: center; border-radius: 50%; color: #fff; background: var(--red); font: 500 8px/1 var(--mono); }
+.gomoku-cell[data-proposal] .gomoku-stone b { display: grid; }
+.gomoku-cell .gomoku-stone i { position: absolute; inset: 36%; display: none; border: 1.5px solid var(--red); border-radius: 50%; }
+.gomoku-cell[data-last='true'] .gomoku-stone i { display: block; }
+.gomoku-cell[data-win='true'] .gomoku-stone { box-shadow: 0 0 0 3px var(--lamp), 0 3px 7px rgba(0,0,0,.3); }
+.gomoku-cell > small { position: absolute; z-index: 4; inset: 0; display: none; place-items: center; color: #fff; font: 500 clamp(6px, .75vw, 9px)/1 var(--mono); text-shadow: 0 1px 2px rgba(0,0,0,.5); }
+.gomoku-board[data-show-numbers='true'] .gomoku-cell[data-stone] > small { display: grid; }
+.gomoku-board[data-show-numbers='true'] .gomoku-cell[data-stone='white'] > small { color: #2b3137; text-shadow: none; }
+.gomoku-cell[data-forbidden]::before { content: '×'; position: absolute; z-index: 5; inset: 13%; display: grid; place-items: center; border: 1px solid rgba(154,39,53,.42); border-radius: 50%; color: var(--red); background: rgba(247,244,237,.34); font: 500 clamp(9px, 1.1vw, 14px)/1 var(--mono); }
+.gomoku-cell[data-hint='true']::before { content: '◇'; position: absolute; z-index: 6; inset: 7%; display: grid; place-items: center; color: var(--red); border: 2px solid var(--red); border-radius: 50%; background: rgba(247,244,237,.45); font: 600 clamp(11px, 1.3vw, 17px)/1 var(--mono); animation: gomokuHint 1.3s ease-in-out infinite; }
+
+@keyframes gomokuHint { 50% { transform: scale(.84); opacity: .66; } }
+
+.gomoku-thinking-veil { position: absolute; z-index: 20; inset: 0; display: grid; place-content: center; justify-items: center; gap: 10px; color: #f7f4ed; background: rgba(21,29,38,.45); backdrop-filter: blur(1px); }
+.gomoku-thinking-veil[hidden] { display: none; }
+.gomoku-thinking-veil i { width: 36px; height: 36px; border: 1px solid rgba(255,255,255,.35); border-top-color: #fff; border-radius: 50%; animation: gomokuSpin 1s linear infinite; }
+.gomoku-thinking-veil span { font-size: 12px; font-weight: 600; letter-spacing: .08em; }
+.gomoku-thinking-veil small { font: 400 8px/1 var(--mono); letter-spacing: .12em; }
+@keyframes gomokuSpin { to { transform: rotate(360deg); } }
+
+.gomoku-board-actions { width: min(100%, 700px); display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 18px; border: 1px solid var(--line); }
+.gomoku-board-actions button { min-height: 44px; padding: 0 8px; border: 0; border-right: 1px solid var(--line); background: transparent; cursor: pointer; color: var(--ink-soft); font-size: 10px; transition: color .2s ease, background-color .2s ease; }
+.gomoku-board-actions button:last-child { border-right: 0; }
+.gomoku-board-actions button:hover:not(:disabled) { color: var(--red); background: var(--wash); }
+.gomoku-board-actions button:disabled { opacity: .34; cursor: default; }
+.gomoku-board-actions button span { margin-right: 6px; font-family: var(--mono); }
+
+.gomoku-opening-card,
+.gomoku-engine-card,
+.gomoku-history-card { border-bottom: 1px solid var(--line); padding: 0 0 24px; margin: 0 0 24px; }
+.gomoku-opening-card[hidden] { display: none; }
+.gomoku-opening-card { padding: 17px; border: 1px solid color-mix(in srgb, var(--red) 42%, var(--line)); background: color-mix(in srgb, var(--red) 5%, var(--paper)); }
+.gomoku-opening-card > p:first-child { margin: 0; color: var(--red); font: 400 8px/1.4 var(--mono); letter-spacing: .12em; }
+.gomoku-opening-card h3 { margin: 12px 0 8px; font-size: 15px; line-height: 1.55; }
+.gomoku-opening-card h3 + p { margin: 0; color: var(--ink-soft); font-size: 10px; line-height: 1.75; }
+.gomoku-opening-actions { display: grid; gap: 7px; margin-top: 15px; }
+.gomoku-opening-actions button { min-height: 40px; padding: 8px 10px; border: 1px solid var(--line-strong); border-radius: 0; background: transparent; cursor: pointer; font-size: 10px; text-align: left; transition: border-color .2s ease, color .2s ease, background-color .2s ease; }
+.gomoku-opening-actions button:hover { border-color: var(--red); color: var(--red); background: color-mix(in srgb, var(--red) 5%, transparent); }
+.gomoku-opening-actions button.is-primary { border-color: var(--red); color: var(--paper); background: var(--red); }
+.gomoku-proposal-count { margin: 13px 0 0 !important; color: var(--red) !important; font: 400 8px/1.5 var(--mono) !important; }
+.gomoku-engine-card { padding-top: 2px; }
+.gomoku-engine-title i { display: inline-block; width: 6px; height: 6px; margin-right: 7px; border-radius: 50%; background: var(--ink-soft); }
+.gomoku-engine-title i.is-thinking { background: #5e8b66; box-shadow: 0 0 0 4px rgba(94,139,102,.12); }
+.gomoku-engine-title small { color: var(--red); font: inherit; }
+.gomoku-engine-card dl { display: grid; grid-template-columns: repeat(3, 1fr); margin: 18px 0 0; }
+.gomoku-engine-card dl div { padding-right: 8px; }
+.gomoku-engine-card dl div + div { padding-left: 8px; border-left: 1px solid var(--line); }
+.gomoku-engine-card dt { color: var(--ink-soft); font-size: 8px; }
+.gomoku-engine-card dd { margin: 4px 0 0; font: 400 11px/1.4 var(--mono); }
+.gomoku-engine-card > p { margin: 17px 0 0; }
+.gomoku-engine-card > p span { display: block; color: var(--ink-soft); font-size: 8px; }
+.gomoku-engine-card > p b { display: block; min-height: 37px; margin-top: 5px; overflow: hidden; color: var(--ink-soft); font: 300 8px/1.6 var(--mono); text-overflow: ellipsis; }
+.gomoku-history-head b { color: var(--ink); font: 400 9px/1.4 var(--serif); }
+.gomoku-history { max-height: 256px; margin: 15px 0 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; overflow: auto; list-style: none; scrollbar-width: thin; }
+.gomoku-history li { min-width: 0; border-bottom: 1px solid var(--line); }
+.gomoku-history li:nth-child(odd) { border-right: 1px solid var(--line); }
+.gomoku-history li.is-empty { grid-column: 1 / -1; padding: 18px 0; border: 0; color: var(--ink-soft); font-size: 9px; }
+.gomoku-history li.is-event { grid-column: 1 / -1; min-height: 30px; padding: 6px; display: grid; grid-template-columns: 34px minmax(0, 1fr); align-items: center; gap: 6px; border-right: 0; color: var(--ink-soft); }
+.gomoku-history li.is-event b { color: var(--red); font: 500 7px/1 var(--mono); letter-spacing: .1em; }
+.gomoku-history li.is-event span { overflow: hidden; font: 400 8px/1.35 var(--serif); text-overflow: ellipsis; white-space: nowrap; }
+.gomoku-history button { width: 100%; min-height: 33px; padding: 5px 6px; display: grid; grid-template-columns: 22px 11px minmax(0,1fr); align-items: center; border: 0; background: transparent; cursor: pointer; text-align: left; }
+.gomoku-history button:hover { background: var(--wash); }
+.gomoku-history button b { color: var(--ink-soft); font: 300 8px/1 var(--mono); }
+.gomoku-history button i { width: 8px; height: 8px; border: 1px solid var(--line-strong); border-radius: 50%; background: var(--stone-black); }
+.gomoku-history button i.is-white { background: var(--stone-white); }
+.gomoku-history button span { overflow: hidden; font: 400 9px/1 var(--mono); text-overflow: ellipsis; white-space: nowrap; }
+.gomoku-review { margin-top: 17px; }
+.gomoku-review[hidden] { display: none; }
+.gomoku-review label { display: flex; justify-content: space-between; color: var(--ink-soft); font-size: 8px; }
+.gomoku-review label b { color: var(--ink); font: 400 8px/1 var(--mono); }
+.gomoku-review input { width: 100%; accent-color: var(--red); }
+.gomoku-review button { width: 100%; min-height: 38px; margin-top: 8px; border: 1px solid var(--line); border-radius: 0; background: transparent; cursor: pointer; font-size: 9px; }
+
+.gomoku-toast { position: fixed; z-index: 110; left: 50%; bottom: 92px; max-width: min(88vw, 520px); padding: 11px 17px; border: 1px solid var(--line-strong); color: var(--paper); background: var(--ink); box-shadow: var(--shadow); transform: translateX(-50%); font-size: 11px; }
+.gomoku-toast[hidden] { display: none; }
+
+.gomoku-notes,
+.gomoku-engine-note { padding-top: 150px; }
+.gomoku-notes-lead { display: grid; grid-template-columns: 1fr 1.15fr; column-gap: 8vw; align-items: end; }
+.gomoku-notes-lead .gomoku-section-index { grid-column: 1 / -1; }
+.gomoku-notes-lead h2,
+.gomoku-engine-note h2 { margin: 0; font-size: clamp(38px, 5.3vw, 72px); font-weight: 500; line-height: 1.18; letter-spacing: -.035em; }
+.gomoku-notes-lead > p:last-child { max-width: 560px; margin: 0; padding-left: 28px; border-left: 1px solid var(--lamp); color: var(--ink-soft); font-size: 14px; line-height: 2; }
+.gomoku-rule-index { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 70px; border-top: 1px solid var(--line-strong); border-bottom: 1px solid var(--line-strong); }
+.gomoku-rule-index article { min-height: 250px; padding: 30px 27px; }
+.gomoku-rule-index article + article { border-left: 1px solid var(--line); }
+.gomoku-rule-index span { color: var(--red); font: 400 8px/1.4 var(--mono); letter-spacing: .12em; }
+.gomoku-rule-index h3 { margin: 50px 0 13px; font-size: 20px; }
+.gomoku-rule-index p { margin: 0; color: var(--ink-soft); font-size: 12px; line-height: 1.9; }
+.gomoku-rules-source { margin: 25px 0 0; color: var(--ink-soft); font-size: 10px; line-height: 1.9; }
+.gomoku-rules-source a { color: var(--blue); border-bottom: 1px solid var(--line); }
+.gomoku-rules-source a:hover { color: var(--red); border-color: var(--red); }
+.gomoku-engine-note { display: grid; grid-template-columns: .8fr 1.2fr; gap: 9vw; padding-bottom: 40px; }
+.gomoku-engine-copy { padding-top: 40px; }
+.gomoku-engine-copy > p { margin: 0 0 20px; color: var(--ink-soft); font-size: 13px; line-height: 2; }
+.gomoku-engine-copy dl { display: grid; grid-template-columns: repeat(4,1fr); margin: 42px 0 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.gomoku-engine-copy dl div { padding: 17px 10px; }
+.gomoku-engine-copy dl div + div { border-left: 1px solid var(--line); }
+.gomoku-engine-copy dt { color: var(--red); font: 400 9px/1.4 var(--mono); }
+.gomoku-engine-copy dd { margin: 7px 0 0; color: var(--ink-soft); font: 300 8px/1.4 var(--mono); }
+
+@media (max-width: 1100px) {
+  .gomoku-workspace { grid-template-columns: 210px minmax(400px, 1fr); }
+  .gomoku-record { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr 1.15fr; gap: 24px; border-top: 1px solid var(--line); border-left: 0; }
+  .gomoku-record > .gomoku-panel-heading { grid-column: 1 / -1; margin-bottom: 0; }
+  .gomoku-opening-card,
+  .gomoku-engine-card,
+  .gomoku-history-card { margin: 0; border-bottom: 0; }
+}
+
+@media (max-width: 820px) {
+  .gomoku-page { padding-top: 74px; }
+  .gomoku-hero { min-height: 0; grid-template-columns: 1fr; padding-top: 72px; }
+  .gomoku-breadcrumb { margin-bottom: 42px; }
+  .gomoku-hero-orbit { width: min(74vw, 390px); margin-top: 60px; }
+  .gomoku-hero-meta { grid-template-columns: 1fr 1fr; margin-top: 56px; }
+  .gomoku-hero-meta div:nth-child(3) { padding-left: 0; border-left: 0; border-top: 1px solid var(--line); }
+  .gomoku-hero-meta div:nth-child(4) { border-top: 1px solid var(--line); }
+  .gomoku-hero-meta div { padding-top: 17px; padding-bottom: 12px; }
+  .gomoku-workspace { display: flex; flex-direction: column; }
+  .gomoku-setup { border-right: 0; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: repeat(3, 1fr); gap: 0 14px; }
+  .gomoku-setup > .gomoku-panel-heading,
+  .gomoku-setup > .gomoku-switches,
+  .gomoku-setup > .gomoku-local-note { grid-column: 1 / -1; }
+  .gomoku-field { margin-top: 0; }
+  .gomoku-new-game { align-self: end; margin-top: 0; }
+  .gomoku-board-column { padding: 30px clamp(14px, 4vw, 32px); }
+  .gomoku-record { grid-template-columns: 1fr 1fr; }
+  .gomoku-history-card { grid-column: 1 / -1; }
+  .gomoku-notes-lead { grid-template-columns: 1fr; }
+  .gomoku-notes-lead > p:last-child { margin-top: 32px; }
+  .gomoku-rule-index { grid-template-columns: 1fr 1fr; }
+  .gomoku-rule-index article:nth-child(3) { border-left: 0; border-top: 1px solid var(--line); }
+  .gomoku-rule-index article:nth-child(4) { border-top: 1px solid var(--line); }
+  .gomoku-engine-note { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .gomoku-hero { padding-top: 58px; }
+  .gomoku-hero h1 { font-size: clamp(58px, 21vw, 86px); }
+  .gomoku-room-wrap { width: 100%; margin-top: 58px; }
+  .gomoku-console { border-inline: 0; }
+  .gomoku-console-head { min-height: 86px; padding: 18px 17px; }
+  .gomoku-console-head > div:first-child { display: block; }
+  .gomoku-console-head h2 { margin-top: 5px; }
+  .gomoku-kicker { font-size: 7px; }
+  .gomoku-head-state { min-width: 126px; }
+  .gomoku-setup { grid-template-columns: 1fr; padding: 23px 17px 25px; }
+  .gomoku-setup > * { grid-column: 1 !important; }
+  .gomoku-field { margin-top: 17px; }
+  .gomoku-new-game { margin-top: 22px; }
+  .gomoku-board-column { padding-inline: 8px; }
+  .gomoku-status-card { padding-inline: 8px; }
+  .gomoku-board-shell { grid-template-columns: 14px minmax(0, 1fr); grid-template-rows: 14px minmax(0,1fr); gap: 2px; }
+  .gomoku-axis { font-size: 6px; }
+  .gomoku-star { width: 4px; height: 4px; }
+  .gomoku-board-actions button { font-size: 9px; }
+  .gomoku-record { display: block; padding: 25px 17px 28px; }
+  .gomoku-record > section { margin-top: 22px; padding-bottom: 22px; border-bottom: 1px solid var(--line); }
+  .gomoku-record > section:last-child { border-bottom: 0; }
+  .gomoku-notes,
+  .gomoku-engine-note { padding-top: 100px; }
+  .gomoku-rule-index { grid-template-columns: 1fr; }
+  .gomoku-rule-index article { min-height: 0; padding: 25px 18px; }
+  .gomoku-rule-index article + article { border-left: 0; border-top: 1px solid var(--line); }
+  .gomoku-rule-index h3 { margin-top: 30px; }
+  .gomoku-engine-copy dl { grid-template-columns: 1fr 1fr; }
+  .gomoku-engine-copy dl div:nth-child(3) { border-left: 0; border-top: 1px solid var(--line); }
+  .gomoku-engine-copy dl div:nth-child(4) { border-top: 1px solid var(--line); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gomoku-stone { transition: none; }
+  .gomoku-cell[data-hint='true']::before,
+  .gomoku-thinking-veil i { animation: none; }
+}

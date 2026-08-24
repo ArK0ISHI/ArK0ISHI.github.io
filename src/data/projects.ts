@@ -90,4 +90,15 @@ export const projects: Project[] = [
     result: '2026 年“华数杯”国际大学生数学建模竞赛一等奖',
     articleHref: '/blog/huashu-cup-a-2026/',
   },
+  {
+    id: 'gomoku-room',
+    number: 'P.07',
+    title: '十五路棋室：五子棋人机对局',
+    subtitle: 'A local-first Gomoku room with four opening rules',
+    description: '在十五路棋盘上加入四档电脑棋力、连珠禁手与正式开局协议，并把提示、悔棋、复盘和棋谱整理进一套适合手机使用的界面。',
+    reflection: '当规则里出现换色与候选点，怎样让第一次接触的人也能跟着棋盘提示走完开局？',
+    tags: ['博弈算法', '交互设计', 'TypeScript'],
+    result: '四档棋力 · 四种规则 · 本机搜索与存档',
+    detailHref: '/projects/gomoku/',
+  },
 ];

@@ -1,0 +1,189 @@
+---
+const coordinates = 'ABCDEFGHIJKLMNO'.split('');
+const cells = Array.from({ length: 225 }, (_, index) => ({
+  x: index % 15,
+  y: Math.floor(index / 15),
+}));
+const stars = [
+  { x: 3, y: 3 }, { x: 11, y: 3 },
+  { x: 3, y: 11 }, { x: 11, y: 11 },
+  { x: 7, y: 7 },
+];
+---
+
+<gomoku-room class="gomoku-room" data-gomoku-room>
+  <section class="gomoku-console" aria-label="五子棋人机对局">
+    <header class="gomoku-console-head">
+      <div>
+        <p class="gomoku-kicker"><i aria-hidden="true"></i> BOARD ONLINE · 15 × 15</p>
+        <h2>纵横十五路</h2>
+      </div>
+      <div class="gomoku-head-state" aria-live="polite">
+        <span data-gomoku-phase>自由规则</span>
+        <b data-gomoku-headline>黑方落子</b>
+      </div>
+    </header>
+
+    <div class="gomoku-workspace">
+      <aside class="gomoku-setup" aria-label="对局设置">
+        <div class="gomoku-panel-heading">
+          <span>SETUP / 设置</span>
+          <small>01</small>
+        </div>
+
+        <label class="gomoku-field">
+          <span>规则</span>
+          <select data-gomoku-rule>
+            <option value="freestyle">简单规则 · 无禁手</option>
+            <option value="renju">连珠规则 · 有禁手</option>
+            <option value="classic">五手两打 · Classic RIF</option>
+            <option value="taraguchi10">塔拉山口‑10 · Taraguchi‑10</option>
+          </select>
+          <small data-gomoku-rule-note>黑白双方五子或长连都获胜，黑方先行。</small>
+        </label>
+
+        <label class="gomoku-field">
+          <span>电脑棋力</span>
+          <select data-gomoku-difficulty>
+            <option value="easy">easy · 初识棋路</option>
+            <option value="normal" selected>normal · 日常对弈</option>
+            <option value="hard">hard · 认真应战</option>
+            <option value="lunatic">lunatic · 全力推演</option>
+          </select>
+          <small data-gomoku-difficulty-note>约 0.26 秒，三层迭代搜索。</small>
+        </label>
+
+        <label class="gomoku-field">
+          <span data-gomoku-seat-label>执子</span>
+          <select data-gomoku-seat>
+            <option value="first">黑方 · 先手</option>
+            <option value="second">白方 · 后手</option>
+            <option value="random">随机决定</option>
+          </select>
+          <small data-gomoku-seat-note>新局开始时生效。</small>
+        </label>
+
+        <div class="gomoku-switches" aria-label="显示选项">
+          <label><input type="checkbox" data-gomoku-numbers /><span aria-hidden="true"></span>显示手数</label>
+          <label><input type="checkbox" data-gomoku-forbidden checked /><span aria-hidden="true"></span>标出禁手</label>
+          <label><input type="checkbox" data-gomoku-sound checked /><span aria-hidden="true"></span>落子音</label>
+        </div>
+
+        <button class="gomoku-new-game" type="button" data-gomoku-new>
+          <span>开始新局</span><b aria-hidden="true">↗</b>
+        </button>
+
+        <p class="gomoku-local-note"><i aria-hidden="true"></i>棋局只保存在当前浏览器；搜索在本机完成。</p>
+      </aside>
+
+      <div class="gomoku-board-column">
+        <div class="gomoku-status-card">
+          <div class="gomoku-turn-mark" data-gomoku-turn-mark aria-hidden="true"><i></i></div>
+          <div>
+            <p data-gomoku-status-title>轮到你 · 黑方</p>
+            <span data-gomoku-status-detail>请选择一个交叉点落子。</span>
+          </div>
+          <span class="gomoku-move-count" data-gomoku-move-count>000</span>
+        </div>
+
+        <div class="gomoku-board-shell" data-gomoku-board-shell>
+          <div class="gomoku-axis gomoku-axis-top" aria-hidden="true">
+            {coordinates.map(letter => <span>{letter}</span>)}
+          </div>
+          <div class="gomoku-axis gomoku-axis-left" aria-hidden="true">
+            {Array.from({ length: 15 }, (_, index) => <span>{15 - index}</span>)}
+          </div>
+          <div class="gomoku-board" data-gomoku-board aria-label="十五乘十五五子棋棋盘" role="grid" aria-rowcount="15" aria-colcount="15">
+            <div class="gomoku-lines" aria-hidden="true"></div>
+            {stars.map(star => (
+              <i
+                class="gomoku-star"
+                style={`--star-x:${star.x};--star-y:${star.y}`}
+                aria-hidden="true"
+              ></i>
+            ))}
+            <div class="gomoku-cells">
+              {cells.map(({ x, y }, index) => (
+                <button
+                  class="gomoku-cell"
+                  type="button"
+                  role="gridcell"
+                  data-x={x}
+                  data-y={y}
+                  data-index={index}
+                  aria-label={`${coordinates[x]}${15 - y}，空位`}
+                  tabindex={index === 112 ? '0' : '-1'}
+                >
+                  <span class="gomoku-stone" aria-hidden="true"><i></i><b></b></span>
+                  <small aria-hidden="true"></small>
+                </button>
+              ))}
+            </div>
+            <div class="gomoku-thinking-veil" data-gomoku-thinking-veil hidden>
+              <i aria-hidden="true"></i>
+              <span>电脑正在推演</span>
+              <small data-gomoku-thinking-depth>DEPTH 01</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="gomoku-board-actions" aria-label="棋局操作">
+          <button type="button" data-gomoku-undo disabled><span aria-hidden="true">↶</span>悔棋</button>
+          <button type="button" data-gomoku-hint><span aria-hidden="true">◇</span>求一手</button>
+          <button type="button" data-gomoku-pass hidden><span aria-hidden="true">○</span>停一手</button>
+          <button type="button" data-gomoku-copy><span aria-hidden="true">⌁</span>复制棋谱</button>
+        </div>
+      </div>
+
+      <aside class="gomoku-record" aria-label="对局记录与开局操作">
+        <div class="gomoku-panel-heading">
+          <span>RECORD / 棋谱</span>
+          <small>02</small>
+        </div>
+
+        <section class="gomoku-opening-card" data-gomoku-opening-card hidden aria-live="polite">
+          <p data-gomoku-opening-kicker>OPENING / 开局协议</p>
+          <h3 data-gomoku-opening-title>选择是否交换颜色</h3>
+          <p data-gomoku-opening-copy></p>
+          <div class="gomoku-opening-actions" data-gomoku-opening-actions></div>
+          <p class="gomoku-proposal-count" data-gomoku-proposal-count hidden></p>
+        </section>
+
+        <section class="gomoku-engine-card">
+          <div class="gomoku-engine-title">
+            <span><i data-gomoku-engine-light aria-hidden="true"></i>推演台</span>
+            <small data-gomoku-engine-state>STANDBY</small>
+          </div>
+          <dl>
+            <div><dt>深度</dt><dd data-gomoku-depth>—</dd></div>
+            <div><dt>节点</dt><dd data-gomoku-nodes>—</dd></div>
+            <div><dt>用时</dt><dd data-gomoku-time>—</dd></div>
+          </dl>
+          <p><span>候选路线</span><b data-gomoku-pv>等待落子</b></p>
+        </section>
+
+        <section class="gomoku-history-card">
+          <div class="gomoku-history-head">
+            <span>MOVE LOG / 手顺</span>
+            <b data-gomoku-record-count>0 手</b>
+          </div>
+          <ol class="gomoku-history" data-gomoku-history>
+            <li class="is-empty">新局尚未落子</li>
+          </ol>
+          <div class="gomoku-review" data-gomoku-review hidden>
+            <label for="gomoku-review-range">复盘进度 <b data-gomoku-review-label>0 / 0</b></label>
+            <input id="gomoku-review-range" type="range" min="0" max="0" value="0" data-gomoku-review-range />
+            <button type="button" data-gomoku-review-exit>回到对局</button>
+          </div>
+        </section>
+      </aside>
+    </div>
+
+    <p class="sr-only" data-gomoku-live aria-live="polite"></p>
+    <div class="gomoku-toast" data-gomoku-toast role="status" hidden></div>
+  </section>
+</gomoku-room>
+
+<script>
+  import '../scripts/gomoku-room';
+</script>

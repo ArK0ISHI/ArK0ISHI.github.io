@@ -1,47 +1,52 @@
 ---
+import { getEntry, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import '../../styles/invisible-distance.css';
 
-const title = '看不见的远方：在120日元的价差里，触摸可见性的盲点';
-const description = '以梅洛-庞蒂与德里达的视觉思想重读《120日元之冬》，并保存文章在《Backlog Vol.2》中的实体刊载形态。';
+const post = await getEntry('blog', 'invisible-distance');
+if (!post) throw new Error('Missing invisible-distance content entry');
+const { Content, headings } = await render(post);
+const title = post.data.title;
+const description = post.data.description;
+const readingHeadings = headings.filter((heading) => heading.depth === 2);
 const gallery = [
   {
     src: '/images/works/invisible-distance/article-opening.jpg',
-    alt: '《看不见的远方》在《Backlog Vol.2》中的第62至63页开篇跨页',
+    alt: '《看不见的远方》刊载页 62 至 63，标题页、序言与冬夜列车开篇',
     index: 'P.62—63',
-    caption: '开篇从最低票价的慢速列车出发，讨论地理距离之外的观看方式。',
+    caption: '从 120 日元的冬夜慢车出发，提出远方与观看的问题。',
     wide: true,
     page: false,
   },
   {
     src: '/images/works/invisible-distance/article-spread-02.jpg',
-    alt: '《看不见的远方》第64至65页跨页',
+    alt: '《看不见的远方》刊载页 64 至 65，盲目的开端与可见性的盲点',
     index: 'P.64—65',
-    caption: '镜头失去透明感，观看落回姿态、触感与相遇。',
+    caption: '碎裂的镜片改变了观看的位置，盲点由此进入叙述。',
     wide: false,
     page: false,
   },
   {
     src: '/images/works/invisible-distance/article-spread-03.jpg',
-    alt: '《看不见的远方》第66至67页跨页',
+    alt: '《看不见的远方》刊载页 66 至 67，超反思、消极能力与德里达式重读',
     index: 'P.66—67',
-    caption: '缺席留下痕迹，并持续改变眼前之物。',
+    caption: '从超反思和消极能力转向痕迹、见证与素描事件。',
     wide: false,
     page: false,
   },
   {
     src: '/images/works/invisible-distance/article-spread-04.jpg',
-    alt: '《看不见的远方》第68至69页跨页',
+    alt: '《看不见的远方》刊载页 68 至 69，痕迹、纪录与结语',
     index: 'P.68—69',
-    caption: '讨论如何观看，也追问被看见的处境与观看的限度。',
+    caption: '站牌上的纪录、缺席者的痕迹与重新书写，共同通向结语。',
     wide: true,
     page: false,
   },
   {
     src: '/images/works/invisible-distance/article-page-70.jpg',
-    alt: '《看不见的远方》第70页结语与参考文献',
+    alt: '《看不见的远方》第 70 页，全文结尾、参考文献与作者后记',
     index: 'P.70',
-    caption: '从远方的价格返回价值，让未被看见的经验重新进入叙述。',
+    caption: '全文结尾、参考文献与后记。文章在这一页结束。',
     wide: false,
     page: true,
   },
@@ -58,9 +63,9 @@ const gallery = [
           <span class="work-title-main">看不见的远方</span>
           <span class="work-title-sub">在 120 日元的价差里，<br />触摸可见性的盲点</span>
         </h1>
-        <p class="work-deck">以梅洛-庞蒂与德里达的视觉思想浅析《120日元之冬》。本页依据实际刊载版本，整理作品信息、论题和书页档案。</p>
+        <p class="work-deck">本文刊载于《Backlog Vol.2》第 62—70 页。这里同时提供连续阅读的文字版和最终装帧书页。</p>
         <div class="work-actions">
-          <a href="#work-thesis">进入作品档案</a>
+          <a href="#work-reading">阅读正文</a>
           <button type="button" data-open-work-gallery>打开书页浏览</button>
         </div>
       </div>
@@ -87,12 +92,12 @@ const gallery = [
       <div class="work-lead-grid">
         <div class="work-abstract">
           <p>《120日元之冬》把一个成年人和一个仍想再远一点的孩子放进冬夜慢车。隐形眼镜遗失，检票规则悬在身后，厕所、座位与无人站台组成临时的庇护所。120 日元标出了车票价格，旅途还在衡量另一件事：人怎样观看世界。</p>
-          <p>文章沿着踩碎隐形眼镜、厕所躲检票、红绿双星和站牌记录等场景，观察视觉如何离开抽离的全景位置，回到身体的局限、偶遇的温度和无法消除的盲点。</p>
+          <p>文章沿着踩碎隐形眼镜、厕所躲检票、红绿双星和站牌题刻等场景，观察视觉如何离开抽离的全景位置，回到身体的局限、偶遇的温度和无法消除的盲点。</p>
           <p>梅洛-庞蒂把观看带回身体经验；德里达讨论缺席、痕迹与幽灵如何进入可见之物。两条线索在这部短小的视觉小说中相遇，价格由此通向价值。</p>
         </div>
         <blockquote class="work-pullquote">
-          票价标出一段路程；观看转身以后，远方才开始显露。
-          <cite>站内摘要 · 依据刊载文章整理</cite>
+          彼时，我们或许会惊异地发现，远方即在身侧。
+          <cite>《看不见的远方》结尾</cite>
         </blockquote>
       </div>
 
@@ -115,12 +120,39 @@ const gallery = [
       </div>
     </section>
 
+    <section class="work-section work-reading-section" id="work-reading" aria-labelledby="work-reading-title">
+      <div class="work-section-heading">
+        <p class="work-section-kicker">02 / WEB READING</p>
+        <h2 id="work-reading-title">网页正文</h2>
+      </div>
+
+      <div class="work-reading-layout">
+        <nav class="work-reading-toc" aria-label="正文目录">
+          <span>CONTENTS / 目录</span>
+          <ol>
+            {readingHeadings.map((heading) => <li><a href={`#${heading.slug}`}>{heading.text}</a></li>)}
+          </ol>
+          <a class="work-reading-pages-link" href="#work-pages">转到原刊书页 ↓</a>
+        </nav>
+
+        <div class="work-reading-paper">
+          <div class="work-reading-note">
+            <span>TEXT EDITION / 文字版</span>
+            <p>正文逐页核对《Backlog Vol.2》P.62—70，以最终刊载版的字词、段落和参考文献为准。网页只调整换行。</p>
+          </div>
+          <div class="work-reading-body">
+            <Content />
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="work-section" id="work-pages" aria-labelledby="work-pages-title">
       <div class="work-section-heading">
-        <p class="work-section-kicker">02 / PRINTED PAGES</p>
+        <p class="work-section-kicker">03 / PRINTED PAGES</p>
         <h2 id="work-pages-title">论文落到纸页以后，<br />版式也参与了论述。</h2>
       </div>
-      <p class="work-gallery-intro">这里展示文章在社刊中的四个跨页与结尾单页。深色底、细金线和图像节点串起看见、遮蔽与记录；点击书页可放大。</p>
+      <p class="work-gallery-intro">这里展示文章在社刊中的四个跨页与结尾单页。最后一张原图的右页已经进入下一篇文章，因此本页只保留 P.70。点击书页可放大。</p>
 
       <div class="work-gallery">
         {gallery.map((item, index) => (
@@ -133,7 +165,7 @@ const gallery = [
               data-gallery-src={item.src}
               data-gallery-alt={item.alt}
               data-gallery-caption={`${item.index} · ${item.caption}`}
-              aria-label={`放大查看 ${item.index} 跨页`}
+              aria-label={`放大查看 ${item.index} 书页`}
             >
               <span class="work-gallery-frame"><img src={item.src} width={item.page ? 1000 : 1800} height={item.page ? 1378 : 1240} alt={item.alt} loading={index === 0 ? 'eager' : 'lazy'} decoding="async" /></span>
               <figcaption class="work-gallery-caption"><span class="work-caption-index">{item.index}</span><span>{item.caption}</span></figcaption>
@@ -145,7 +177,7 @@ const gallery = [
 
     <section class="work-section" id="work-object" aria-labelledby="work-object-title">
       <div class="work-section-heading">
-        <p class="work-section-kicker">03 / THE OBJECT</p>
+        <p class="work-section-kicker">04 / THE OBJECT</p>
         <h2 id="work-object-title">它首先是一本可以被拿起、<br />翻动与偶然发现的书。</h2>
       </div>
 
@@ -160,7 +192,7 @@ const gallery = [
     <section class="work-section" id="work-publication" aria-labelledby="work-publication-title">
       <div class="work-history">
         <div>
-          <p class="work-history-label">04 / PUBLICATION MEMORY</p>
+          <p class="work-history-label">05 / PUBLICATION MEMORY</p>
           <h2 id="work-publication-title">一本社刊的半年，<br />与许多人留下的手温。</h2>
         </div>
         <div class="work-history-copy">

@@ -22,7 +22,7 @@ const cleanBody = (body = '') => body
   .trim();
 
 const pageItems: SearchItem[] = [
-  { title: '首页', description: '个人简介、精选项目、最近文章与进入本站的三条路径。', href: '/', type: '页面', meta: 'HOME', searchText: '首页 主页 亚略Ar', rank: 20 },
+  { title: '首页', description: '个人简介、观测与计算、写作与书页、行旅光影和近来的文字。', href: '/', type: '页面', meta: 'HOME', searchText: '首页 主页 亚略Ar', rank: 20 },
   { title: '笔记', description: '物理课程、实验方法、计算方法与代码工具笔记。', href: '/notes/', type: '页面', meta: 'NOTES', searchText: '笔记 物理 实验 计算 代码 工具', rank: 19 },
   { title: '项目', description: '科研项目、课程大作业、网页与工具的持续档案。', href: '/projects/', type: '页面', meta: 'PROJECTS', searchText: '项目 科研 实验 模型 网页 工具', rank: 18 },
   { title: '写作', description: '文学评论、视觉小说、东方Project与零散随笔。', href: '/writing/', type: '页面', meta: 'WRITING', searchText: '写作 文学 视觉小说 东方Project 随笔', rank: 17 },
@@ -244,6 +244,11 @@ const serializedIndex = JSON.stringify(searchItems).replaceAll('<', '\\u003c');
     }, { signal: controller.signal });
 
     document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && dialog.open && !event.isComposing) {
+        event.preventDefault();
+        closeSearch();
+        return;
+      }
       const target = event.target;
       const editing = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || (target instanceof HTMLElement && target.isContentEditable);
       if ((event.ctrlKey || event.metaKey) && event.key.toLocaleLowerCase() === 'k' && !event.isComposing && !editing) {

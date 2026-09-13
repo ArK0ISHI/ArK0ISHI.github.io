@@ -277,6 +277,31 @@
 .home-a-threshold > a:hover { color: var(--red); background: var(--wash); }
 .home-a + .intro-strip { border-top: 0; }
 
+/* Refined type, clearer controls, and a restrained living cover. */
+.home-a-copy h1 { font-size: clamp(76px, 8.2vw, 118px); font-weight: 500; }
+.home-a-copy { top: 23%; }
+.home-a-overline { margin-bottom: 29px; font-size: 10px; }
+.home-a-role { margin-top: 22px; font-weight: 400; }
+.home-a-lede { color: rgba(247, 241, 230, .86); line-height: 2.1; }
+.home-a-primary, .home-a-secondary { min-height: 48px; font-size: 13px; font-weight: 500; }
+.home-a-primary { min-width: 168px; color: #1b2531; border-color: #f1e9dc; background: #f1e9dc; }
+.home-a-primary:hover { background: #fffaf1; border-color: #fffaf1; }
+.home-a-secondary { color: #f4ede3; }
+.home-a-scroll { display: inline-flex; align-items: center; gap: 20px; min-height: 44px; font-size: 9px; }
+.home-a-scroll span { font-family: var(--serif); font-size: 10px; letter-spacing: .14em; }
+.home-a-credit { font-size: 10px; color: rgba(247, 241, 231, .74); }
+.home-a-threshold { grid-template-columns: 27% repeat(4, minmax(0, 1fr)); }
+.home-a-threshold-title span, .home-a-threshold > a > span { font-size: 9px; }
+.home-a-threshold-title strong { font-size: 17px; }
+.home-a-threshold > a strong { font-size: 14px; }
+.home-a-threshold > a small { font-family: var(--serif); font-size: 10px; line-height: 1.7; }
+.home-a-signals { padding: 0 16px; background: rgba(10, 17, 28, .3); backdrop-filter: blur(8px); }
+.home-a-signal-kicker, .home-a-track-meta { font-size: 9px; color: rgba(247, 241, 231, .76); }
+.home-a-visible .home-a-art { animation: room-drift 24s ease-in-out infinite alternate; }
+@keyframes room-drift { from { transform: scale(1.002); } to { transform: scale(1.032); } }
+.home-edition .home-a-scene :is(a, button):focus-visible { outline-color: #f0c09b; }
+.home-edition .home-a-threshold a:focus-visible { outline-color: var(--red); }
+
 .home-section[id] { scroll-margin-top: 110px; }
 
 body.home-a-visible .music-dock:not(.is-expanded) {
@@ -295,7 +320,7 @@ body.home-a-visible .music-dock:not(.is-expanded) {
 .site-header.is-home:not(.scrolled) .nav-link::after { background: #e9bb97; }
 .site-header.is-home:not(.scrolled) .icon-button:hover,
 .site-header.is-home:not(.scrolled) .menu-button:hover { background: rgba(247, 241, 231, .1); }
-.site-header.is-home:not(.scrolled) .theme-toggle { display: none; }
+.site-header.is-home:not(.scrolled) .theme-toggle { display: grid; }
 .site-header.is-home:not(.scrolled) .search-toggle { width: auto; padding-inline: 12px; border-radius: 0; display: flex; gap: 10px; }
 .site-header.is-home:not(.scrolled) .search-label,
 .site-header.is-home:not(.scrolled) .search-toggle kbd { display: inline; }
@@ -342,19 +367,19 @@ body.home-a-visible .music-dock:not(.is-expanded) {
   .home-a { min-height: auto; }
   .home-a-scene { height: 720px; min-height: 0; }
   .home-a-art { object-position: 52% 58%; }
-  .home-a-wash { background: linear-gradient(180deg, rgba(8, 15, 25, .52) 0%, rgba(9, 16, 27, .26) 35%, rgba(8, 15, 25, .1) 54%, rgba(7, 13, 22, .86) 100%); }
+  .home-a-wash { background: linear-gradient(180deg, rgba(8, 15, 25, .52) 0%, rgba(9, 16, 27, .5) 35%, rgba(8, 15, 25, .3) 54%, rgba(7, 13, 22, .86) 100%); }
   .home-a-wash::after { inset: 70px 16px 0; }
   .home-a-copy { left: 24px; right: 24px; top: 116px; width: auto; }
   .home-a-overline { gap: 10px; margin-bottom: 18px; font-size: 7px; letter-spacing: .13em; }
   .home-a-overline span:first-child::before { width: 18px; }
   .home-a-copy h1 { font-size: clamp(54px, 17vw, 70px); }
   .home-a-role { margin-top: 12px; font-size: clamp(19px, 5.6vw, 24px); }
-  .home-a-lede { margin-top: 20px; font-size: 12px; line-height: 1.9; }
+  .home-a-lede { margin-top: 20px; font-size: 13px; line-height: 1.9; }
   .home-a-lede br { display: none; }
   .home-a-actions { margin-top: 27px; gap: 18px; }
   .home-a-primary { min-width: 138px; padding-inline: 14px; }
   .home-a-primary,
-  .home-a-secondary { min-height: 41px; font-size: 11px; }
+  .home-a-secondary { min-height: 44px; font-size: 11px; }
   .home-a-signals { left: 24px; right: 24px; bottom: 62px; width: auto; display: grid; grid-template-columns: 1fr 1fr; column-gap: 18px; }
   .home-a-music { min-height: 86px; padding-block: 14px; }
   .home-a-music::after { display: none; }
@@ -385,5 +410,5 @@ body.home-a-visible .music-dock:not(.is-expanded) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .home-a-art { transform: none; }
+  .home-a-art, .home-a-visible .home-a-art { transform: none; animation: none; }
 }

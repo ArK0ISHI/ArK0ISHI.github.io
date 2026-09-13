@@ -20,6 +20,14 @@ npm run preview
 
 ## 修改个人信息
 
+首页采用暮色封面与纸本杂志式编排，依次呈现个人开卷、研究切换展台、写作与排印作品、行旅照片、可筛选文章及经历入口。内容继续读取现有文章与项目数据，保留所有原有详情页。
+
+- 封面与入口：`src/components/HomeHero.astro`、`src/styles/home-a.css`
+- 研究展台：`src/components/HomeResearch.astro`
+- 写作与书页：`src/components/HomeExhibition.astro`
+- 光影选集：`src/components/HomeFieldnotes.astro`
+- 首页编排与响应式样式：`src/pages/index.astro`、`src/styles/home-edition.css`
+
 - 站点名称、关键词与联系方式：`src/data/site.ts`
 - 项目档案：`src/data/projects.ts`
 - 网易云专辑与曲目顺序：`music.config.json`

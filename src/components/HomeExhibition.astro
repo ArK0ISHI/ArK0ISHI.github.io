@@ -1,0 +1,109 @@
+<section class="home-exhibition" aria-labelledby="home-exhibition-title">
+  <header class="exhibition-heading">
+    <div>
+      <p class="exhibition-kicker">WRITING & BOOKS / 写作与书页</p>
+      <h2 id="home-exhibition-title">让阅读，<em>留下形状。</em></h2>
+    </div>
+    <p class="exhibition-intro">从一篇评论到一本长篇整理稿，在写作与排印之间，寻找适合慢慢阅读的形式。</p>
+  </header>
+
+  <div class="exhibition-grid">
+    <article class="exhibit exhibit-essay">
+      <figure>
+        <a class="exhibit-stage essay-stage" href="/blog/invisible-distance/" aria-label="阅读《看不见的远方》及刊载书页">
+          <span class="stage-number" aria-hidden="true">01 / PRINTED ESSAY</span>
+          <img src="/images/works/invisible-distance/backlog-cover-photo.jpg" alt="《Backlog Vol.2》实体社刊封面照片" width="1800" height="1197" loading="lazy" decoding="async" />
+          <span class="stage-note">BACKLOG VOL.2 · P.62—70</span>
+        </a>
+        <figcaption>亚略 Ar 撰文 <span>刊载于《Backlog Vol.2》</span></figcaption>
+      </figure>
+      <div class="exhibit-copy">
+        <p class="exhibit-category">文学批评 <span>2026.08 · 站内归档</span></p>
+        <h3><a href="/blog/invisible-distance/">看不见的远方</a></h3>
+        <p class="exhibit-subtitle">在 120 日元的价差里，触摸可见性的盲点</p>
+        <p class="exhibit-description">从《120日元之冬》的慢车、碎镜片与红绿微光出发，借梅洛-庞蒂与德里达的视觉思想，重读一次关于“看见”的旅程。</p>
+        <a class="exhibit-link" href="/blog/invisible-distance/">读文章与刊载书页 <span aria-hidden="true">↗</span></a>
+      </div>
+    </article>
+
+    <article class="exhibit exhibit-edition">
+      <figure>
+        <a class="exhibit-stage edition-stage" href="/blog/latex-touhou-typesetting/" aria-label="查看《东方紫雨幽蝶》个人整理版档案">
+          <span class="stage-number" aria-hidden="true">02 / EDITORIAL EDITION</span>
+          <div class="edition-pages">
+            <img class="edition-cover" src="/images/works/ziyudie/front-cover.webp" alt="《东方紫雨幽蝶》v2.0个人整理版完整封面" width="1055" height="1491" loading="lazy" decoding="async" />
+            <img class="edition-chapter" src="/images/works/ziyudie/chapter-01.webp" alt="《东方紫雨幽蝶》第一章章首的LaTeX版式" width="1108" height="1571" loading="lazy" decoding="async" />
+          </div>
+          <span class="stage-note">A5 · 88 CHAPTERS · 1293 PAGES</span>
+        </a>
+        <figcaption>原作 coolcate <span>亚略 Ar 整理校订、排印与版式设计</span></figcaption>
+      </figure>
+      <div class="exhibit-copy">
+        <p class="exhibit-category">文本校订 · LaTeX 排印 <span>v2.0 · 2026.08</span></p>
+        <h3><a href="/blog/latex-touhou-typesetting/">东方紫雨幽蝶</a></h3>
+        <p class="exhibit-subtitle">把长篇文字，重新编成可以久读的书</p>
+        <p class="exhibit-description">整理断行、缺字与标点，重建章首、目录和正文的阅读节奏。将〈白玉楼阁〉编为 A5 数字合订本，并开放分章阅读。</p>
+        <div class="edition-actions">
+          <a class="exhibit-link" href="/blog/latex-touhou-typesetting/">看整理与排印档案 <span aria-hidden="true">↗</span></a>
+          <a class="edition-read" href="/library/ziyudie/">进入分章阅读 <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </article>
+  </div>
+  <footer class="exhibition-footer"><span>文字、纸页与阅读的余温</span><a href="/library/">去书架继续翻阅 <span aria-hidden="true">→</span></a></footer>
+</section>
+
+<style>
+  .home-exhibition { width: var(--page); margin: clamp(80px, 10vw, 144px) auto; }
+  .exhibition-heading { display: grid; grid-template-columns: 1.2fr 1fr; align-items: end; gap: 56px; margin-bottom: 46px; }
+  .exhibition-kicker { margin: 0 0 18px; color: var(--red); font: 400 10px/1.6 var(--mono); letter-spacing: .12em; }
+  .exhibition-heading h2 { margin: 0; font: 500 clamp(29px, 3.8vw, 48px)/1.45 var(--serif); letter-spacing: -.025em; }
+  .exhibition-heading h2 em { color: var(--red); font-style: normal; }
+  .exhibition-intro { margin: 0 0 6px; color: var(--ink-soft); font-size: 14px; line-height: 2; max-width: 385px; justify-self: end; }
+  .exhibition-grid { display: grid; grid-template-columns: 1.24fr 1fr; gap: clamp(28px, 5vw, 68px); }
+  .exhibit { min-width: 0; }
+  .exhibit-edition { padding-top: 88px; }
+  .exhibit figure { margin: 0; }
+  .exhibit-stage { position: relative; display: block; overflow: hidden; background: var(--paper-deep); }
+  .essay-stage { aspect-ratio: 1.22; background: color-mix(in srgb, var(--violet) 12%, var(--paper)); }
+  .essay-stage > img { position: absolute; inset: 58px 28px 48px; width: calc(100% - 56px); height: calc(100% - 106px); object-fit: contain; filter: drop-shadow(0 15px 18px rgba(29, 25, 38, .12)); }
+  .exhibit-stage img { transition: transform .5s ease; }
+  .exhibit-stage:hover img { transform: translateY(-4px); }
+  .stage-number, .stage-note { position: absolute; left: 24px; color: var(--ink-soft); font: 400 9px/1.6 var(--mono); letter-spacing: .1em; }
+  .stage-number { top: 20px; }
+  .stage-note { bottom: 18px; }
+  .edition-stage { aspect-ratio: 1.04; background: color-mix(in srgb, var(--violet) 7%, var(--paper-deep)); }
+  .edition-pages { position: absolute; inset: 58px 28px 48px; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, .86fr); grid-template-rows: minmax(0, 1fr); align-items: center; gap: 15px; }
+  .edition-pages img { min-width: 0; min-height: 0; object-fit: contain; width: 100%; height: 100%; max-height: 315px; filter: drop-shadow(0 9px 10px rgba(29, 25, 38, .12)); }
+  .edition-pages .edition-chapter { height: 77%; }
+  figcaption { display: flex; flex-wrap: wrap; justify-content: space-between; column-gap: 16px; margin-top: 13px; color: var(--ink-soft); font-size: 11px; line-height: 1.8; }
+  .exhibit-copy { margin-top: 27px; }
+  .exhibit-category { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin: 0 0 15px; color: var(--red); font-size: 11px; }
+  .exhibit-category span { color: var(--ink-soft); font: 400 9px/1.6 var(--mono); }
+  .exhibit h3 { margin: 0 0 9px; font: 500 clamp(26px, 3vw, 37px)/1.4 var(--serif); }
+  .exhibit-subtitle { margin: 0 0 18px; color: var(--ink-soft); font-size: 13px; line-height: 1.8; }
+  .exhibit-description { margin: 0; color: var(--ink-soft); font-size: 13px; line-height: 2; max-width: 43em; }
+  .exhibit-link { display: inline-flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 44px; margin-top: 24px; border-bottom: 1px solid var(--line-strong); font-size: 12px; }
+  .exhibit-link span { color: var(--red); font-family: var(--mono); }
+  .edition-actions { display: flex; flex-wrap: wrap; align-items: end; gap: 12px 24px; }
+  .edition-read { min-height: 44px; display: inline-flex; align-items: center; gap: 12px; color: var(--ink-soft); font-size: 11px; }
+  .exhibition-footer { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px 24px; padding-top: 26px; margin-top: 50px; border-top: 1px solid var(--line); font-size: 12px; }
+  .exhibition-footer > span { color: var(--ink-soft); }
+  .exhibition-footer a { display: inline-flex; align-items: center; gap: 24px; min-height: 44px; }
+  a:focus-visible { outline: 2px solid var(--red); outline-offset: 5px; }
+  @media (max-width: 760px) {
+    .exhibition-heading { grid-template-columns: 1fr; gap: 22px; margin-bottom: 30px; }
+    .exhibition-intro { justify-self: start; max-width: 34em; }
+    .exhibition-grid { grid-template-columns: 1fr; gap: 48px; }
+    .exhibit-edition { padding-top: 0; }
+    .essay-stage { aspect-ratio: 1.22; }
+    .edition-stage { aspect-ratio: 1.04; }
+    .edition-pages img { max-height: 360px; }
+    .exhibit-copy { margin-top: 22px; }
+    .exhibition-footer { margin-top: 34px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .exhibit-stage img { transition: none; }
+    .exhibit-stage:hover img { transform: none; }
+  }
+</style>

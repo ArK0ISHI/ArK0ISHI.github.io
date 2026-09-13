@@ -21,13 +21,13 @@ const initialTrackCount = neteaseMusic.tracks.length;
     <div class="home-a-wash" aria-hidden="true"></div>
 
     <div class="home-a-copy" data-reveal>
-      <p class="home-a-overline"><span>PRIVATE OBSERVATORY</span><span>SHANGHAI · 31°N</span></p>
+      <p class="home-a-overline"><span>A PERSONAL OBSERVATORY</span><span>SHANGHAI · 31°N</span></p>
       <h1 id="home-a-title">亚略 <i>Ar</i></h1>
       <p class="home-a-role">物理、计算与幻想叙事</p>
-      <p class="home-a-lede">白天与器件、数据相处，夜里读故事、修文字。<br />在方程与故事之间，留下那些暂时无法被测量的感受。</p>
+      <p class="home-a-lede">记录一次测量的来路，也留住一页故事的余温。<br />这里收藏仍在生长的好奇，欢迎你慢慢翻阅。</p>
       <div class="home-a-actions">
-        <a class="home-a-primary" href="/blog/why-this-site/">从一篇文章开始</a>
-        <a class="home-a-secondary" href="#tonight-log">推开小屋的门</a>
+        <a class="home-a-primary" href="#tonight-log">翻开这间小屋</a>
+        <a class="home-a-secondary" href="/blog/invisible-distance/">读《看不见的远方》</a>
       </div>
     </div>
 
@@ -40,21 +40,21 @@ const initialTrackCount = neteaseMusic.tracks.length;
       </button>
     </aside>
 
-    <a class="home-a-scroll" href="#tonight-log">SCROLL TO THE ROOM</a>
+    <a class="home-a-scroll" href="#tonight-log">SCROLL TO EXPLORE <span>向下，慢慢展开</span></a>
     <p class="home-a-credit">
-      本页插画预览 · <a href="https://www.pixiv.net/artworks/58419066" target="_blank" rel="noreferrer">wjstpwls4 / Pixiv 58419066</a>
+      插画 · <a href="https://www.pixiv.net/artworks/58419066" target="_blank" rel="noreferrer">wjstpwls4 / Pixiv 58419066</a>
     </p>
   </div>
 
   <nav class="home-a-threshold" aria-label="小屋房间">
     <div class="home-a-threshold-title">
-      <span>TONIGHT'S LOG</span>
+      <span>THE ROOM IS OPEN</span>
       <strong>今晚，想先去哪里？</strong>
     </div>
-    <a href="#tonight-log"><span>01</span><strong>观测碎片</strong><small>短记录与近况</small></a>
-    <a href="/light-notes/"><span>02</span><strong>光影札记</strong><small>照片、旅途与途中饭桌</small></a>
-    <a href="/projects/"><span>03</span><strong>实验室</strong><small>项目与计算工具</small></a>
-    <a href="/about/"><span>04</span><strong>关于小屋</strong><small>身份、方法与边界</small></a>
+    <a href="#research"><span>01</span><strong>观测与计算</strong><small>沿一条轨迹走进研究</small></a>
+    <a href="#writing-exhibition"><span>02</span><strong>写作与书页</strong><small>翻阅评论与长篇整理</small></a>
+    <a href="#fieldnotes"><span>03</span><strong>行旅与光影</strong><small>走进七月的城市日常</small></a>
+    <a href="/projects/gomoku/"><span>04</span><strong>十五路棋室</strong><small>或是，安静地下盘棋</small></a>
   </nav>
 </section>
 
@@ -115,7 +115,7 @@ const initialTrackCount = neteaseMusic.tracks.length;
     window.addEventListener('scroll', syncHeroVisibility, { passive: true, signal: controller.signal });
 
     root.querySelector('.home-a-primary')?.addEventListener('click', () => {
-      try { sessionStorage.setItem('ar-entry-path', 'hero-article'); } catch { /* optional */ }
+      try { sessionStorage.setItem('ar-entry-path', 'hero-prologue'); } catch { /* optional */ }
     }, { signal: controller.signal });
   }
 

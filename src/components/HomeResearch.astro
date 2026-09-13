@@ -1,0 +1,204 @@
+---
+import { projects } from '../data/projects';
+
+const studies = [
+  { id: 'magnetic-mirror-orbits', tab: '磁镜与粒子', caption: '看见一颗粒子的去向。', image: '/images/projects/magnetic-mirror-orbits/particle-orbits.webp', alt: '双线圈磁镜场中带电粒子的数值轨道图', question: '一颗粒子，会被磁场留住吗？' },
+  { id: 'huashu-cup-a-2026', tab: '任意球轨迹', caption: '从一帧画面，走向三维。', image: '/images/projects/huashu-cup-a-2026/reconstructed-trajectory.webp', alt: '由双视角比赛视频重建的任意球三维轨迹', question: '二维画面，怎样还原一次飞行？' },
+  { id: 'pf2-error-field', tab: 'PF2 误差场', caption: '一厘米，改变了什么？', image: '/images/projects/pf2-error-field/error-field-slices.webp', alt: 'PF2线圈位移后误差磁场的空间切片图', question: '一厘米的偏移，会留下怎样的场？' },
+].map(study => {
+  const project = projects.find(project => project.id === study.id);
+  if (!project) throw new Error(`Missing homepage research project: ${study.id}`);
+  return { ...study, project };
+});
+
+const otherProjects = [
+  { id: 'capacitive-displacement', label: '电容微位移', note: '实验与测量' },
+  { id: 'dripping-faucet-chaos', label: '滴水与混沌', note: '非线性动力学' },
+  { id: 'gomoku-room', label: '十五路棋室', note: '和电脑下一盘棋' },
+  { id: 'summer-camp-navigator', label: '保研工作台', note: '信息整理与工具' },
+].map(entry => {
+  const project = projects.find(project => project.id === entry.id);
+  if (!project) throw new Error(`Missing homepage project link: ${entry.id}`);
+  return { ...entry, href: project.articleHref ?? project.detailHref ?? '/projects/' };
+});
+---
+
+<section class="home-research page-width" id="research" aria-labelledby="home-research-title" data-home-research>
+  <header class="research-heading">
+    <div>
+      <p class="research-eyebrow">01 / RESEARCH &amp; EXPERIMENTS</p>
+      <h2 id="home-research-title">把好奇，交给<em>验证。</em></h2>
+    </div>
+    <a class="research-all" href="/projects/">全部项目 <span aria-hidden="true">↗</span></a>
+  </header>
+
+  <div class="research-tabs" role="tablist" aria-label="探索研究项目">
+    {studies.map((study, index) => (
+      <button
+        type="button"
+        id={`research-tab-${study.id}`}
+        role="tab"
+        aria-controls={`research-panel-${study.id}`}
+        aria-selected={index === 0 ? 'true' : 'false'}
+        tabindex={index === 0 ? 0 : -1}
+        data-research-tab
+      >
+        <span class="research-tab-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+        {study.tab}
+      </button>
+    ))}
+  </div>
+
+  <div class="research-panels">
+    {studies.map((study, index) => (
+      <div
+        class="research-panel"
+        id={`research-panel-${study.id}`}
+        role="tabpanel"
+        aria-labelledby={`research-tab-${study.id}`}
+        tabindex="0"
+        hidden={index !== 0}
+        data-research-panel
+      >
+        <figure class="research-figure">
+          <div class="research-paper">
+            <img src={study.image} alt={study.alt} loading="lazy" decoding="async" />
+          </div>
+          <figcaption><span>{study.project.number} / FIELD NOTES</span><p>{study.caption}</p></figcaption>
+        </figure>
+        <div class="research-copy">
+          <p class="research-question">{study.question}</p>
+          <h3>{study.project.title}</h3>
+          <p class="research-description">{study.project.description}</p>
+          <ul class="research-tags" aria-label="项目主题">{study.project.tags.map(tag => <li>{tag}</li>)}</ul>
+          <a class="research-read" href={study.project.articleHref ?? study.project.detailHref ?? '/projects/'}>
+            走进这项研究 <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <nav class="research-more" aria-label="更多实验与工具">
+    {otherProjects.map(entry => (
+      <a href={entry.href}>
+        <div><small>{entry.note}</small><strong>{entry.label}</strong></div>
+        <span aria-hidden="true">↗</span>
+      </a>
+    ))}
+  </nav>
+</section>
+
+<script>
+  const researchWindow = window as Window & { __arHomeResearchController?: AbortController };
+
+  function setupHomeResearch() {
+    researchWindow.__arHomeResearchController?.abort();
+    const root = document.querySelector<HTMLElement>('[data-home-research]');
+    if (!root) return;
+    const controller = new AbortController();
+    researchWindow.__arHomeResearchController = controller;
+    const { signal } = controller;
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-research-tab]'));
+    const panels = Array.from(root.querySelectorAll<HTMLElement>('[data-research-panel]'));
+
+    const selectTab = (activeIndex: number, focus = false) => {
+      tabs.forEach((tab, index) => {
+        const selected = index === activeIndex;
+        tab.setAttribute('aria-selected', String(selected));
+        tab.tabIndex = selected ? 0 : -1;
+      });
+      const activePanel = tabs[activeIndex]?.getAttribute('aria-controls');
+      panels.forEach(panel => { panel.hidden = panel.id !== activePanel; });
+      if (focus) tabs[activeIndex]?.focus();
+    };
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('click', () => selectTab(index), { signal });
+      tab.addEventListener('keydown', (event) => {
+        let target: number;
+        if (event.key === 'ArrowRight') target = (index + 1) % tabs.length;
+        else if (event.key === 'ArrowLeft') target = (index - 1 + tabs.length) % tabs.length;
+        else if (event.key === 'Home') target = 0;
+        else if (event.key === 'End') target = tabs.length - 1;
+        else return;
+        event.preventDefault();
+        selectTab(target, true);
+      }, { signal });
+    });
+  }
+
+  document.addEventListener('astro:page-load', setupHomeResearch);
+  setupHomeResearch();
+</script>
+
+<style>
+  .home-research { padding-block: clamp(64px, 8vw, 112px); scroll-margin-top: 100px; }
+  .research-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 34px; }
+  .research-eyebrow { margin: 0 0 16px; color: var(--ink-soft); font: 400 10px/1.6 var(--mono); letter-spacing: .15em; }
+  .research-heading h2 { margin: 0; color: var(--ink); font-family: var(--serif); font-size: clamp(29px, 3.8vw, 46px); font-weight: 500; line-height: 1.45; letter-spacing: -.035em; }
+  .research-heading h2 em { color: var(--red); font-style: normal; }
+  .research-all { display: inline-flex; align-items: center; gap: 24px; min-height: 44px; color: var(--ink-soft); font-size: 12px; white-space: nowrap; }
+  .research-all span { color: var(--red); font-size: 17px; }
+  .research-tabs { display: flex; gap: 30px; border-bottom: 1px solid var(--line); }
+  .research-tabs button { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 12px; min-height: 52px; padding: 12px 0 16px; border: 0; background: transparent; color: var(--ink-soft); font: 500 13px/1.6 var(--serif); cursor: pointer; transition: color .18s ease; }
+  .research-tabs button::after { content: ''; position: absolute; right: 0; bottom: -1px; left: 0; height: 2px; background: transparent; }
+  .research-tabs button[aria-selected='true'] { color: var(--red); }
+  .research-tabs button[aria-selected='true']::after { background: var(--red); }
+  .research-tab-number { font: 400 10px/1 var(--mono); }
+  .research-panel { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(0, .88fr); align-items: center; gap: clamp(28px, 5vw, 72px); padding-block: 36px 40px; }
+  .research-panel[hidden] { display: none; }
+  .research-figure { min-width: 0; margin: 0; }
+  .research-paper { display: grid; place-items: center; aspect-ratio: 1.48; padding: clamp(12px, 2vw, 26px); border: 1px solid var(--line); background: #fff; }
+  .research-paper img { display: block; width: 100%; height: 100%; min-height: 0; max-height: 340px; object-fit: contain; }
+  .research-figure figcaption { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding-top: 14px; }
+  .research-figure figcaption span { color: var(--ink-soft); font: 400 9px/1.6 var(--mono); letter-spacing: .09em; white-space: nowrap; }
+  .research-figure figcaption p { margin: 0; color: var(--ink-soft); font-size: 11px; line-height: 1.8; }
+  .research-copy { min-width: 0; }
+  .research-question { margin: 0 0 14px; color: var(--red); font-size: 12px; line-height: 1.9; }
+  .research-copy h3 { margin: 0; color: var(--ink); font-size: clamp(22px, 2.5vw, 30px); font-weight: 500; line-height: 1.7; text-wrap: pretty; }
+  .research-description { margin: 18px 0 20px; color: var(--ink-soft); font-size: 13px; line-height: 2; }
+  .research-tags { display: flex; flex-wrap: wrap; gap: 8px 15px; margin: 0 0 24px; padding: 0; list-style: none; }
+  .research-tags li { color: var(--ink-soft); font-size: 10px; line-height: 1.8; }
+  .research-tags li + li::before { content: '·'; margin-right: 15px; color: var(--red); }
+  .research-read { display: inline-flex; align-items: center; justify-content: space-between; gap: 36px; min-height: 44px; border-bottom: 1px solid var(--red); color: var(--ink); font-size: 12px; }
+  .research-read span { color: var(--red); font-size: 18px; }
+  .research-more { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .research-more a { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 90px; padding: 18px 20px; color: var(--ink); transition: background-color .18s ease; }
+  .research-more a:first-child { padding-left: 0; }
+  .research-more a + a { border-left: 1px solid var(--line); }
+  .research-more small { display: block; margin-bottom: 6px; color: var(--ink-soft); font-size: 10px; line-height: 1.7; }
+  .research-more strong { font-size: 14px; font-weight: 500; line-height: 1.7; }
+  .research-more a > span { color: var(--red); }
+  .research-more a:hover { background: var(--paper-deep); }
+  .research-all:hover, .research-read:hover, .research-tabs button:hover { color: var(--red); }
+  .home-research :is(a, button, [role='tabpanel']):focus-visible { outline: 2px solid var(--red); outline-offset: 5px; }
+  @media (max-width: 760px) {
+    .research-heading { align-items: start; gap: 14px; margin-bottom: 20px; }
+    .research-heading h2 { font-size: clamp(26px, 5vw, 36px); }
+    .research-all { gap: 8px; font-size: 11px; }
+    .research-tabs { justify-content: space-between; gap: 12px; }
+    .research-tabs button { flex: 1; gap: 7px; min-height: 48px; padding-block: 12px; font-size: 12px; }
+    .research-panel { grid-template-columns: minmax(0, 1fr); gap: 25px; padding-block: 25px 32px; }
+    .research-paper { aspect-ratio: 1.5; }
+    .research-paper img { max-height: 380px; }
+    .research-copy h3 { max-width: 560px; font-size: 23px; }
+    .research-description { margin-block: 14px 17px; }
+    .research-tags { margin-bottom: 14px; }
+    .research-more { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .research-more a { min-height: 86px; padding: 16px; }
+    .research-more a:nth-child(odd) { padding-left: 0; border-left: 0; }
+    .research-more a:nth-child(n+3) { border-top: 1px solid var(--line); }
+  }
+  @media (max-width: 400px) {
+    .research-heading { display: block; }
+    .research-all { margin-top: 5px; }
+    .research-tabs { gap: 8px; }
+    .research-tab-number { display: none; }
+    .research-figure figcaption { display: block; }
+    .research-figure figcaption p { margin-top: 3px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .research-tabs button, .research-more a { transition: none; }
+  }
+</style>

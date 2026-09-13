@@ -48,7 +48,8 @@ const kindLabel = {
           <div><dt>篇幅</dt><dd>{chapters.length} 章 · {interludes.length} 间奏 · {afterwords.length} 后记</dd></div>
         </dl>
         <div class="zy-library-actions">
-          <a class="zy-primary-action" href={hrefOf(entries[0].id)}>从第一章开始 <span aria-hidden="true">→</span></a>
+          <a class="zy-primary-action" data-start-reading href={hrefOf(entries[0].id)}><span data-start-label>从第一章开始</span> <span aria-hidden="true">→</span></a>
+          <a class="zy-secondary-action" href="#zy-catalogue-title">浏览目录 <span aria-hidden="true">↓</span></a>
           <a class="zy-secondary-action" href="/blog/latex-touhou-typesetting/">查看装帧档案</a>
         </div>
       </div>
@@ -133,7 +134,7 @@ const kindLabel = {
         const raw = localStorage.getItem(RESUME_KEY);
         if (!raw) return;
         const saved = JSON.parse(raw) as { href?: unknown; title?: unknown; progress?: unknown };
-        if (typeof saved.href !== 'string' || !saved.href.startsWith('/library/ziyudie/')) return;
+        if (typeof saved.href !== 'string' || !items.some(item => item.querySelector('a')?.getAttribute('href') === saved.href)) return;
         const resume = this.querySelector<HTMLElement>('[data-resume]');
         const link = this.querySelector<HTMLAnchorElement>('[data-resume-link]');
         const title = this.querySelector<HTMLElement>('[data-resume-title]');
@@ -143,6 +144,12 @@ const kindLabel = {
           ? Math.max(0, Math.min(100, Math.round(saved.progress)))
           : 0;
         link.href = `${saved.href}?resume=1`;
+        const start = this.querySelector<HTMLAnchorElement>('[data-start-reading]');
+        const startLabel = this.querySelector<HTMLElement>('[data-start-label]');
+        if (start && startLabel) {
+          start.href = link.href;
+          startLabel.textContent = '继续上次阅读';
+        }
         title.textContent = typeof saved.title === 'string' ? saved.title : '继续阅读';
         copy.textContent = progress > 2 ? `上次停在本章约 ${progress}% 的位置。` : '上次刚刚翻开这一章。';
         resume.hidden = false;

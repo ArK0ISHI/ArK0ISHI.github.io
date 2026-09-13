@@ -583,6 +583,9 @@ const serializedConfig = JSON.stringify({
       const playing = !audio.paused && !audio.ended;
       const track = currentTrack();
       dock.classList.toggle('is-playing', playing);
+      const entryLabel = `打开音乐播放器，${playing ? '正在播放' : '当前曲目'}：${track.title}`;
+      compact.querySelector<HTMLButtonElement>('[data-music-toggle]')?.setAttribute('aria-label', entryLabel);
+      compact.querySelector<HTMLButtonElement>('[data-music-toggle]')?.setAttribute('title', entryLabel);
       try {
         if ('mediaSession' in navigator) navigator.mediaSession.playbackState = playing ? 'playing' : 'paused';
       } catch { /* unsupported media session state */ }

@@ -2,17 +2,29 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ArticleRow from '../../components/ArticleRow.astro';
+import '../../styles/library.css';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 const writtenPages = posts.filter(post => ['文学批评', '装帧与排版', '东方Project'].includes(post.data.category));
+const novelEntries = (await getCollection('novel', ({ data }) => data.book === '东方紫雨幽蝶'))
+  .sort((a, b) => a.data.order - b.data.order);
+const chapters = novelEntries.filter(entry => entry.data.kind === 'chapter');
+const interludes = novelEntries.filter(entry => entry.data.kind === 'interlude');
+const afterwords = novelEntries.filter(entry => entry.data.kind === 'afterword');
+const firstChapter = chapters[0];
+const firstChapterHref = firstChapter
+  ? `/library/ziyudie/${firstChapter.id.split('/').at(-1)?.replace(/\.md$/, '')}/`
+  : '/library/ziyudie/';
+const countTheme = (theme: string) => posts.filter(post => post.data.category === theme || post.data.tags.includes(theme)).length;
 const shelves = [
   {
     no: 'SHELF 01',
     title: '视觉小说与叙事',
     desc: '关于记忆、选择、界面与元叙事的阅读记录。',
     href: `/tags/${encodeURIComponent('视觉小说')}/`,
-    count: posts.filter(post => post.data.tags.includes('视觉小说') || post.data.category === '文学批评').length,
+    count: countTheme('视觉小说'),
+    unit: '篇文字',
     tags: '记忆 · 界面 · 元游戏',
   },
   {
@@ -20,15 +32,17 @@ const shelves = [
     title: '《东方紫雨幽蝶》全文',
     desc: '按章节阅读 coolcate 的长篇小说，并从目录进入间奏、原作者感言与整理校订记。',
     href: '/library/ziyudie/',
-    count: posts.filter(post => post.data.category === '东方Project' || post.data.title.includes('东方')).length,
-    tags: '88 章 · 间奏 · 后记',
+    count: chapters.length,
+    unit: '章正文',
+    tags: `${interludes.length} 篇间奏 · ${afterwords.length} 篇后记`,
   },
   {
     no: 'SHELF 03',
     title: '装帧与校订',
     desc: 'LaTeX 版式实验、文本整理、字形选择与阅读节奏。',
     href: `/tags/${encodeURIComponent('装帧与排版')}/`,
-    count: posts.filter(post => post.data.category === '装帧与排版').length,
+    count: countTheme('装帧与排版'),
+    unit: '篇文字',
     tags: 'LaTeX · Typography · Editorial',
   },
   {
@@ -36,37 +50,33 @@ const shelves = [
     title: '研究与写作方法',
     desc: '把写作、研究、计算与个人知识管理放在同一张工作台上。',
     href: `/tags/${encodeURIComponent('方法')}/`,
-    count: posts.filter(post => post.data.tags.includes('方法')).length,
+    count: countTheme('方法'),
+    unit: '篇文字',
     tags: 'Workflow · Tools · Research',
   },
 ];
 ---
 
 <BaseLayout title="书架" description="阅读记录、作品索引、装帧与校订实践。">
-  <header class="page-hero">
+  <div class="library-room">
+  <header class="page-hero library-hero">
     <div class="page-hero-grid">
       <div><p class="eyebrow">LIBRARY / 书架</p><h1>读过的书<br />与<em>留下的页</em></h1></div>
-      <p class="page-hero-description">这张书架沿着文本之间的关系展开，收纳阅读记录、作品索引、装帧试验和校订手记。</p>
+      <div class="library-hero-note"><p class="page-hero-description">这里有可以逐章翻阅的长篇，也有阅读之后留下的评论与校订手记。先打开一本书，再沿着文字之间的关系慢慢走。</p><nav aria-label="书架篇章"><a href="#library-novel">全文阅读 <span aria-hidden="true">↓</span></a><a href="#written-pages-title">评论与手记 <span aria-hidden="true">↓</span></a></nav></div>
     </div>
   </header>
-  <section class="page-content">
-    <aside class="library-preface">
-      <p class="eyebrow">A NOTE FROM THE DESK</p>
-      <p>这里不按读完的数量计数。尚未形成公开笔记的阅读先留在纸面；遇到值得继续追问的问题，再把它编进索引。</p>
-    </aside>
-
-    <a class="library-light-note" href="/light-notes/" data-reveal>
-      <figure>
-        <img src="/images/journal/2026-summer/20260716-191447-thumb.webp" width="720" height="540" loading="lazy" decoding="async" alt="西湖晚霞映在水面，同行小偶在近处看向镜头" />
-      </figure>
-      <div>
-        <p class="eyebrow">LIGHT NOTES / 光影札记</p>
-        <span>2026.07 · 43 FRAMES</span>
-        <h2>书页之外，<br />还有一路经过的<em>光</em></h2>
-        <p>校园、湖岸、夜航与途中饭桌。先把时间和地点认真存下，故事会在往后的整理中慢慢长出来。</p>
-        <strong>走进七月的旅途档案 <b aria-hidden="true">↗</b></strong>
+  <div class="page-content library-content">
+    <article class="library-novel" id="library-novel" aria-labelledby="library-novel-title">
+      <figure class="library-novel-cover"><a href="/library/ziyudie/" aria-label="浏览《东方紫雨幽蝶》全文目录"><img src="/images/works/ziyudie/front-cover.webp" width="1055" height="1491" loading="eager" decoding="async" alt="《东方紫雨幽蝶》个人整理版封面，花影间的幽幽子吹奏横笛" /></a></figure>
+      <div class="library-novel-copy">
+        <header class="library-novel-heading"><p class="eyebrow">FULL TEXT / 全文阅读</p><h2 id="library-novel-title"><a href="/library/ziyudie/">东方紫雨幽蝶</a></h2><p class="library-novel-subtitle">第一部〈白玉楼阁〉</p></header>
+        <p class="library-novel-description">围绕西行寺幽幽子展开的东方 Project 长篇二次创作。按章翻阅正文，也读到原作者感言与整理校订记。</p>
+        <dl class="library-novel-counts" aria-label="已收录篇幅"><div><dt>正文</dt><dd>{chapters.length}<span>章</span></dd></div><div><dt>间奏</dt><dd>{interludes.length}<span>篇</span></dd></div><div><dt>后记</dt><dd>{afterwords.length}<span>篇</span></dd></div></dl>
+        <p class="library-novel-credits"><span>原作 <strong>coolcate</strong></span><span>整理校订、排印 <strong>亚略 Ar</strong></span></p>
+        <div class="library-novel-actions"><a class="library-start-reading" href={firstChapterHref}>从第一章读起 <span aria-hidden="true">→</span></a><a class="library-browse-contents" href="/library/ziyudie/#zy-catalogue-title">浏览全部目录 <span aria-hidden="true">↗</span></a></div>
+        <a class="library-edition-link" href="/blog/latex-touhou-typesetting/">v2.0 · 查看个人整理版与排印档案</a>
       </div>
-    </a>
+    </article>
 
     <section class="library-written" aria-labelledby="written-pages-title">
       <div class="library-section-heading">
@@ -76,45 +86,23 @@ const shelves = [
       {writtenPages.map((post, index) => <ArticleRow post={post} number={String(index + 1).padStart(2, '0')} />)}
     </section>
 
-    <div class="page-controls library-map-heading"><span class="page-count">按主题慢慢归档</span><span class="eyebrow">A READING MAP</span></div>
+    <aside class="library-preface">
+      <p class="eyebrow">A NOTE FROM THE DESK</p>
+      <p>这里不按读完的数量计数。尚未形成公开笔记的阅读先留在纸面；遇到值得继续追问的问题，再把它编进索引。</p>
+    </aside>
+    <div class="page-controls library-map-heading"><h2>按主题慢慢归档</h2><span class="eyebrow">A READING MAP</span></div>
     <div class="library-grid">
       {shelves.map(shelf => (
         <a class="library-entry" href={shelf.href}>
           <p class="eyebrow">{shelf.no}</p>
-          <span class="library-count">{shelf.count > 0 ? `${String(shelf.count).padStart(2, '0')} 页` : '等待整理'}</span>
+          <span class="library-count">{shelf.count > 0 ? `${String(shelf.count).padStart(2, '0')} ${shelf.unit}` : '等待整理'}</span>
           <h2>{shelf.title}</h2>
           <p>{shelf.desc}</p>
           <footer><span>{shelf.tags}</span><b aria-hidden="true">↗</b></footer>
         </a>
       ))}
     </div>
-  </section>
+    <a class="library-photo-note" href="/light-notes/"><img src="/images/journal/2026-summer/20260716-191447-thumb.webp" width="720" height="540" loading="lazy" decoding="async" alt="西湖晚霞与同行的小偶" /><div><p class="eyebrow">BEYOND THE PAGE / 书页之外</p><p>换一种方式阅读日常。</p><span>光影札记 · 七月的旅途档案 <b aria-hidden="true">↗</b></span></div></a>
+  </div>
+  </div>
 </BaseLayout>
-
-<style>
-  .library-light-note {
-    margin: clamp(54px, 8vw, 96px) 0;
-    display: grid;
-    grid-template-columns: minmax(0, 1.35fr) minmax(320px, .8fr);
-    min-height: 470px;
-    background: var(--night);
-    color: #f3efe7;
-    overflow: hidden;
-  }
-  .library-light-note figure { margin: 0; min-height: 100%; overflow: hidden; }
-  .library-light-note img { width: 100%; height: 100%; object-fit: cover; transition: transform .9s cubic-bezier(.2,.7,.2,1); }
-  .library-light-note > div { padding: clamp(38px, 5vw, 70px); display: flex; flex-direction: column; justify-content: center; }
-  .library-light-note .eyebrow { color: #c7d1d6; }
-  .library-light-note > div > span { margin-top: 14px; color: #b7c0c6; font: 300 9px/1.4 var(--mono); letter-spacing: .14em; }
-  .library-light-note h2 { margin: 30px 0 18px; font-size: clamp(30px, 3.3vw, 48px); line-height: 1.25; font-weight: 500; }
-  .library-light-note h2 em { color: #e8b870; font-style: normal; }
-  .library-light-note > div > p:not(.eyebrow) { margin: 0; color: #c8c7c2; font-size: 14px; line-height: 1.9; }
-  .library-light-note strong { width: max-content; margin-top: 36px; padding-bottom: 8px; border-bottom: 1px solid rgba(243,239,231,.5); font-size: 12px; letter-spacing: .08em; }
-  .library-light-note strong b { margin-left: 18px; color: #e8b870; font-family: var(--mono); }
-  .library-light-note:hover img { transform: scale(1.025); }
-  @media (max-width: 760px) {
-    .library-light-note { grid-template-columns: 1fr; min-height: 0; }
-    .library-light-note figure { aspect-ratio: 4 / 3; }
-    .library-light-note > div { padding: 34px 26px 40px; }
-  }
-</style>

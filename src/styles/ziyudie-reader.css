@@ -9,6 +9,10 @@
   color: var(--zy-ink);
 }
 
+main:has(> .zy-reader) { overflow: clip; }
+.zy-reader { padding-top: 84px; overflow-anchor: none; }
+#zy-catalogue-title { scroll-margin-top: 110px; }
+
 :root[data-theme='dark'] .zy-library,
 :root[data-theme='dark'] .zy-reader {
   --zy-ink: #eee8f0;
@@ -217,7 +221,7 @@
 
 .zy-reader-tools {
   position: sticky;
-  top: 78px;
+  top: 96px;
   z-index: 20;
   width: max-content;
   max-width: calc(100% - 32px);
@@ -235,7 +239,8 @@
 }
 .zy-tool-label { padding: 0 12px; font: 400 8px/1 var(--mono); letter-spacing: .1em; }
 .zy-tool-group { display: flex; }
-.zy-reader-tools button {
+.zy-reader-tools button,
+.zy-tool-navigation :is(a, span) {
   min-width: 48px;
   min-height: 44px;
   padding: 0 10px;
@@ -243,12 +248,18 @@
   background: transparent;
   border: 0;
   cursor: pointer;
-  font: 400 10px/1 var(--serif);
+  font: 500 11px/1 var(--serif);
 }
-.zy-reader-tools button:hover { color: var(--zy-paper); background: var(--zy-pink); }
+.zy-tool-navigation :is(a, span) { display: inline-flex; align-items: center; justify-content: center; }
+.zy-reader-tools button, .zy-tool-navigation a { color: var(--zy-ink); }
+.zy-tool-navigation span { opacity: .35; cursor: default; }
+.zy-tool-navigation { border-right: 1px solid color-mix(in srgb, var(--zy-muted) 24%, transparent); }
+.zy-reader-tools button:hover:not(:disabled),
+.zy-tool-navigation a:hover { color: var(--zy-paper); background: var(--zy-ink); }
+.zy-reader-tools button:disabled { opacity: .35; cursor: default; }
 .zy-reader-tools output { min-width: 138px; padding: 0 12px; font: 400 8px/1.4 var(--mono); letter-spacing: .06em; }
 
-.zy-reader-sheet { width: min(calc(100% - 40px), 980px); margin: clamp(60px, 8vw, 110px) auto 0; }
+.zy-reader-sheet { width: min(calc(100% - 40px), 980px); margin: clamp(42px, 5vw, 70px) auto 0; }
 .zy-chapter-header { width: min(100%, var(--novel-measure)); margin: 0 auto clamp(54px, 7vw, 88px); text-align: center; }
 .zy-chapter-header > p:first-child { margin: 0; display: flex; justify-content: center; gap: 18px; color: var(--zy-pink); font: 400 9px/1.4 var(--mono); letter-spacing: .13em; }
 .zy-chapter-header h1 { margin: 25px 0 20px; font-size: clamp(42px, 7vw, 76px); font-weight: 500; letter-spacing: -.04em; }
@@ -312,7 +323,7 @@
 .zy-reader button:focus-visible { outline: 2px solid var(--zy-pink); outline-offset: 4px; }
 
 @media (max-width: 760px) {
-  .zy-library-hero { width: min(100% - 32px, 560px); min-height: auto; grid-template-columns: 1fr; gap: 54px; padding-top: 54px; }
+  .zy-library-hero { width: min(100% - 32px, 560px); min-height: auto; grid-template-columns: 1fr; gap: 54px; padding-top: 102px; }
   .zy-library-cover { max-width: 310px; }
   .zy-library-intro h1 { font-size: clamp(56px, 21vw, 88px); }
   .zy-library-intro h1 br { display: none; }
@@ -334,9 +345,12 @@
   .zy-reader-header > div .eyebrow { margin: 0; }
   .zy-reader-back,
   .zy-reader-archive { align-self: end; margin-bottom: 12px; }
-  .zy-reader-tools { top: 68px; overflow-x: auto; justify-content: flex-start; }
-  .zy-tool-label,
-  .zy-reader-tools output { display: none; }
+  .zy-reader { padding-top: 70px; }
+  .zy-reader-tools { top: 82px; max-width: calc(100% - 24px); padding: 4px; gap: 4px; justify-content: flex-start; }
+  .zy-reader-tools button, .zy-tool-navigation :is(a, span) { min-width: 44px; padding-inline: 6px; }
+  .zy-tool-label, .zy-reader-tools [data-measure] { display: none; }
+  .zy-reader-tools output { position: absolute; width: 1px; height: 1px; min-width: 0; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  #zy-catalogue-title { scroll-margin-top: 90px; }
   .zy-reader-sheet { width: calc(100% - 38px); margin-top: 62px; }
   .zy-chapter-header { margin-bottom: 52px; }
   .zy-chapter-header h1 { font-size: clamp(42px, 15vw, 64px); }

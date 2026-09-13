@@ -15,15 +15,15 @@ const categories = [...new Set(posts.map(post => post.data.category))];
       <p class="page-hero-description">把公式的来路、仪器的脾气与程序的边界写下来。这里收录物理笔记、实验方法、数值模拟和工具实践。</p>
     </div>
   </header>
-  <section class="page-content">
+  <section class="page-content notes-archive">
     <div class="page-controls">
-      <span class="page-count">{String(posts.length).padStart(2, '0')} ENTRIES</span>
+      <span class="page-count notes-count" data-filter-status role="status" aria-live="polite" aria-atomic="true">全部 {posts.length} 篇笔记</span>
       <div class="filter-list" role="group" aria-label="按分类筛选">
-        <button class="filter-button active" data-filter="all">全部</button>
-        {categories.map(category => <button class="filter-button" data-filter={category}>{category}</button>)}
+        <button class="filter-button active" type="button" data-filter="all" aria-pressed="true" aria-controls="notes-results">全部</button>
+        {categories.map(category => <button class="filter-button" type="button" data-filter={category} aria-pressed="false" aria-controls="notes-results">{category}</button>)}
       </div>
     </div>
-    <div data-post-list>
+    <div id="notes-results" data-post-list>
       {posts.map((post, index) => (
         <div data-category={post.data.category}><ArticleRow post={post} number={String(index + 1).padStart(2, '0')} /></div>
       ))}
@@ -42,13 +42,15 @@ const categories = [...new Set(posts.map(post => post.data.category))];
     const buttons = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
     const rows = document.querySelectorAll<HTMLElement>('[data-category]');
     const empty = document.querySelector<HTMLElement>('[data-empty]');
-    buttons.forEach(button => button.addEventListener('click', () => {
+    const status = document.querySelector<HTMLElement>('[data-filter-status]');
+    if (!status || buttons.length === 0) return;
+    const applyFilter = (requested: string, updateUrl = false) => {
+      const filter = [...buttons].some(button => button.dataset.filter === requested) ? requested : 'all';
       buttons.forEach(item => {
-        const active = item === button;
+        const active = item.dataset.filter === filter;
         item.classList.toggle('active', active);
         item.setAttribute('aria-pressed', String(active));
       });
-      const filter = button.dataset.filter;
       let visible = 0;
       rows.forEach(row => {
         const show = filter === 'all' || row.dataset.category === filter;
@@ -56,10 +58,31 @@ const categories = [...new Set(posts.map(post => post.data.category))];
         if (show) visible++;
       });
       if (empty) empty.hidden = visible > 0;
-    }, { signal: controller.signal }));
-    buttons.forEach((button, index) => button.setAttribute('aria-pressed', String(index === 0)));
+      status.textContent = filter === 'all' ? `全部 ${rows.length} 篇笔记` : `${filter} · ${visible} / ${rows.length} 篇`;
+      if (updateUrl) {
+        const url = new URL(location.href);
+        if (filter === 'all') url.searchParams.delete('category');
+        else url.searchParams.set('category', filter);
+        history.replaceState(history.state, '', url);
+      }
+    };
+    buttons.forEach(button => button.addEventListener('click', () => applyFilter(button.dataset.filter ?? 'all', true), { signal: controller.signal }));
+    applyFilter(new URL(location.href).searchParams.get('category') ?? 'all');
+    window.addEventListener('popstate', () => applyFilter(new URL(location.href).searchParams.get('category') ?? 'all'), { signal: controller.signal });
+    document.addEventListener('astro:before-swap', () => controller.abort(), { once: true, signal: controller.signal });
   }
 
   document.addEventListener('astro:page-load', setupNoteFilters);
   setupNoteFilters();
 </script>
+
+<style>
+  .notes-archive .filter-button { min-height: 44px; padding: 12px 15px; font: 400 12px/1.5 var(--serif); }
+  .notes-archive .filter-button:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
+  .notes-count { min-width: 150px; font-size: 11px; line-height: 1.8; }
+  @media (max-width: 600px) {
+    .notes-archive .page-controls { gap: 12px; }
+    .notes-archive .filter-list { gap: 8px; }
+    .notes-archive .filter-button { padding-inline: 13px; }
+  }
+</style>

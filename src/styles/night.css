@@ -529,6 +529,14 @@ body.search-open { overflow: hidden; }
   .music-compact .music-open-copy, .music-compact .music-quick-play { display: none; }
 }
 
+/* Idle music and long-form reading need only a small, reachable entry. */
+@media (min-width: 981px) {
+  :is(.music-dock:not(.is-playing), body:has(.work-reading-body, .prose, .zy-reader) .music-dock):not(.is-expanded) { width: 52px; }
+  :is(.music-dock:not(.is-playing), body:has(.work-reading-body, .prose, .zy-reader) .music-dock) .music-compact { width: 52px; height: 52px; min-height: 52px; grid-template-columns: 1fr; }
+  :is(.music-dock:not(.is-playing), body:has(.work-reading-body, .prose, .zy-reader) .music-dock) .music-compact .music-open { padding: 8px; justify-content: center; }
+  :is(.music-dock:not(.is-playing), body:has(.work-reading-body, .prose, .zy-reader) .music-dock) .music-compact :is(.music-open-copy, .music-quick-play) { display: none; }
+}
+
 @media (max-height: 700px) {
   .music-panel-header {
     position: sticky;

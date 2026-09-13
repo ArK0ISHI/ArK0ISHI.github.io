@@ -126,18 +126,31 @@ const gallery = [
         <h2 id="work-reading-title">网页正文</h2>
       </div>
 
-      <div class="work-reading-layout">
-        <nav class="work-reading-toc" aria-label="正文目录">
-          <span>CONTENTS / 目录</span>
-          <ol>
-            {readingHeadings.map((heading) => <li><a href={`#${heading.slug}`}>{heading.text}</a></li>)}
-          </ol>
-          <a class="work-reading-pages-link" href="#work-pages">转到原刊书页 ↓</a>
-        </nav>
+      <div class="work-reading-layout" data-work-reader data-reading-size="standard">
+        <aside class="work-reading-sidebar" aria-label="阅读辅助">
+          <div class="work-reading-tools" data-reading-tools hidden>
+            <div class="work-reading-progress-label"><span>阅读进度</span><span data-reading-percent>0%</span></div>
+            <progress class="work-reading-progress" max="100" value="0" aria-label="正文阅读进度" data-reading-progress></progress>
+            <div class="work-reading-size" role="group" aria-label="正文字号">
+              <span>字号</span>
+              <button type="button" data-reading-size-option="standard" aria-pressed="true">标准</button>
+              <button type="button" data-reading-size-option="large" aria-pressed="false">大字</button>
+            </div>
+          </div>
+          <details class="work-reading-toc" open data-reading-toc>
+            <summary><span>CONTENTS / 正文目录</span><span class="work-reading-current" data-reading-current>{readingHeadings[0]?.text}</span></summary>
+            <nav aria-label="正文目录">
+              <ol>
+                {readingHeadings.map((heading) => <li><a href={`#${heading.slug}`} data-reading-section-link>{heading.text}</a></li>)}
+              </ol>
+              <a class="work-reading-pages-link" href="#work-pages">转到原刊书页 ↓</a>
+            </nav>
+          </details>
+        </aside>
 
         <div class="work-reading-paper">
           <div class="work-reading-note">
-            <span>TEXT EDITION / 文字版</span>
+            <span>TEXT EDITION / 夜读</span>
             <p>正文逐页核对《Backlog Vol.2》P.62—70，以最终刊载版的字词、段落和参考文献为准。网页只调整换行。</p>
           </div>
           <div class="work-reading-body">
@@ -215,7 +228,7 @@ const gallery = [
     </section>
 
     <footer class="work-ending">
-      <p>旧版网页曾让这个题目对应到另一篇泛化文章。本页按真实刊载内容、纸页和团队署名重新整理。</p>
+      <p>感谢你读到这里。愿这个冬夜的故事，也为你的日常留下一处可以重新观看的远方。</p>
       <nav aria-label="作品页后续导航"><a href="/writing/">继续阅读写作</a><a href="/">回到小屋首页</a></nav>
     </footer>
 
@@ -231,7 +244,73 @@ const gallery = [
 </BaseLayout>
 
 <script>
-  const workWindow = window as Window & { __arWorkArchiveController?: AbortController };
+  const workWindow = window as Window & { __arWorkArchiveController?: AbortController; __arWorkReaderController?: AbortController };
+
+  function setupWorkReader() {
+    workWindow.__arWorkReaderController?.abort();
+    const root = document.querySelector<HTMLElement>('[data-work-reader]');
+    const body = root?.querySelector<HTMLElement>('.work-reading-body');
+    if (!root || !body) return;
+    const controller = new AbortController();
+    workWindow.__arWorkReaderController = controller;
+    const { signal } = controller;
+    const tools = root.querySelector<HTMLElement>('[data-reading-tools]');
+    const progress = root.querySelector<HTMLProgressElement>('[data-reading-progress]');
+    const percent = root.querySelector<HTMLElement>('[data-reading-percent]');
+    const current = root.querySelector<HTMLElement>('[data-reading-current]');
+    const toc = root.querySelector<HTMLDetailsElement>('[data-reading-toc]');
+    const buttons = [...root.querySelectorAll<HTMLButtonElement>('[data-reading-size-option]')];
+    const links = [...root.querySelectorAll<HTMLAnchorElement>('[data-reading-section-link]')];
+    const sections = links.map(link => document.getElementById(decodeURIComponent(link.hash.slice(1))));
+    const narrow = window.matchMedia('(max-width: 980px)');
+    const syncToc = () => { if (toc) toc.open = !narrow.matches; };
+    syncToc();
+    narrow.addEventListener('change', syncToc, { signal });
+
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const offset = narrow.matches ? 94 : 118;
+      const rect = body.getBoundingClientRect();
+      const distance = Math.max(1, body.scrollHeight - innerHeight + offset);
+      const value = Math.round(Math.max(0, Math.min(1, (offset - rect.top) / distance)) * 100);
+      if (progress) progress.value = value;
+      if (percent) percent.textContent = `${value}%`;
+      let active = 0;
+      sections.forEach((section, index) => { if (section && section.getBoundingClientRect().top <= offset + 16) active = index; });
+      links.forEach((link, index) => {
+        if (index === active) link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
+      });
+      if (current) current.textContent = links[active]?.textContent ?? '';
+    };
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
+    const setSize = (size: string) => {
+      root.dataset.readingSize = size === 'large' ? 'large' : 'standard';
+      buttons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.readingSizeOption === root.dataset.readingSize)));
+      schedule();
+    };
+    try { setSize(localStorage.getItem('ar-work-reading-size') ?? 'standard'); } catch { setSize('standard'); }
+    buttons.forEach(button => button.addEventListener('click', () => {
+      setSize(button.dataset.readingSizeOption ?? 'standard');
+      try { localStorage.setItem('ar-work-reading-size', root.dataset.readingSize ?? 'standard'); } catch { /* Reading controls also work without storage. */ }
+    }, { signal }));
+    links.forEach((link, index) => link.addEventListener('click', () => {
+      if (narrow.matches && toc) toc.open = false;
+      const heading = sections[index];
+      heading?.setAttribute('tabindex', '-1');
+      heading?.focus({ preventScroll: true });
+      schedule();
+    }, { signal }));
+    window.addEventListener('scroll', schedule, { passive: true, signal });
+    window.addEventListener('resize', schedule, { signal });
+    const observer = new ResizeObserver(schedule);
+    observer.observe(body);
+    signal.addEventListener('abort', () => { observer.disconnect(); cancelAnimationFrame(frame); }, { once: true });
+    document.addEventListener('astro:before-swap', () => controller.abort(), { once: true, signal });
+    if (tools) tools.hidden = false;
+    schedule();
+  }
 
   function setupWorkArchive() {
     workWindow.__arWorkArchiveController?.abort();
@@ -274,5 +353,7 @@ const gallery = [
   }
 
   document.addEventListener('astro:page-load', setupWorkArchive);
+  document.addEventListener('astro:page-load', setupWorkReader);
   setupWorkArchive();
+  setupWorkReader();
 </script>

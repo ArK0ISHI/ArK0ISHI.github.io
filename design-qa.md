@@ -1,3 +1,65 @@
+# 《看不见的远方》暗色阅读精修
+
+Date: 2026-09-13
+
+final result: passed
+
+## Scope and visual target
+
+The user requested further refinement, specifically a dark background for the essay text. The existing work-archive layout, published essay, printed pages and credits remain the source of truth. Intentional changes are the reader palette, type rhythm, reading aids and page-scoped navigation/player contrast.
+
+- Source: https://ark0ishi.github.io/blog/invisible-distance/ at commit `19a3ead243eb8ed4896b6ca83306fdc7bf86d31e`.
+- Implementation preview: http://127.0.0.1:4322/blog/invisible-distance/.
+- Evidence directory in the recovery workspace: `../dark-reading/`.
+- Desktop source/implementation captures: `before-desktop.png`, `after-desktop.png`; 1440 × 1000 CSS and image pixels, device scale 1.
+- Mobile source/implementation: `before-mobile-text.png`, `after-mobile-text.png`; 390 × 844 CSS and image pixels, device scale 1.
+- State: same route/content, global light preference, reduced motion, standard font, closed menu/player. Each reading capture starts at the top and scrolls down to the same semantic region, allowing header scroll state to settle. Finite screenshot animations are disabled.
+- Combined evidence: `comparison-desktop.jpg`, `comparison-mobile-text.jpg`, `comparison-quote.jpg`, `comparison-middle.jpg`, `comparison-hero.jpg`. Both images are placed at original equal dimensions with a 42px label strip. No independent rescaling or stretching.
+- Additional states: `after-mobile-controls.png` and `after-global-dark.png`.
+
+## Findings and repair history
+
+No actionable P0/P1/P2 issues remain in the reviewed states.
+
+1. **P2 / requested palette correction:** the original reader hardcoded a pale paper panel inside the dark work archive. Replaced its background and all dependent body, note, heading, quote, link and emphasis colors as one local palette. Removed distracting paper rules. Post-fix evidence: desktop, quote and mobile combined inputs.
+2. **P2 / chapter navigation:** the original `main` overflow container prevented viewport sticky behavior. Added page-scoped `overflow: clip`; the new sidebar stays at 118px on desktop. Added current chapter state, 44px link targets and mobile native disclosure. Deep-jump and focus checks pass.
+3. **P2 / hero navigation contrast:** global light-mode text was nearly invisible on the fixed dark hero. Page-scoped light navigation now remains legible there; mobile menu retains its own global theme colors. Evidence: combined hero capture and mobile navigation interaction.
+4. **Polish:** two font sizes with remembered preference, body-only progress, quieter player colors, restrained heading size/spacing and a reader-facing closing sentence. No essay text, quotations, references or credits changed.
+
+## Required fidelity surfaces
+
+- **Typography:** original Noto Serif SC / DM Mono families retained; 18px standard desktop text, 17px mobile text, 20px/19px larger option. Body leading remains about 2; chapter titles have calmer scale and spacing. Original Chinese and Japanese text remains complete.
+- **Spacing:** retained the existing reading grid and full-width mobile panel. Desktop measure capped at 38em. The mobile contents collapse before the text; no extra fixed reading overlay was introduced.
+- **Colors:** reader surface #17222e, warm body #d9d5ce and muted gold accents. Computed contrast ratios: body 11.01:1, notes 7.59:1, headings 13.37:1, quotes 9.62:1. Reader colors are independent of the user's stored global theme. Selection/focus and mobile menu remain readable.
+- **Images:** retained all original covers, printed spreads, page 70 and physical-book images. Original gallery opens and advances correctly; no generated or substitute artwork was introduced.
+- **Copy/content:** browser textContent of the entire essay matches the source capture exactly. Seven chapter headings and original references/credits are retained. UI labels explain font size, chapter navigation and progress directly.
+
+## Validation
+
+`checks.json` records a passing local browser run with no page or console errors:
+
+- Text equality, palette contrast, font size and persistence.
+- Desktop sticky position, direct chapter jumps, current location and 0–100% progress limited to the essay.
+- Dark reader in both global themes; no overflow at widths 320, 390, 768 and 1440.
+- Mobile contents open/jump/close and focus the destination heading.
+- Mobile navigation, original gallery keyboard controls and Escape.
+- Astro client navigation away/back and no-JavaScript fallback.
+
+`pnpm build`: 63 checked files, 0 errors, 0 warnings, 0 hints. Final production build generates 143 pages. The final CSS-only menu color addition was rebuilt successfully. Browser checks exercise the final build.
+
+## Checklist and limits
+
+- [x] Capture and compare source and implementation together at equal density.
+- [x] Inspect readable text, quotation, hero and mobile detail regions.
+- [x] Verify reading controls and existing gallery/navigation behavior.
+- [x] Preserve the essay and publication credits.
+- [ ] External music streaming and weather reliability are outside this scoped reading refinement.
+
+The following report is the earlier homepage review retained for history.
+
+
+---
+
 # Homepage refinement — Design QA
 
 Date: 2026-09-13 (Asia/Shanghai)

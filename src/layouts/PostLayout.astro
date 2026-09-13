@@ -1,5 +1,6 @@
 ---
 import BaseLayout from './BaseLayout.astro';
+import ResearchFigureViewer from '../components/ResearchFigureViewer.astro';
 
 type Heading = { depth: number; slug: string; text: string };
 type Neighbor = { title: string; href: string };
@@ -114,6 +115,7 @@ const displayedScopeNote = scopeNote ?? (kind === 'note' ? defaultScopeNote : un
       </nav>
     )}
   </article>
+  <ResearchFigureViewer />
 </BaseLayout>
 
 <script>

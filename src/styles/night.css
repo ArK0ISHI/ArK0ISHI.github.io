@@ -313,6 +313,7 @@ body.search-open { overflow: hidden; }
 }
 .music-open { min-width: 0; padding: 8px 10px 8px 13px; border: 0; background: transparent; display: flex; align-items: center; gap: 11px; text-align: left; }
 .music-open:hover .music-open-copy strong { color: var(--red); }
+.music-dock.is-playing .music-open { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--red) 45%, transparent); border-radius: inherit; }
 .signal-orbit { position: relative; flex: 0 0 34px; height: 34px; border: 1px solid var(--line-strong); border-radius: 50%; animation: signal-breathe 4.5s ease-in-out infinite; }
 .signal-orbit::after { content: ''; position: absolute; inset: 7px; border: 1px dashed var(--line-strong); border-radius: inherit; }
 .signal-orbit i { position: absolute; z-index: 1; width: 5px; height: 5px; border-radius: 50%; background: var(--red); }
@@ -502,9 +503,11 @@ body.search-open { overflow: hidden; }
   .post-neighbors > a { min-height: 122px; padding: 24px 18px; }
   .post-neighbors .is-newer { text-align: left; }
   .footer-links { width: 100%; margin-left: 0; }
-  .music-dock { left: auto; right: 12px; bottom: max(10px, env(safe-area-inset-bottom)); width: min(280px, calc(100vw - 24px)); max-width: none; }
+  .music-dock { left: auto; right: 12px; bottom: max(12px, env(safe-area-inset-bottom)); width: 52px; max-width: none; }
   .music-dock.is-expanded { left: 12px; width: auto; }
-  .music-compact { width: 100%; min-height: 56px; }
+  .music-compact { width: 52px; height: 52px; min-height: 52px; grid-template-columns: 1fr; }
+  .music-compact .music-open { padding: 8px; justify-content: center; }
+  .music-compact .music-open-copy, .music-compact .music-quick-play { display: none; }
   .music-panel { max-height: calc(100svh - 100px); }
   .music-track { grid-template-columns: 72px 1fr; gap: 16px; padding-inline: 20px; }
   .music-disc { width: 70px; height: 70px; }
@@ -517,6 +520,13 @@ body.search-open { overflow: hidden; }
   .music-volume input { display: none; }
   .music-drawer-tabs button { padding-inline: 16px; }
   .music-credit { padding-inline: 16px; }
+}
+
+@media (min-width: 601px) and (max-width: 980px) {
+  .music-dock:not(.is-expanded) { width: 52px; }
+  .music-compact { width: 52px; height: 52px; min-height: 52px; grid-template-columns: 1fr; }
+  .music-compact .music-open { padding: 8px; justify-content: center; }
+  .music-compact .music-open-copy, .music-compact .music-quick-play { display: none; }
 }
 
 @media (max-height: 700px) {

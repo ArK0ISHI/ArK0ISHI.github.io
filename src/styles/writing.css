@@ -1,0 +1,81 @@
+/* A reading room for essays and carefully made editions. */
+.writing-room { --page: min(1180px, calc(100% - 64px)); }
+.writing-room a:focus-visible { outline: 2px solid var(--red); outline-offset: 5px; }
+.writing-room .writing-hero { padding-block: 145px 48px; }
+.writing-room .writing-hero .page-hero-grid { grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 80px; }
+.writing-room .writing-hero h1 { font-size: clamp(46px, 5.7vw, 76px); font-weight: 500; line-height: 1.3; }
+.writing-room .writing-hero h1 em { font: inherit; }
+.writing-introduction { max-width: 410px; justify-self: end; padding-bottom: 4px; }
+.writing-introduction .page-hero-description { font-size: 14px; line-height: 2; }
+.writing-index-link { display: inline-flex; align-items: center; justify-content: space-between; gap: 28px; min-height: 44px; margin-top: 16px; font-size: 12px; border-bottom: 1px solid var(--line-strong); }
+.writing-index-link span { color: var(--red); }
+.writing-features { margin-top: 34px; }
+.writing-section-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 22px; }
+.writing-section-heading h2 { margin: 0; font-size: 17px; font-weight: 500; }
+.writing-section-heading p { margin: 0; color: var(--ink-soft); font: 400 9px/1.6 var(--mono); letter-spacing: .09em; }
+.writing-feature-grid { display: grid; grid-template-columns: 1.12fr 1fr; gap: 44px; }
+.writing-feature { min-width: 0; }
+.writing-feature figure { margin: 0; }
+.writing-stage { position: relative; display: grid; width: 100%; height: 366px; padding: 52px 24px 44px; overflow: hidden; }
+.writing-stage-essay { background: #19242e; color: #e7e1d7; }
+.writing-stage-essay > img { width: 100%; height: 100%; min-height: 0; object-fit: contain; box-shadow: 0 10px 24px #070e1426; }
+.writing-stage-label, .writing-stage-caption { position: absolute; left: 24px; font: 400 9px/1.6 var(--mono); letter-spacing: .1em; }
+.writing-stage-label { top: 20px; }
+.writing-stage-caption { bottom: 16px; }
+.writing-stage-essay .writing-stage-caption { color: #c9c5bc; }
+.writing-stage-edition { background: color-mix(in srgb, var(--violet) 9%, var(--paper-deep)); }
+.writing-stage-edition .writing-stage-label, .writing-stage-edition .writing-stage-caption { color: var(--ink-soft); }
+.writing-book-pages { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .84fr); grid-template-rows: minmax(0, 1fr); gap: 20px; align-items: center; min-height: 0; max-width: 365px; margin-inline: auto; }
+.writing-book-pages img { width: 100%; height: 100%; min-width: 0; min-height: 0; object-fit: contain; filter: drop-shadow(0 8px 12px #1c142329); }
+.writing-book-pages img + img { height: 83%; }
+.writing-stage img { transition: transform .35s ease; }
+.writing-stage:hover img { transform: translateY(-3px); }
+.writing-feature figcaption { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 14px; margin-top: 12px; color: var(--ink-soft); font-size: 11px; line-height: 1.8; }
+.writing-feature-copy { margin-top: 26px; }
+.writing-feature-category { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 14px; margin: 0 0 12px; color: var(--red); font-size: 11px; }
+.writing-feature-category span { color: var(--ink-soft); }
+.writing-feature h3 { margin: 0 0 14px; font-size: clamp(27px, 2.8vw, 37px); font-weight: 500; line-height: 1.5; }
+.writing-feature-copy > p:not(.writing-feature-category) { margin: 0; color: var(--ink-soft); font-size: 13px; line-height: 2; }
+.writing-feature-actions { display: flex; flex-wrap: wrap; align-items: end; column-gap: 24px; }
+.writing-feature-link { display: inline-flex; align-items: center; justify-content: space-between; gap: 28px; min-height: 44px; margin-top: 20px; border-bottom: 1px solid var(--line-strong); font-size: 12px; }
+.writing-feature-link span { color: var(--red); }
+.writing-chapter-link { display: inline-flex; align-items: center; gap: 12px; min-height: 44px; margin-top: 20px; font-size: 11px; color: var(--ink-soft); }
+.writing-feature-copy a:hover, .writing-index-link:hover { color: var(--red); }
+.writing-index { margin-top: 86px; scroll-margin-top: 112px; }
+.writing-index .page-controls { align-items: baseline; justify-content: space-between; }
+.writing-index h2 { margin: 0; font-size: 25px; font-weight: 500; }
+.writing-index .article-row { padding-block: 28px; }
+@media (max-width: 900px) {
+  .writing-room .writing-hero .page-hero-grid { gap: 40px; }
+  .writing-feature-grid { gap: 28px; }
+  .writing-stage { height: 300px; padding-inline: 18px; }
+  .writing-stage-label, .writing-stage-caption { left: 18px; }
+}
+@media (max-width: 680px) {
+  .writing-room { --page: calc(100% - 40px); }
+  .writing-room .writing-hero { padding-block: 114px 30px; }
+  .writing-room .writing-hero .page-hero-grid { grid-template-columns: 1fr; gap: 22px; }
+  .writing-room .writing-hero h1 { margin-top: 14px; font-size: clamp(42px, 11.5vw, 58px); line-height: 1.3; }
+  .writing-introduction { max-width: none; justify-self: start; }
+  .writing-introduction .page-hero-description { font-size: 13px; line-height: 1.95; }
+  .writing-index-link { margin-top: 12px; }
+  .writing-features { margin-top: 25px; }
+  .writing-section-heading { gap: 5px; margin-bottom: 18px; }
+  .writing-section-heading h2 { font-size: 16px; }
+  .writing-section-heading p { font-size: 8px; }
+  .writing-feature-grid { grid-template-columns: 1fr; gap: 46px; }
+  .writing-stage { height: auto; aspect-ratio: 1.27; padding: 44px 16px 36px; }
+  .writing-stage-edition { aspect-ratio: 1.13; }
+  .writing-stage-label { top: 16px; }
+  .writing-stage-caption { bottom: 13px; font-size: 8px; }
+  .writing-feature-copy { margin-top: 20px; }
+  .writing-feature h3 { font-size: 28px; margin-bottom: 10px; }
+  .writing-book-pages { gap: 14px; }
+  .writing-feature-link, .writing-chapter-link { margin-top: 15px; }
+  .writing-index { margin-top: 56px; scroll-margin-top: 88px; }
+  .writing-index h2 { font-size: 22px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .writing-stage img { transition: none; }
+  .writing-stage:hover img { transform: none; }
+}

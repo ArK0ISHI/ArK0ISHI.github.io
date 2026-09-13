@@ -86,7 +86,11 @@ Boris 方法把一步更新拆成位置推进和速度旋转。没有电场时�
 
 <figure>
   <img src="/images/projects/magnetic-mirror-orbits/particle-orbits.webp" alt="三种拉莫尔半径尺度下粒子在双线圈磁镜场中的三维轨道和二维投影" width="2000" height="732" loading="lazy" decoding="async" />
-  <figcaption>图 3　三种 $\epsilon$ 的代表轨道。回旋半径变大后，反弹区的轨迹包络和漂移开始出现可见差异。</figcaption>
+  <figcaption>
+
+图 3　三种 $\epsilon$ 的代表轨道。回旋半径变大后，反弹区的轨迹包络和漂移开始出现可见差异。
+
+  </figcaption>
 </figure>
 
 小 $\epsilon$ 轨道紧贴导引中心，反弹位置稳定。$\epsilon$ 增大后，单次回旋跨越的磁场范围变宽，粒子在强梯度区感受到的变化也更剧烈。
@@ -108,7 +112,11 @@ $$
 
 <figure>
   <img src="/images/projects/magnetic-mirror-orbits/magnetic-moment-history.webp" alt="不同 epsilon 条件下磁矩、轴向位置和局部磁场随时间的变化" width="2000" height="1291" loading="lazy" decoding="async" />
-  <figcaption>图 4　代表轨道的磁矩历史。$\epsilon$ 较小时曲线只轻微起伏，尺度增大后反弹附近的变化迅速增强。</figcaption>
+  <figcaption>
+
+图 4　代表轨道的磁矩历史。$\epsilon$ 较小时曲线只轻微起伏，尺度增大后反弹附近的变化迅速增强。
+
+  </figcaption>
 </figure>
 
 在主扫描中，单反弹磁矩变化从
@@ -133,7 +141,11 @@ $$
 
 <figure>
   <img src="/images/projects/magnetic-mirror-orbits/magnetic-moment-scaling.webp" alt="磁矩相对变化随 epsilon 的扫描结果及中小 epsilon 区间拟合" width="2000" height="1614" loading="lazy" decoding="async" />
-  <figcaption>图 5　磁矩绝热性随 $\epsilon$ 的变化。拟合只覆盖中小尺度区间，大尺度散点保留其非单调特征。</figcaption>
+  <figcaption>
+
+图 5　磁矩绝热性随 $\epsilon$ 的变化。拟合只覆盖中小尺度区间，大尺度散点保留其非单调特征。
+
+  </figcaption>
 </figure>
 
 ## 靠近损失锥时
@@ -142,7 +154,11 @@ $$
 
 <figure>
   <img src="/images/projects/magnetic-mirror-orbits/loss-cone-scan.webp" alt="近损失锥俯仰角下不同 epsilon 轨道的反射、命中和边界逃逸结果" width="2000" height="934" loading="lazy" decoding="async" />
-  <figcaption>图 6　近损失锥扫描。$\epsilon=0.32$ 与 $0.42$ 在第一反弹附近命中边界，$0.55$ 与 $0.70$ 从计算域边界离开。</figcaption>
+  <figcaption>
+
+图 6　近损失锥扫描。$\epsilon=0.32$ 与 $0.42$ 在第一反弹附近命中边界，$0.55$ 与 $0.70$ 从计算域边界离开。
+
+  </figcaption>
 </figure>
 
 图中的空心点表示模拟时间窗内尚未完成某个事件，因此只能当作下界。它们没有给出真实逃逸时刻。这个标记能避免把有限观察时间造成的截断读成完整动力学结论。
@@ -153,7 +169,11 @@ $$
 
 <figure>
   <img src="/images/projects/magnetic-mirror-orbits/gyro-phase.webp" alt="不同初始回旋相位下反弹位置和磁矩变化的敏感性分析" width="2000" height="1340" loading="lazy" decoding="async" />
-  <figcaption>图 7　初始回旋相位扫描。相同 $\epsilon$ 与俯仰角下，反弹位置和磁矩变化仍有可见离散。</figcaption>
+  <figcaption>
+
+图 7　初始回旋相位扫描。相同 $\epsilon$ 与俯仰角下，反弹位置和磁矩变化仍有可见离散。
+
+  </figcaption>
 </figure>
 
 这组结果说明，贴近损失锥时只给出 $\epsilon$ 和俯仰角还不够。相位分布也应进入统计，单条代表轨道很难覆盖全部可能性。
@@ -164,7 +184,11 @@ $$
 
 <figure>
   <img src="/images/projects/magnetic-mirror-orbits/poincare.webp" alt="不同 epsilon 下粒子轨道的 Poincaré 截面对比" width="2000" height="618" loading="lazy" decoding="async" />
-  <figcaption>图 8　不同 $\epsilon$ 的 Poincaré 截面。点列从紧致结构逐渐变宽，显示轨道组织随尺度改变。</figcaption>
+  <figcaption>
+
+图 8　不同 $\epsilon$ 的 Poincaré 截面。点列从紧致结构逐渐变宽，显示轨道组织随尺度改变。
+
+  </figcaption>
 </figure>
 
 <figure>

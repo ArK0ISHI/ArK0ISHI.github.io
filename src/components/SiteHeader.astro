@@ -72,12 +72,25 @@ const isActive = (href: string) => href === '/' ? pathname === '/' : pathname.st
 
     const menuButton = document.querySelector<HTMLButtonElement>('.menu-button');
     const menu = document.querySelector<HTMLElement>('#mobile-menu');
+    const header = document.querySelector<HTMLElement>('[data-header]');
+    const background = new Map<HTMLElement, boolean>();
     document.body.classList.remove('menu-open');
     const setMenu = (open: boolean, returnFocus = false) => {
       menuButton?.setAttribute('aria-expanded', String(open));
       menuButton?.setAttribute('aria-label', open ? '关闭导航' : '打开导航');
       if (menu) menu.hidden = !open;
       document.body.classList.toggle('menu-open', open);
+      if (open) {
+        header?.classList.remove('hidden-header');
+        document.querySelectorAll<HTMLElement>('body > main, body > footer, [data-music-dock]').forEach(element => {
+          background.set(element, element.inert);
+          element.inert = true;
+        });
+        menu?.querySelector<HTMLAnchorElement>('a')?.focus();
+      } else {
+        background.forEach((wasInert, element) => { element.inert = wasInert; });
+        background.clear();
+      }
       if (returnFocus) menuButton?.focus();
     };
     menuButton?.addEventListener('click', () => {
@@ -85,11 +98,27 @@ const isActive = (href: string) => href === '/' ? pathname === '/' : pathname.st
       setMenu(!open);
     }, { signal: controller.signal });
     document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && menuButton?.getAttribute('aria-expanded') === 'true') setMenu(false, true);
-    }, { signal: controller.signal });
+      if (menuButton?.getAttribute('aria-expanded') !== 'true') return;
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') { setMenu(false, true); return; }
+      if (event.key === 'Escape') { event.preventDefault(); setMenu(false, true); }
+      if (event.key !== 'Tab') return;
+      const stops = [...(header?.querySelectorAll<HTMLElement>('.header-inner a, .header-inner button, .mobile-nav a') ?? [])]
+        .filter(element => element.getClientRects().length > 0 && !element.closest('[inert]'));
+      const first = stops[0];
+      const last = stops.at(-1);
+      if (event.shiftKey && (document.activeElement === first || !header?.contains(document.activeElement))) {
+        event.preventDefault(); last?.focus();
+      } else if (!event.shiftKey && (document.activeElement === last || !header?.contains(document.activeElement))) {
+        event.preventDefault(); first?.focus();
+      }
+    }, { capture: true, signal: controller.signal });
     menu?.querySelectorAll('a').forEach(link => link.addEventListener('click', () => setMenu(false), { signal: controller.signal }));
+    header?.querySelector('[data-search-trigger]')?.addEventListener('click', () => setMenu(false), { capture: true, signal: controller.signal });
+    const desktop = window.matchMedia('(min-width: 901px)');
+    desktop.addEventListener('change', () => { if (desktop.matches) setMenu(false); }, { signal: controller.signal });
+    controller.signal.addEventListener('abort', () => setMenu(false), { once: true });
+    document.addEventListener('astro:before-swap', () => controller.abort(), { once: true, signal: controller.signal });
 
-    const header = document.querySelector<HTMLElement>('[data-header]');
     let lastY = window.scrollY;
     const updateHeader = () => {
       const y = window.scrollY;

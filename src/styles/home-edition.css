@@ -65,12 +65,16 @@
 }
 @media (max-width: 760px) {
   .home-edition { --page: calc(100% - 40px); }
-  .edition-prologue { grid-template-columns: 1fr; gap: 34px; padding-block: 68px 52px; }
-  .prologue-title h2 { font-size: 34px; }
-  .prologue-title .edition-text-link { margin-top: 14px; }
-  .prologue-copy p { font-size: 13px; }
-  .edition-contents { display: grid; grid-template-columns: 1fr 1fr; gap: 0 20px; padding-block: 12px; }
-  .edition-contents > span { grid-column: 1 / -1; margin-bottom: 8px; }
+  .edition-prologue { grid-template-columns: 1fr; gap: 20px; padding-block: 38px 30px; }
+  .prologue-title .edition-kicker { margin-bottom: 12px; }
+  .prologue-title h2 { font-size: 29px; line-height: 1.5; }
+  .prologue-title .edition-text-link { margin-top: 9px; }
+  .prologue-copy p { font-size: 13px; line-height: 1.95; margin-bottom: 12px; }
+  .prologue-copy .prologue-name { font-size: 16px; margin-bottom: 10px; }
+  .archive-counts { gap: 14px; margin-top: 20px; padding-top: 15px; }
+  .archive-counts dd { font-size: 27px; margin-top: 4px; }
+  .edition-contents { display: grid; grid-template-columns: 1fr 1fr; gap: 0 20px; padding-block: 6px; }
+  .edition-contents > span { display: none; }
   .edition-contents a { font-size: 12px; }
   .edition-heading { grid-template-columns: 1fr; gap: 20px; margin-bottom: 27px; }
   .edition-heading > p { justify-self: start; }

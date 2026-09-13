@@ -73,6 +73,10 @@ const heroPhoto = photosById.get('20260716-191447')!;
         <p class="journal-kicker"><span>LIGHT NOTES</span><span>2026 · SUMMER</span></p>
         <h1>光影<em>札记</em></h1>
         <p class="journal-deck">目的地标出路程的骨架。一顿饭、一次雨、窗外的灯，还有始终出现在画面一角的同行者，把这些日子连成同一段旅程。</p>
+        <nav class="journal-hero-routes" aria-label="开始浏览光影札记">
+          <a href="#journal-cities">按城市选片 <span aria-hidden="true">↓</span></a>
+          <a href="#journal-chapter-index">浏览 {lightNoteStories.length} 段旅途 <span aria-hidden="true">↓</span></a>
+        </nav>
         <dl class="journal-stats" aria-label="本辑概况">
           <div><dt>{String(lightNotePhotos.length).padStart(2, '0')}</dt><dd>帧影像</dd></div>
           <div><dt>{String(lightNoteStories.length).padStart(2, '0')}</dt><dd>段章节</dd></div>
@@ -103,7 +107,7 @@ const heroPhoto = photosById.get('20260716-191447')!;
       <span>02 JUL — 31 JUL 2026</span>
     </section>
 
-    <div class="journal-filter-shell">
+    <div class="journal-filter-shell" id="journal-cities">
       <nav class="journal-filters" aria-label="按城市筛选照片" data-journal-filters>
         <button type="button" data-city-filter="all" aria-pressed="true">全部 <span>{lightNotePhotos.length}</span></button>
         {cities.map(item => (
@@ -114,9 +118,9 @@ const heroPhoto = photosById.get('20260716-191447')!;
     </div>
 
     <div class="journal-archive">
-      <aside class="journal-index-shell">
+      <aside class="journal-index-shell" id="journal-chapter-index">
         <nav class="journal-index" aria-label="旅途章节索引">
-          <p><span>CHAPTER INDEX</span><small>沿日期下行</small></p>
+          <p><span>CHAPTER INDEX</span><button class="journal-index-open" type="button" data-open-chapter-picker aria-haspopup="dialog" aria-controls="journal-chapter-picker">展开目录</button></p>
           <ol>
             {chapters.map(chapter => (
               <li data-index-city={chapter.city}>
@@ -207,6 +211,33 @@ const heroPhoto = photosById.get('20260716-191447')!;
       <a href="#light-notes-top">回到卷首 ↑</a>
     </footer>
 
+    <button class="journal-current-chapter" type="button" data-current-chapter data-open-chapter-picker aria-haspopup="dialog" aria-controls="journal-chapter-picker" hidden>
+      <span data-current-chapter-count>01 / {String(chapters.length).padStart(2, '0')}</span>
+      <strong data-current-chapter-title>{chapters[0].title}</strong>
+      <span class="journal-current-chapter-action">章节 <span aria-hidden="true">↑</span></span>
+    </button>
+
+    <dialog class="journal-chapter-picker" id="journal-chapter-picker" data-chapter-picker aria-labelledby="journal-chapter-picker-title">
+      <header>
+        <div><p>CHAPTER INDEX / 旅途目录</p><h2 id="journal-chapter-picker-title">沿旅途，换一页。</h2></div>
+        <button type="button" data-close-chapter-picker aria-label="关闭章节目录">关闭</button>
+      </header>
+      <div class="journal-picker-filter"><p data-picker-filter-status>全部城市 · {chapters.length} 段旅途</p><button type="button" data-picker-show-all hidden>显示全部城市</button></div>
+      <nav aria-label="选择旅途章节">
+        <ol>
+          {chapters.map(chapter => (
+            <li data-index-city={chapter.city}>
+              <a href={`#${chapter.id}`} data-picker-chapter={chapter.id}>
+                <span>{String(chapter.storyIndex + 1).padStart(2, '0')}</span>
+                <strong>{chapter.title}</strong>
+                <small>{formatMonthDay(chapter.firstShotAt)} · {chapter.city}</small>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+    </dialog>
+
     <dialog class="journal-lightbox" data-journal-lightbox aria-labelledby="journal-lightbox-title" aria-describedby="journal-lightbox-caption">
       <div class="journal-lightbox-inner">
         <header>
@@ -269,6 +300,16 @@ const heroPhoto = photosById.get('20260716-191447')!;
     let activeCity = 'all';
     let currentTrigger: HTMLAnchorElement | null = null;
     let previousFocus: HTMLElement | null = null;
+    const picker = document.querySelector<HTMLDialogElement>('[data-chapter-picker]');
+    const pickerLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-picker-chapter]'));
+    const currentChapterButton = document.querySelector<HTMLButtonElement>('[data-current-chapter]');
+    const currentChapterCount = document.querySelector<HTMLElement>('[data-current-chapter-count]');
+    const currentChapterTitle = document.querySelector<HTMLElement>('[data-current-chapter-title]');
+    const pickerFilterStatus = document.querySelector<HTMLElement>('[data-picker-filter-status]');
+    const pickerShowAll = document.querySelector<HTMLButtonElement>('[data-picker-show-all]');
+    const timeline = document.querySelector<HTMLElement>('[data-journal-timeline]');
+    let pickerPreviousFocus: HTMLElement | null = null;
+    let chapterFrame = 0;
 
     const visibleTriggers = () => allTriggers.filter(trigger => !trigger.closest<HTMLElement>('[data-journal-chapter]')?.hidden);
     const setActiveIndexLink = (id: string) => {
@@ -278,7 +319,37 @@ const heroPhoto = photosById.get('20260716-191447')!;
         if (active) link.setAttribute('aria-current', 'location');
         else link.removeAttribute('aria-current');
       });
+      pickerLinks.forEach(link => {
+        if (link.dataset.pickerChapter === id) link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
+      });
+      const chapterPosition = chapters.findIndex(chapter => chapter.id === id);
+      const chapterTitle = chapters[chapterPosition]?.querySelector('h2')?.textContent || '';
+      if (currentChapterCount) currentChapterCount.textContent = `${String(chapterPosition + 1).padStart(2, '0')} / ${String(chapters.length).padStart(2, '0')}`;
+      if (currentChapterTitle) currentChapterTitle.textContent = chapterTitle;
+      currentChapterButton?.setAttribute('aria-label', `打开章节目录，当前第 ${chapterPosition + 1} 章：${chapterTitle}`);
     };
+
+    const updateChapterPosition = () => {
+      chapterFrame = 0;
+      const visible = chapters.filter(chapter => !chapter.hidden);
+      const marker = window.innerHeight * .28;
+      const active = visible.find(chapter => {
+        const rect = chapter.getBoundingClientRect();
+        return rect.top <= marker && rect.bottom > marker;
+      }) || visible.find(chapter => chapter.getBoundingClientRect().top >= marker) || visible.at(-1);
+      if (active) setActiveIndexLink(active.id);
+      if (currentChapterButton && timeline) {
+        const timelineRect = timeline.getBoundingClientRect();
+        currentChapterButton.hidden = timelineRect.top > marker || timelineRect.bottom < 140;
+      }
+    };
+    const queueChapterPosition = () => {
+      if (!chapterFrame) chapterFrame = requestAnimationFrame(updateChapterPosition);
+    };
+    window.addEventListener('scroll', queueChapterPosition, { passive: true, signal: controller.signal });
+    window.addEventListener('resize', queueChapterPosition, { passive: true, signal: controller.signal });
+    controller.signal.addEventListener('abort', () => cancelAnimationFrame(chapterFrame), { once: true });
 
     const sectionObserver = new IntersectionObserver((entries) => {
       const visible = entries
@@ -308,9 +379,45 @@ const heroPhoto = photosById.get('20260716-191447')!;
         ? `显示全部 ${visibleChapterCount} 个章节 · ${visiblePhotoCount} 张照片`
         : `显示${city} ${visibleChapterCount} 个章节 · ${visiblePhotoCount} 张照片`;
       refreshObservedSections();
+      if (pickerFilterStatus) pickerFilterStatus.textContent = `${city === 'all' ? '全部城市' : city} · ${visibleChapterCount} 段旅途`;
+      if (pickerShowAll) pickerShowAll.hidden = city === 'all';
+      queueChapterPosition();
     };
 
     filterButtons.forEach(button => button.addEventListener('click', () => applyFilter(button.dataset.cityFilter || 'all'), { signal: controller.signal }));
+
+    if (picker && typeof picker.showModal === 'function') {
+      document.querySelectorAll<HTMLButtonElement>('[data-open-chapter-picker]').forEach(button => button.addEventListener('click', () => {
+        pickerPreviousFocus = button;
+        picker.showModal();
+        document.body.classList.add('journal-navigation-open');
+        const activeLink = picker.querySelector<HTMLAnchorElement>('[aria-current="location"]');
+        activeLink?.focus({ preventScroll: true });
+        activeLink?.scrollIntoView({ block: 'nearest' });
+      }, { signal: controller.signal }));
+      picker.querySelector('[data-close-chapter-picker]')?.addEventListener('click', () => picker.close(), { signal: controller.signal });
+      pickerShowAll?.addEventListener('click', () => applyFilter('all'), { signal: controller.signal });
+      picker.addEventListener('click', event => { if (event.target === picker) picker.close(); }, { signal: controller.signal });
+      picker.addEventListener('close', () => {
+        document.body.classList.remove('journal-navigation-open');
+        pickerPreviousFocus?.focus({ preventScroll: true });
+      }, { signal: controller.signal });
+      pickerLinks.forEach(link => link.addEventListener('click', event => {
+        if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        const target = chapters.find(chapter => chapter.id === link.dataset.pickerChapter);
+        if (!target) return;
+        event.preventDefault();
+        pickerPreviousFocus = null;
+        picker.close();
+        history.replaceState(history.state, '', `#${target.id}`);
+        const heading = target.querySelector<HTMLElement>('h2');
+        heading?.setAttribute('tabindex', '-1');
+        heading?.focus({ preventScroll: true });
+        target.scrollIntoView({ behavior: 'instant', block: 'start' });
+        setActiveIndexLink(target.id);
+        queueChapterPosition();
+      }, { signal: controller.signal }));
+    }
 
     const preloadNeighbor = (trigger: HTMLAnchorElement | undefined) => {
       const src = trigger?.dataset.full;
@@ -394,6 +501,9 @@ const heroPhoto = photosById.get('20260716-191447')!;
       previousFocus = null;
       if (dialog.open) dialog.close();
       document.body.classList.remove('journal-lightbox-open');
+      pickerPreviousFocus = null;
+      if (picker?.open) picker.close();
+      document.body.classList.remove('journal-navigation-open');
     }, { once: true, signal: controller.signal });
 
     applyFilter(activeCity);

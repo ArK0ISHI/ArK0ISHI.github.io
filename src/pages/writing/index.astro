@@ -2,20 +2,60 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ArticleRow from '../../components/ArticleRow.astro';
+import '../../styles/writing.css';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft && data.kind === 'writing'))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 
 <BaseLayout title="写作" description="文学评论、视觉小说、东方Project与零散随笔。">
-  <header class="page-hero">
+  <div class="writing-room">
+  <header class="page-hero writing-hero">
     <div class="page-hero-grid">
       <div><p class="eyebrow">WRITING / 写作</p><h1>记忆、幻想<br />与<em>叙事</em></h1></div>
-      <p class="page-hero-description">物理追问世界如何运行，文学追问我们如何感受、记忆并讲述这个世界。这里保存关于视觉小说、东方Project与文本的思考。</p>
+      <div class="writing-introduction"><p class="page-hero-description">物理追问世界如何运行，文学追问我们如何感受、记忆并讲述这个世界。从一篇评论到一本整理稿，让阅读留下可以翻阅的形状。</p><a class="writing-index-link" href="#writing-index">浏览全部 {posts.length} 篇文字 <span aria-hidden="true">↓</span></a></div>
     </div>
   </header>
-  <section class="page-content">
-    <div class="page-controls"><span class="page-count">{String(posts.length).padStart(2, '0')} ESSAYS</span></div>
+  <section class="writing-features page-width" aria-labelledby="writing-features-title">
+    <header class="writing-section-heading"><h2 id="writing-features-title">先翻开这两页</h2><p>SELECTED WORK / 文字与排印</p></header>
+    <div class="writing-feature-grid">
+      <article class="writing-feature writing-feature-essay" aria-labelledby="writing-essay-title">
+        <figure>
+          <a class="writing-stage writing-stage-essay" href="/blog/invisible-distance/" aria-label="阅读《看不见的远方》与刊载档案">
+            <span class="writing-stage-label">01 / BACKLOG VOL.2</span>
+            <img src="/images/works/invisible-distance/article-opening.jpg" alt="《Backlog Vol.2》中《看不见的远方》的第 62—63 页刊载跨页" width="1800" height="1240" loading="eager" decoding="async" />
+            <span class="writing-stage-caption">从一次观看，走向一篇评论。</span>
+          </a>
+          <figcaption>亚略 Ar 撰文 <span>刊载于《Backlog Vol.2》，第 62—70 页</span></figcaption>
+        </figure>
+        <div class="writing-feature-copy">
+          <p class="writing-feature-category">文学批评 <span>《120日元之冬》</span></p>
+          <h3 id="writing-essay-title"><a href="/blog/invisible-distance/">看不见的远方</a></h3>
+          <p>在 120 日元的价差里，触摸可见性的盲点。借梅洛-庞蒂与德里达的视觉思想，重读慢车、碎镜片与红绿微光之间的旅程。</p>
+          <a class="writing-feature-link" href="/blog/invisible-distance/">读正文与刊载书页 <span aria-hidden="true">↗</span></a>
+        </div>
+      </article>
+      <article class="writing-feature writing-feature-edition" aria-labelledby="writing-edition-title">
+        <figure>
+          <a class="writing-stage writing-stage-edition" href="/blog/latex-touhou-typesetting/" aria-label="查看《东方紫雨幽蝶》个人整理版档案">
+            <span class="writing-stage-label">02 / A PERSONAL EDITION</span>
+            <div class="writing-book-pages"><img src="/images/works/ziyudie/front-cover.webp" alt="《东方紫雨幽蝶》个人整理版封面" width="1055" height="1491" loading="eager" decoding="async" /><img src="/images/works/ziyudie/chapter-01.webp" alt="第一章章首的 LaTeX 排印版式" width="1108" height="1571" loading="lazy" decoding="async" /></div>
+            <span class="writing-stage-caption">A5 · 88 章 · 1293 页</span>
+          </a>
+          <figcaption>原作 coolcate <span>亚略 Ar 整理校订、排印与版式设计</span></figcaption>
+        </figure>
+        <div class="writing-feature-copy">
+          <p class="writing-feature-category">文本校订 · LaTeX 排印 <span>v2.0 · 个人整理版</span></p>
+          <h3 id="writing-edition-title"><a href="/blog/latex-touhou-typesetting/">东方紫雨幽蝶</a></h3>
+          <p>将第一部〈白玉楼阁〉整理成可以久读的 A5 数字合订本。从断行与标点，到目录、章首与正文，重新安放长篇文字的阅读节奏。</p>
+          <div class="writing-feature-actions"><a class="writing-feature-link" href="/blog/latex-touhou-typesetting/">看整理与排印档案 <span aria-hidden="true">↗</span></a><a class="writing-chapter-link" href="/library/ziyudie/">进入分章阅读 <span aria-hidden="true">→</span></a></div>
+        </div>
+      </article>
+    </div>
+  </section>
+  <section class="page-content writing-index" id="writing-index" aria-labelledby="writing-index-title">
+    <div class="page-controls"><h2 id="writing-index-title">全部文字</h2><span class="page-count">{String(posts.length).padStart(2, '0')} ESSAYS</span></div>
     {posts.map((post, index) => <ArticleRow post={post} number={String(index + 1).padStart(2, '0')} />)}
   </section>
+  </div>
 </BaseLayout>

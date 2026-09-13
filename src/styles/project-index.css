@@ -1,0 +1,27 @@
+.project-selections { margin-bottom: 64px; }
+.project-selections > header { margin-bottom: 28px; }
+.project-selections > header .eyebrow { margin-top: 0; }
+.project-selections h2 { margin: 12px 0 0; font-size: clamp(24px, 3vw, 32px); font-weight: 500; line-height: 1.5; }
+.project-selection-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+.project-selection { display: flex; min-width: 0; flex-direction: column; color: var(--ink); }
+.project-selection-image { display: grid; place-items: center; aspect-ratio: 1.42; padding: 14px; border: 1px solid var(--line); background: #fff; }
+.project-selection-image img { display: block; width: 100%; height: 100%; min-height: 0; object-fit: contain; }
+.project-selection-copy { position: relative; flex: 1; padding: 20px 24px 18px 0; border-bottom: 1px solid var(--line); }
+.project-selection-copy > span { color: var(--ink-soft); font: 400 10px/1.7 var(--mono); letter-spacing: .05em; }
+.project-selection-copy h3 { margin: 12px 0 10px; font-size: clamp(17px, 1.5vw, 21px); font-weight: 500; line-height: 1.7; }
+.project-selection-copy p { margin: 0; color: var(--ink-soft); font-size: 11px; line-height: 1.9; }
+.project-selection-copy b { position: absolute; right: 0; top: 56px; color: var(--red); font-size: 18px; font-weight: 400; }
+.project-selection:hover h3, .project-copy h3 a:hover { color: var(--red); }
+.project-selection:hover .project-selection-image { border-color: var(--red); }
+.project-selection:focus-visible, .project-copy h3 a:focus-visible, .project-links a:focus-visible { outline: 2px solid var(--red); outline-offset: 5px; }
+.project-copy h3 a { display: inline-block; padding-block: 5px; margin-block: -5px; }
+.project-result .project-links a { display: inline-flex; min-height: 44px; align-items: center; }
+@media (max-width: 760px) {
+  .project-selections { margin-bottom: 44px; }
+  .project-selections > header { margin-bottom: 22px; }
+  .project-selection-grid { grid-template-columns: 1fr; gap: 24px; }
+  .project-selection-image { aspect-ratio: 1.8; }
+  .project-selection-copy { padding-block: 16px 20px; }
+  .project-selection-copy h3 { margin-block: 8px; font-size: 21px; }
+  .project-selection-copy b { top: 46px; }
+}

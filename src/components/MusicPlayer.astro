@@ -26,6 +26,8 @@ const serializedConfig = JSON.stringify({
       data-music-toggle
       aria-expanded="false"
       aria-controls="night-signal-panel"
+      aria-label="打开音乐播放器"
+      title="打开音乐播放器"
     >
       <span class="signal-orbit" aria-hidden="true"><i></i><i></i></span>
       <span class="music-open-copy">
@@ -837,6 +839,14 @@ const serializedConfig = JSON.stringify({
       const expand = panel.hidden !== false;
       setExpanded(expand, true, expand);
     }));
+    dock.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !panel.hidden) {
+        event.preventDefault();
+        setExpanded(false);
+      }
+    });
+    // Keep audio playing across navigation while freeing the next page for reading.
+    document.addEventListener('astro:before-swap', () => setExpanded(false));
     playButtons.forEach(button => button.addEventListener('click', () => { void togglePlay(); }));
     previousButton?.addEventListener('click', () => {
       if (audio.currentTime > 3) {

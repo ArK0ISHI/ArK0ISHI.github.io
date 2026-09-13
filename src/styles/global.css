@@ -269,13 +269,14 @@ main { position: relative; z-index: 1; min-height: 70vh; overflow: hidden; }
   .header-inner { grid-template-columns: 1fr auto; height: 70px; }
   .desktop-nav { display: none; }
   .menu-button { display: grid; }
-  .mobile-nav { position: fixed; inset: 70px 0 0; padding: 32px max(16px, calc((100vw - 720px) / 2)); background: var(--paper); }
+  .mobile-nav { position: fixed; inset: 70px 0 auto; height: calc(100dvh - 70px); overflow-y: auto; overscroll-behavior: contain; padding: 16px max(16px, calc((100vw - 720px) / 2)) max(24px, env(safe-area-inset-bottom)); background: var(--paper); color: var(--ink); }
   .mobile-nav:not([hidden]) { display: block; }
   .mobile-link { display: grid; grid-template-columns: 42px 1fr auto; align-items: baseline; padding: 18px 0; border-bottom: 1px solid var(--line); }
   .mobile-link small, .mobile-link em { color: var(--ink-soft); font: 300 9px/1 var(--mono); letter-spacing: .1em; font-style: normal; text-transform: uppercase; }
   .mobile-link span { font-size: 24px; }
   .mobile-link.active span { color: var(--red); }
   body.menu-open { overflow: hidden; }
+  body.menu-open .site-header .mobile-nav a:focus-visible { outline: 2px solid var(--red); outline-offset: -2px; }
   .project-row { grid-template-columns: 52px minmax(0, 1fr); }
   .project-result { grid-column: 2; border-left: 0; border-top: 1px solid var(--line); padding: 16px 0 0; }
   .footer-grid { grid-template-columns: 1fr 1fr; }

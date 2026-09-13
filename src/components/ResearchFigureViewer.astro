@@ -1,0 +1,99 @@
+---
+import '../styles/research-figures.css';
+---
+
+<dialog class="figure-viewer" data-figure-viewer aria-labelledby="figure-viewer-title" aria-describedby="figure-viewer-caption">
+  <header class="figure-viewer-toolbar">
+    <h2 id="figure-viewer-title">图表细读</h2>
+    <div class="figure-viewer-actions">
+      <button type="button" data-figure-zoom aria-pressed="false">原尺寸</button>
+      <a data-figure-original target="_blank" rel="noopener noreferrer">打开原图 <span aria-hidden="true">↗</span><span class="sr-only">（新窗口）</span></a>
+      <button type="button" data-figure-close autofocus aria-label="关闭图表，返回文章">关闭 <span aria-hidden="true">×</span></button>
+    </div>
+  </header>
+  <div class="figure-viewer-stage" data-figure-stage tabindex="0" role="region" aria-label="图表；原尺寸下可滚动查看细节">
+    <img data-figure-image alt="" />
+  </div>
+  <div class="figure-viewer-caption" id="figure-viewer-caption" data-figure-caption></div>
+  <p class="figure-viewer-hint" data-figure-hint aria-live="polite">选择“原尺寸”查看坐标与图例细节。</p>
+</dialog>
+
+<script>
+  const figureWindow = window as Window & { __arFigureController?: AbortController };
+
+  function setupResearchFigures() {
+    figureWindow.__arFigureController?.abort();
+    const controller = new AbortController();
+    figureWindow.__arFigureController = controller;
+    const { signal } = controller;
+    const dialog = document.querySelector<HTMLDialogElement>('[data-figure-viewer]');
+    const image = dialog?.querySelector<HTMLImageElement>('[data-figure-image]');
+    const caption = dialog?.querySelector<HTMLElement>('[data-figure-caption]');
+    const stage = dialog?.querySelector<HTMLElement>('[data-figure-stage]');
+    const original = dialog?.querySelector<HTMLAnchorElement>('[data-figure-original]');
+    const zoom = dialog?.querySelector<HTMLButtonElement>('[data-figure-zoom]');
+    const close = dialog?.querySelector<HTMLButtonElement>('[data-figure-close]');
+    const hint = dialog?.querySelector<HTMLElement>('[data-figure-hint]');
+    if (!dialog || !image || !caption || !stage || !original || !zoom || !close || !hint) return;
+
+    let opener: HTMLButtonElement | undefined;
+    const setZoom = (enlarged: boolean) => {
+      dialog.dataset.zoomed = String(enlarged);
+      zoom.setAttribute('aria-pressed', String(enlarged));
+      zoom.textContent = enlarged ? '适应屏幕' : '原尺寸';
+      hint.textContent = enlarged ? '滑动或滚动查看图表各处；也可打开原图继续放大。' : '选择“原尺寸”查看坐标与图例细节。';
+      stage.scrollTo(0, 0);
+    };
+
+    document.querySelectorAll<HTMLImageElement>('.prose figure > img, .prose figure > .research-figure-open > img').forEach((source, index) => {
+      const figure = source.closest('figure');
+      if (!figure) return;
+      const sourceCaption = figure.querySelector('figcaption');
+      let button = source.parentElement instanceof HTMLButtonElement ? source.parentElement : undefined;
+      if (!button) {
+        button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'research-figure-open';
+        button.setAttribute('aria-label', `放大查看：${source.alt || `图 ${index + 1}`}`);
+        button.setAttribute('aria-haspopup', 'dialog');
+        const label = document.createElement('span');
+        label.className = 'research-figure-label';
+        label.textContent = '放大查看 ↗';
+        label.setAttribute('aria-hidden', 'true');
+        source.before(button);
+        button.append(source, label);
+      }
+      button.addEventListener('click', () => {
+        opener = button;
+        image.src = source.currentSrc || source.src;
+        image.alt = source.alt;
+        original.href = image.src;
+        stage.style.setProperty('--figure-width', `${source.naturalWidth || source.width}px`);
+        caption.replaceChildren(...(sourceCaption ? [...sourceCaption.childNodes].map(node => node.cloneNode(true)) : [document.createTextNode(source.alt)]));
+        setZoom(false);
+        dialog.showModal();
+        close.focus();
+      }, { signal });
+    });
+
+    image.addEventListener('load', () => stage.style.setProperty('--figure-width', `${image.naturalWidth}px`), { signal });
+    zoom.addEventListener('click', () => setZoom(dialog.dataset.zoomed !== 'true'), { signal });
+    close.addEventListener('click', () => dialog.close(), { signal });
+    dialog.addEventListener('click', event => {
+      if (event.target !== dialog) return;
+      const bounds = dialog.getBoundingClientRect();
+      if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) dialog.close();
+    }, { signal });
+    dialog.addEventListener('close', () => {
+      setZoom(false);
+      if (opener?.isConnected) opener.focus({ preventScroll: true });
+    }, { signal });
+    document.addEventListener('astro:before-swap', () => {
+      if (dialog.open) dialog.close();
+      controller.abort();
+    }, { once: true, signal });
+  }
+
+  document.addEventListener('astro:page-load', setupResearchFigures);
+  setupResearchFigures();
+</script>

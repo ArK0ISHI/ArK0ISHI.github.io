@@ -16,5 +16,6 @@ export const navItems = [
   { href: '/projects/', label: '项目', en: 'Projects' },
   { href: '/writing/', label: '写作', en: 'Writing' },
   { href: '/library/', label: '书架', en: 'Library' },
+  { href: '/light-notes/', label: '光影', en: 'Photos' },
   { href: '/about/', label: '关于', en: 'About' },
 ];

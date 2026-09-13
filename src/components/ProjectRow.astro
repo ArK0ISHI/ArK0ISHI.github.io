@@ -2,13 +2,14 @@
 import type { Project } from '../data/projects';
 interface Props { project: Project; }
 const { project } = Astro.props;
+const titleHref = project.articleHref ?? project.detailHref;
 ---
 
 <article class="project-row" id={project.id}>
   <div class="project-number">{project.number}</div>
   <div class="project-copy">
     <p class="project-subtitle">{project.subtitle}</p>
-    <h3>{project.title}</h3>
+    <h3>{titleHref ? <a href={titleHref}>{project.title}</a> : project.title}</h3>
     <p>{project.description}</p>
     <div class="tag-list">
       {project.tags.map(tag => <span>#{tag}</span>)}

@@ -127,6 +127,15 @@ const gallery = [
       </div>
 
       <div class="work-reading-layout" data-work-reader data-reading-size="standard">
+        <button class="work-chapter-toggle" type="button" data-reading-chapters-open aria-haspopup="dialog" aria-controls="work-chapter-dialog" hidden>
+          <span>正文目录</span><small data-reading-mobile-percent>0%</small><span aria-hidden="true">↑</span>
+        </button>
+        <dialog class="work-chapter-dialog" id="work-chapter-dialog" aria-labelledby="work-chapter-dialog-title" data-reading-chapters>
+          <header><div><p>CONTENTS / 夜读</p><h2 id="work-chapter-dialog-title">换一个章节</h2></div><button type="button" data-reading-chapters-close aria-label="关闭正文目录">关闭</button></header>
+          <nav aria-label="快速选择正文章节">
+            {readingHeadings.map((heading, index) => <a href={`#${heading.slug}`} data-reading-mobile-link><small>{String(index + 1).padStart(2, '0')}</small><span>{heading.text}</span><span aria-hidden="true">↗</span></a>)}
+          </nav>
+        </dialog>
         <aside class="work-reading-sidebar" aria-label="阅读辅助">
           <div class="work-reading-tools" data-reading-tools hidden>
             <div class="work-reading-progress-label"><span>阅读进度</span><span data-reading-percent>0%</span></div>
@@ -262,8 +271,15 @@ const gallery = [
     const buttons = [...root.querySelectorAll<HTMLButtonElement>('[data-reading-size-option]')];
     const links = [...root.querySelectorAll<HTMLAnchorElement>('[data-reading-section-link]')];
     const sections = links.map(link => document.getElementById(decodeURIComponent(link.hash.slice(1))));
+    const chapterButton = root.querySelector<HTMLButtonElement>('[data-reading-chapters-open]');
+    const chapterDialog = root.querySelector<HTMLDialogElement>('[data-reading-chapters]');
+    const mobilePercent = root.querySelector<HTMLElement>('[data-reading-mobile-percent]');
+    const mobileLinks = [...root.querySelectorAll<HTMLAnchorElement>('[data-reading-mobile-link]')];
     const narrow = window.matchMedia('(max-width: 980px)');
-    const syncToc = () => { if (toc) toc.open = !narrow.matches; };
+    const syncToc = () => {
+      if (toc) toc.open = !narrow.matches;
+      if (!narrow.matches) chapterDialog?.close();
+    };
     syncToc();
     narrow.addEventListener('change', syncToc, { signal });
 
@@ -276,6 +292,8 @@ const gallery = [
       const value = Math.round(Math.max(0, Math.min(1, (offset - rect.top) / distance)) * 100);
       if (progress) progress.value = value;
       if (percent) percent.textContent = `${value}%`;
+      if (mobilePercent) mobilePercent.textContent = `${value}%`;
+      if (chapterButton) chapterButton.hidden = !narrow.matches || rect.top > 100 || rect.bottom < 140;
       let active = 0;
       sections.forEach((section, index) => { if (section && section.getBoundingClientRect().top <= offset + 16) active = index; });
       links.forEach((link, index) => {
@@ -283,6 +301,11 @@ const gallery = [
         else link.removeAttribute('aria-current');
       });
       if (current) current.textContent = links[active]?.textContent ?? '';
+      mobileLinks.forEach((link, index) => {
+        if (index === active) link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
+      });
+      chapterButton?.setAttribute('aria-label', `打开正文目录，当前${links[active]?.textContent ?? ''}，已读 ${value}%`);
     };
     const schedule = () => { if (!frame) frame = requestAnimationFrame(update); };
     const setSize = (size: string) => {
@@ -300,6 +323,22 @@ const gallery = [
       const heading = sections[index];
       heading?.setAttribute('tabindex', '-1');
       heading?.focus({ preventScroll: true });
+      schedule();
+    }, { signal }));
+    chapterButton?.addEventListener('click', () => {
+      chapterDialog?.showModal();
+      chapterDialog?.querySelector<HTMLAnchorElement>('[aria-current="location"]')?.focus();
+    }, { signal });
+    root.querySelector('[data-reading-chapters-close]')?.addEventListener('click', () => chapterDialog?.close(), { signal });
+    chapterDialog?.addEventListener('click', event => { if (event.target === chapterDialog) chapterDialog.close(); }, { signal });
+    mobileLinks.forEach((link, index) => link.addEventListener('click', event => {
+      event.preventDefault();
+      chapterDialog?.close();
+      const heading = sections[index];
+      heading?.setAttribute('tabindex', '-1');
+      heading?.focus({ preventScroll: true });
+      heading?.scrollIntoView({ behavior: 'instant', block: 'start' });
+      history.replaceState(history.state, '', link.hash);
       schedule();
     }, { signal }));
     window.addEventListener('scroll', schedule, { passive: true, signal });

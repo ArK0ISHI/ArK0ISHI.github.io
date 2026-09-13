@@ -2,6 +2,13 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProjectRow from '../../components/ProjectRow.astro';
 import { projects } from '../../data/projects';
+import '../../styles/project-index.css';
+
+const selectedStudies = [
+  { id: 'magnetic-mirror-orbits', image: '/images/projects/magnetic-mirror-orbits/particle-orbits.webp', alt: '双线圈磁镜场内三种尺度的粒子轨道', label: '磁镜与粒子', question: '一颗粒子，会被磁场留住吗？', width: 2000, height: 732 },
+  { id: 'huashu-cup-a-2026', image: '/images/projects/huashu-cup-a-2026/reconstructed-trajectory.webp', alt: '根据双视角视频重建的任意球三维轨迹', label: '任意球轨迹', question: '二维画面，怎样还原一次飞行？', width: 1675, height: 740 },
+  { id: 'pf2-error-field', image: '/images/projects/pf2-error-field/error-field-slices.webp', alt: 'PF2 线圈平移引起的三维误差磁场切片', label: 'PF2 误差场', question: '一厘米的偏移，留下怎样的场？', width: 2000, height: 1348 },
+].map(study => ({ ...study, project: projects.find(project => project.id === study.id)! }));
 ---
 
 <BaseLayout title="项目" description="亚略Ar的科研项目、课程大作业、网页与工具。">
@@ -12,6 +19,17 @@ import { projects } from '../../data/projects';
     </div>
   </header>
   <section class="page-content">
+    <section class="project-selections" aria-labelledby="project-selections-title">
+      <header><p class="eyebrow">SELECTED STUDIES / 研究选读</p><h2 id="project-selections-title">从一张图，进入研究。</h2></header>
+      <div class="project-selection-grid">
+        {selectedStudies.map(study => (
+          <a class="project-selection" href={study.project.articleHref}>
+            <div class="project-selection-image"><img src={study.image} alt={study.alt} width={study.width} height={study.height} loading="lazy" decoding="async" /></div>
+            <div class="project-selection-copy"><span>{study.project.number} / {study.label}</span><h3>{study.question}</h3><p>{study.project.title}</p><b aria-hidden="true">↗</b></div>
+          </a>
+        ))}
+      </div>
+    </section>
     <div class="page-controls"><span class="page-count">{String(projects.length).padStart(2, '0')} PROJECTS</span><span class="eyebrow">CONTINUING ARCHIVE / 持续整理</span></div>
     {projects.map(project => <ProjectRow project={project} />)}
   </section>

@@ -158,7 +158,11 @@ $$
 
 <figure>
   <img src="/images/projects/pf2-error-field/error-field-streamlines.webp" alt="y 等于零截面上的误差磁场分布和投影场线" width="2000" height="1044" loading="lazy" decoding="async" />
-  <figcaption>图 4　$y=0$ 截面上的误差场与投影场线。方向图补充了强度云图没有表达的矢量信息。</figcaption>
+  <figcaption>
+
+图 4　$y=0$ 截面上的误差场与投影场线。方向图补充了强度云图没有表达的矢量信息。
+
+  </figcaption>
 </figure>
 
 ## 换到柱坐标观察
@@ -181,7 +185,11 @@ $$
 
 <figure>
   <img src="/images/projects/pf2-error-field/cylindrical-components.webp" alt="固定圆周上误差磁场的径向、环向和垂直分量随角度变化" width="2000" height="614" loading="lazy" decoding="async" />
-  <figcaption>图 5　固定圆周上的 $\Delta B_R$、$\Delta B_\phi$ 与 $\Delta B_Z$。曲线的相位记录了水平位移的方向。</figcaption>
+  <figcaption>
+
+图 5　固定圆周上的 $\Delta B_R$、$\Delta B_\phi$ 与 $\Delta B_Z$。曲线的相位记录了水平位移的方向。
+
+  </figcaption>
 </figure>
 
 ## $n=1$ 从哪里来
@@ -206,7 +214,11 @@ $\cos\phi$ 对应环向模数 $n=1$。若位移转到 $y$ 方向，一阶项变�
 
 <figure>
   <img src="/images/projects/pf2-error-field/toroidal-spectrum.webp" alt="固定圆周上的误差磁场角分布和环向傅里叶幅值谱" width="2000" height="1528" loading="lazy" decoding="async" />
-  <figcaption>图 6　角向分布与傅里叶谱。$n=1$ 幅值比 $n=0$、$n=2$ 高约四个数量级。</figcaption>
+  <figcaption>
+
+图 6　角向分布与傅里叶谱。$n=1$ 幅值比 $n=0$、$n=2$ 高约四个数量级。
+
+  </figcaption>
 </figure>
 
 这个结果把三维云图中的方向性压缩成一组可比较的数字。位移方向改变时，$n=1$ 的相位会随之转动；位移量保持在线性区间时，其幅值应近似正比于 $d$。

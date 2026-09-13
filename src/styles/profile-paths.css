@@ -43,3 +43,12 @@
 @media (prefers-reduced-motion: reduce) {
   .profile-reading-routes a { transition: none; }
 }
+.profile-about .about-lead { padding-top: 24px; }
+@media (max-width: 600px) {
+  .page-content.profile-about { margin-top: 30px; }
+  .profile-about .about-lead { padding-top: 0; gap: 26px; }
+  .profile-about .about-aside { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 16px; font-size: 10px; line-height: 1.9; }
+  .profile-about .about-keywords strong { margin-top: 0; }
+  .profile-about .about-aside p:last-child { margin-bottom: 0; }
+  .profile-about .about-copy > p:first-child::first-letter { float: none; margin: 0; color: inherit; font: inherit; }
+}

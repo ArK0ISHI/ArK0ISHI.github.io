@@ -1,5 +1,7 @@
 ---
 import { navItems, site } from '../data/site';
+import { Image } from 'astro:assets';
+import avatar from '../assets/avatar.jpg';
 
 const pathname = Astro.url.pathname;
 const isHome = pathname === '/';
@@ -10,7 +12,7 @@ const isActive = (href: string) => href === '/' ? pathname === '/' : pathname.st
   <a class="skip-link" href="#main">跳至正文</a>
   <div class="header-inner">
     <a class="brand" href="/" aria-label={`${site.name} 首页`}>
-      <span class="brand-mark">Ar</span>
+      <span class="brand-mark" aria-hidden="true"><Image src={avatar} width={96} height={96} widths={[48, 96]} sizes="42px" format="webp" quality={90} alt="" loading="eager" decoding="async" /></span>
       <span class="brand-name">亚略<span>Ar</span></span>
     </a>
 

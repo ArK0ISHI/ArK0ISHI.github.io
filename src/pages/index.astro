@@ -53,17 +53,17 @@ const honors = [
         <p>有时推导，有时回望。<br />把暂时想清楚的，认真写下来。</p>
       </header>
       <div class="reading-toolbar">
-        <div class="reading-filters" aria-label="文章分类">
-          <button type="button" aria-pressed="true" data-reading-filter="all">全部</button>
-          <button type="button" aria-pressed="false" data-reading-filter="note">物理与计算</button>
-          <button type="button" aria-pressed="false" data-reading-filter="writing">文学与随笔</button>
+        <div class="reading-filters" role="group" aria-label="文章分类">
+          <button type="button" aria-pressed="true" aria-controls="home-reading-results" data-reading-filter="all">全部</button>
+          <button type="button" aria-pressed="false" aria-controls="home-reading-results" data-reading-filter="note">物理与计算</button>
+          <button type="button" aria-pressed="false" aria-controls="home-reading-results" data-reading-filter="writing">文学与随笔</button>
         </div>
         <p class="reading-count" role="status" aria-live="polite" data-reading-count>{posts.length} 篇文字</p>
       </div>
-      <div class="edition-articles">
+      <div id="home-reading-results" class="edition-articles">
         {posts.map((post, index) => <div data-reading-item data-kind={post.data.kind}><ArticleRow post={post} number={String(index + 1).padStart(2, '0')} /></div>)}
       </div>
-      <div class="reading-more-row"><button class="reading-more" type="button" data-reading-more hidden>展开其余文章</button><a class="edition-text-link" href="/rss.xml">通过 RSS 订阅更新</a></div>
+      <div class="reading-more-row"><button class="reading-more" type="button" aria-controls="home-reading-results" data-reading-more hidden>展开其余文章</button><a class="edition-text-link" href="/rss.xml">通过 RSS 订阅更新</a></div>
     </section>
     <section class="edition-afterword page-width" aria-labelledby="afterword-title" data-reveal>
       <p class="edition-kicker">THE ROOM STAYS OPEN / 页末</p>
@@ -92,17 +92,34 @@ const honors = [
     const count = root.querySelector<HTMLElement>('[data-reading-count]');
     let kind = 'all';
     let expanded = false;
-    const update = () => {
+    const update = (updateUrl = false) => {
       const matches = items.filter(item => kind === 'all' || item.dataset.kind === kind);
       const shown = expanded ? matches : matches.slice(0, 4);
       items.forEach(item => { item.hidden = !shown.includes(item); });
       filters.forEach(filter => filter.setAttribute('aria-pressed', String(filter.dataset.readingFilter === kind)));
       if (count) count.textContent = `显示 ${shown.length} / ${matches.length} 篇`;
       if (more) { more.hidden = matches.length <= 4; more.textContent = expanded ? '收起文章' : `展开其余 ${matches.length - 4} 篇`; more.setAttribute('aria-expanded', String(expanded)); }
+      if (updateUrl) {
+        const url = new URL(location.href);
+        if (kind === 'all') url.searchParams.delete('reading');
+        else url.searchParams.set('reading', kind);
+        if (expanded && matches.length > 4) url.searchParams.set('reading-expanded', '1');
+        else url.searchParams.delete('reading-expanded');
+        history.replaceState(history.state, '', url);
+      }
     };
-    filters.forEach(filter => filter.addEventListener('click', () => { kind = filter.dataset.readingFilter ?? 'all'; expanded = false; update(); }, { signal: controller.signal }));
-    more?.addEventListener('click', () => { expanded = !expanded; update(); if (!expanded) root.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'start' }); }, { signal: controller.signal });
-    update();
+    const restore = () => {
+      const params = new URL(location.href).searchParams;
+      const requested = params.get('reading') ?? 'all';
+      kind = filters.some(filter => filter.dataset.readingFilter === requested) ? requested : 'all';
+      expanded = params.get('reading-expanded') === '1';
+      update();
+    };
+    filters.forEach(filter => filter.addEventListener('click', () => { kind = filter.dataset.readingFilter ?? 'all'; expanded = false; update(true); }, { signal: controller.signal }));
+    more?.addEventListener('click', () => { expanded = !expanded; update(true); if (!expanded) root.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'start' }); }, { signal: controller.signal });
+    window.addEventListener('popstate', restore, { signal: controller.signal });
+    document.addEventListener('astro:before-swap', () => controller.abort(), { once: true, signal: controller.signal });
+    restore();
   }
   document.addEventListener('astro:page-load', setupReadingRoom);
   setupReadingRoom();

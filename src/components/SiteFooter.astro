@@ -9,25 +9,28 @@ const year = new Date().getFullYear();
     <div>
       <a class="footer-brand" href="/">亚略<span>Ar</span></a>
       <p>{site.description}</p>
-      <p class="footer-letter">谢谢你走到这一页的灯尽头。愿知识有尺度，故事有温度，远方也有人同行。</p>
+      <p class="footer-letter">谢谢你读到这里。愿知识有尺度，故事有温度，远方也有人同行。</p>
     </div>
-    <div class="footer-index">
+    <nav class="footer-index" aria-label="页脚栏目导航">
       <p class="eyebrow">INDEX / 索引</p>
-      <a href="/notes/">物理与技术笔记</a>
-      <a href="/writing/">文学与幻想叙事</a>
-      <a href="/light-notes/">光影与旅途札记</a>
-      <a href="/projects/">项目档案</a>
-      <a href="/experience/">经历与公开边界</a>
-    </div>
+      <div class="footer-index-links">
+        <a href="/notes/">物理与技术笔记</a>
+        <a href="/projects/">项目与研究档案</a>
+        <a href="/writing/">文学与幻想叙事</a>
+        <a href="/library/">书架与长篇阅读</a>
+        <a href="/light-notes/">光影与旅途札记</a>
+        <a href="/about/">关于亚略 Ar</a>
+      </div>
+    </nav>
     <div class="footer-meta">
       <p class="eyebrow">COORDINATES / 坐标</p>
       <p>SHANGHAI · 31° N</p>
-      <p>Shanghai, China</p>
+      <a class="footer-experience" href="/experience/">经历与公开边界 <span aria-hidden="true">↗</span></a>
     </div>
   </div>
   <div class="footer-bottom page-width">
     <span>© {year} 亚略Ar</span>
-    <span>Built with Astro · Written in Markdown</span>
-    <span class="footer-links"><a href="/rss.xml">RSS</a><a href="#main">回到页首 ↑</a></span>
+    <span class="footer-signature">物理 · 写作 · 光影</span>
+    <span class="footer-links"><a href="/rss.xml" aria-label="通过 RSS 订阅文章更新">RSS 订阅</a><a href="#main">回到页首 ↑</a></span>
   </div>
 </footer>

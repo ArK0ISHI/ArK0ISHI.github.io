@@ -363,6 +363,45 @@ body.home-a-visible .music-dock:not(.is-expanded) {
   .site-header.is-home:not(.scrolled) .theme-toggle { display: grid; }
 }
 
+/* Give the tablet cover a real second row, so live signals never cover its links. */
+@media (min-width: 681px) and (max-width: 900px) {
+  .home-a-scene {
+    height: auto;
+    min-height: calc(100svh - 136px);
+    display: grid;
+    grid-template-rows: 1fr auto;
+    gap: 44px;
+    padding: 150px 5.5vw 76px;
+  }
+  .home-a-copy { position: relative; inset: auto; width: min(620px, 100%); }
+  .home-a-signals {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: 24px;
+    padding: 0 16px;
+  }
+  .home-a-music { min-width: 0; align-content: center; }
+  .home-a-track-meta { grid-column: 1 / -1; }
+  .home-a-scroll { bottom: 13px; }
+  .home-a-threshold { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .home-a-threshold-title {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 54px;
+    padding: 12px 0;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .home-a-threshold-title strong { margin: 0; }
+  .home-a-threshold > a { padding: 20px 12px; }
+}
+
 @media (max-width: 680px) {
   .home-a { min-height: auto; }
   .home-a-scene { height: 720px; min-height: 0; }

@@ -3,20 +3,23 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ArticleRow from '../../components/ArticleRow.astro';
 import HandbookFeature from '../../components/HandbookFeature.astro';
+import MarginaliaFeature from '../../components/MarginaliaFeature.astro';
+import ReadingCollaboration from '../../components/ReadingCollaboration.astro';
 import '../../styles/writing.css';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft && data.kind === 'writing'))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 ---
 
-<BaseLayout title="写作" description="文学评论、视觉小说、东方Project与零散随笔。">
+<BaseLayout title="写作" description="文学评论、东方同人与秘封故事的阅读边注，以及评读、文字校订与书籍排印。">
   <div class="writing-room">
   <header class="page-hero writing-hero">
     <div class="page-hero-grid">
       <div><p class="eyebrow">WRITING / 写作</p><h1>记忆、幻想<br />与<em>叙事</em></h1></div>
-      <div class="writing-introduction"><p class="page-hero-description">物理追问世界如何运行，文学追问我们如何感受、记忆并讲述这个世界。从一篇评论到一本整理稿，让阅读留下可以翻阅的形状。</p><a class="writing-index-link" href="#writing-index">浏览全部 {posts.length} 篇文字 <span aria-hidden="true">↓</span></a></div>
+      <div class="writing-introduction"><p class="page-hero-description">物理追问世界如何运行，文学追问我们如何感受、记忆并讲述这个世界。从页边的几行观察，到一篇评论、一本整理稿，让阅读留下可以翻阅的形状。</p><a class="writing-index-link" href="#writing-index">浏览全部 {posts.length} 篇文字 <span aria-hidden="true">↓</span></a></div>
     </div>
   </header>
+  <div class="page-width"><MarginaliaFeature variant="writing" /></div>
   <section class="writing-features page-width" aria-labelledby="writing-features-title">
     <header class="writing-section-heading"><h2 id="writing-features-title">从文字，到可以翻阅的作品</h2><p>SELECTED WORK / 文字与排印</p></header>
     <div class="writing-feature-grid">
@@ -54,7 +57,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft && data.kin
       </article>
     </div>
   </section>
-  <div class="page-width"><HandbookFeature /></div>
+  <div class="page-width"><ReadingCollaboration headingId="writing-collaboration-title" /><HandbookFeature /></div>
   <section class="page-content writing-index" id="writing-index" aria-labelledby="writing-index-title">
     <div class="page-controls"><h2 id="writing-index-title">全部文字</h2><span class="page-count">{String(posts.length).padStart(2, '0')} ESSAYS</span></div>
     {posts.map((post, index) => <ArticleRow post={post} number={String(index + 1).padStart(2, '0')} />)}

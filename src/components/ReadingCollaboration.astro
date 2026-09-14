@@ -1,0 +1,17 @@
+---
+import { collaborationCases } from '../data/marginalia';
+import '../styles/marginalia.css';
+interface Props { headingId?: string; }
+const { headingId = 'reading-collaboration-title' } = Astro.props;
+---
+<section class="reading-collaboration" aria-labelledby={headingId}>
+  <header class="marginalia-section-heading"><div><p class="marginalia-eyebrow">READING TOGETHER / 参与一部作品</p><h2 id={headingId}>把读到的地方，认真说给作者听。</h2></div><a class="marginalia-text-link" href="/blog/editing-without-erasing-voice/">读校订手记 <span aria-hidden="true">↗</span></a></header>
+  <div class="reading-collaboration-cases">
+    {collaborationCases.map((item, index) => (
+      <article class="reading-collaboration-case">
+        <p class="reading-collaboration-label"><span aria-hidden="true">0{index + 1}</span> {item.label}</p>
+        <h3>{item.title}</h3><p class="reading-collaboration-role">{item.role}</p><p class="reading-collaboration-description">{item.description}</p><p class="reading-collaboration-credit">{item.credit}</p><a class="marginalia-text-link" href={item.href}>{item.action} <span aria-hidden="true">↗</span></a>
+      </article>
+    ))}
+  </div>
+</section>

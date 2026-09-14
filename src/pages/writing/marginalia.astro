@@ -1,0 +1,97 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ReadingCollaboration from '../../components/ReadingCollaboration.astro';
+import { marginalia, marginaliaHref, readingWorks, type MarginaliaKind } from '../../data/marginalia';
+import '../../styles/marginalia.css';
+
+const featured = marginalia.find(note => note.number === '05')!;
+const categories: MarginaliaKind[] = ['叙事细读', '秘封札记', '听歌随笔', '校订手记'];
+---
+
+<BaseLayout title="阅读边注" description="把目光停下的地方，写在页边。东方同人、秘封专辑与音乐叙事的十则短笺，以及评读和文字校订的参与记录。">
+  <div class="marginalia-room" data-marginalia-room>
+    <header class="marginalia-hero page-width">
+      <div class="marginalia-hero-copy">
+        <p class="marginalia-eyebrow">MARGINALIA / 阅读边注</p>
+        <h1>把目光停下的地方，<br /><em>写在页边。</em></h1>
+        <p class="marginalia-intro">读到一个名字，听见一段旋律，或在一句话前停了一下。把这些细小的停顿留下来：有时是对叙事的追问，有时是幻想与科学的交会，也有时，只是想把一部喜欢的作品介绍给你。</p>
+        <nav class="marginalia-hero-links" aria-label="阅读边注页内导航">
+          <a href="#marginalia-notes">翻开十则短笺 <span aria-hidden="true">↓</span></a>
+          <a href="#marginalia-shelf">沿作品阅读 <span aria-hidden="true">↓</span></a>
+        </nav>
+      </div>
+      <aside class="marginalia-hero-note" aria-label="写在扉页">
+        <span class="marginalia-page-mark" aria-hidden="true">＊</span>
+        <p class="marginalia-hero-note-label">写在扉页</p>
+        <p>不必一口气读完。<br />从一个让你停下的<br />细节开始就好。</p>
+        <span class="marginalia-hero-note-sign">亚略 Ar / 页边留白</span>
+      </aside>
+    </header>
+
+    <section class="marginalia-featured page-width" aria-labelledby="marginalia-featured-title">
+      <div class="marginalia-window" aria-hidden="true">
+        <div class="marginalia-window-caption"><span>RETROSPECTIVE</span><span>53 MINUTES</span></div>
+        <div class="marginalia-window-frame"><div class="marginalia-window-scene"><i class="marginalia-moon"></i><i class="marginalia-mountain mountain-back"></i><i class="marginalia-mountain mountain-front"></i><i class="marginalia-horizon"></i></div></div>
+        <p>窗外的风景，<br /><span>也值得再问一次。</span></p>
+        <span class="marginalia-window-foot">卯酉东海道 / 窗边札记</span>
+      </div>
+      <div class="marginalia-featured-copy">
+        <p class="marginalia-eyebrow">从这里读起 <span>NOTE {featured.number}</span></p>
+        <span class="marginalia-work-label">{featured.kind} · 《{featured.work}》</span>
+        <h2 id="marginalia-featured-title"><a href={marginaliaHref(featured)}>万景幕：<br />一扇太懂乘客的窗</a></h2>
+        <p>{featured.description}</p>
+        <a class="marginalia-text-link" href={marginaliaHref(featured)}>坐到这扇窗边 <span aria-hidden="true">↗</span></a>
+        <small>{featured.spoiler}</small>
+      </div>
+    </section>
+
+    <section class="marginalia-notes page-width" id="marginalia-notes" aria-labelledby="marginalia-notes-title">
+      <header class="marginalia-section-heading">
+        <div><p class="marginalia-eyebrow">TEN NOTES / 十则短笺</p><h2 id="marginalia-notes-title">在一个细节旁，多停留一会儿。</h2></div>
+        <p>每篇沿一个问题展开，<br />留出继续回读的余地。</p>
+      </header>
+      <div class="marginalia-filter-bar" data-marginalia-controls hidden>
+        <div class="marginalia-filters" role="group" aria-label="按短笺类别筛选">
+          <button type="button" data-note-filter="all" aria-pressed="true" aria-controls="marginalia-note-list">全部 <span>{marginalia.length}</span></button>
+          {categories.map(kind => <button type="button" data-note-filter={kind} aria-pressed="false" aria-controls="marginalia-note-list">{kind} <span>{marginalia.filter(note => note.kind === kind).length}</span></button>)}
+        </div>
+        <p class="marginalia-count" role="status" aria-live="polite" aria-atomic="true" data-note-count>共 {marginalia.length} 则短笺</p>
+      </div>
+      <div class="marginalia-note-list" id="marginalia-note-list">
+        {marginalia.map(note => (
+          <article class="marginalia-note" data-note-kind={note.kind}>
+            <span class="marginalia-note-number" aria-hidden="true">{note.number}</span>
+            <div class="marginalia-note-body">
+              <p class="marginalia-note-meta"><span>{note.kind}</span><span>{note.work}</span></p>
+              <h3><a href={marginaliaHref(note)}>{note.title}<span class="marginalia-note-arrow" aria-hidden="true">↗</span></a></h3>
+              <p class="marginalia-note-description">{note.description}</p>
+              <p class="marginalia-spoiler">{note.spoiler}</p>
+            </div>
+            <p class="marginalia-note-margin">{note.line}</p>
+          </article>
+        ))}
+      </div>
+      <aside class="marginalia-reading-key" aria-label="关于这些边注">
+        <span aria-hidden="true">＊</span><p>涉及作品设定时，正文附有出处；由细节延伸出的判断，保留为我的阅读角度。秘封札记讨论的是器乐专辑及其附带故事，歌词随笔则另循歌中的声音展开。</p>
+      </aside>
+    </section>
+
+    <section class="marginalia-shelf page-width" id="marginalia-shelf" aria-labelledby="marginalia-shelf-title">
+      <header class="marginalia-section-heading">
+        <div><p class="marginalia-eyebrow">READING PATHS / 沿作品阅读</p><h2 id="marginalia-shelf-title">有些世界，愿意多待一会儿。</h2></div>
+        <p>从一部作品，<br />走进它旁边的短笺。</p>
+      </header>
+      <div class="marginalia-work-list">
+        {readingWorks.map((work, index) => (
+          <article class="marginalia-work">
+            <span class="marginalia-work-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+            <div><p class="marginalia-work-medium">{work.medium}</p><h3><a href={work.href}>{work.title}<span aria-hidden="true">↗</span></a></h3><p class="marginalia-work-subtitle">{work.subtitle}</p><p class="marginalia-work-creator">{work.creator}</p><p class="marginalia-work-note">{work.note}</p></div>
+          </article>
+        ))}
+      </div>
+    </section>
+    <div class="page-width"><ReadingCollaboration headingId="marginalia-collaboration-title" /></div>
+    <div class="marginalia-afterword page-width"><p>写在页边，也写给下一次回来的自己。</p><a class="marginalia-text-link" href="/writing/">回到写作室 <span aria-hidden="true">↗</span></a></div>
+  </div>
+</BaseLayout>
+<script>import '../../scripts/marginalia';</script>

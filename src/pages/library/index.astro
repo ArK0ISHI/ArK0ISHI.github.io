@@ -3,11 +3,12 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ArticleRow from '../../components/ArticleRow.astro';
 import HandbookFeature from '../../components/HandbookFeature.astro';
+import MarginaliaFeature from '../../components/MarginaliaFeature.astro';
 import '../../styles/library.css';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-const writtenPages = posts.filter(post => ['文学批评', '装帧与排版', '东方Project'].includes(post.data.category));
+const writtenPages = posts.filter(post => ['文学批评', '装帧与排版', '东方Project'].includes(post.data.category) || post.data.tags.includes('阅读边注'));
 const novelEntries = (await getCollection('novel', ({ data }) => data.book === '东方紫雨幽蝶'))
   .sort((a, b) => a.data.order - b.data.order);
 const chapters = novelEntries.filter(entry => entry.data.kind === 'chapter');
@@ -79,6 +80,7 @@ const shelves = [
       </div>
     </article>
 
+    <MarginaliaFeature variant="library" />
     <HandbookFeature />
     <section class="library-written" aria-labelledby="written-pages-title">
       <div class="library-section-heading">

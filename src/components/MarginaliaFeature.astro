@@ -1,0 +1,21 @@
+---
+import { marginalia, marginaliaHref } from '../data/marginalia';
+import '../styles/marginalia.css';
+interface Props { variant?: 'home' | 'writing' | 'library'; }
+const { variant = 'writing' } = Astro.props;
+const selected = ['05', '03', '08'].map(number => marginalia.find(note => note.number === number)!);
+const headingId = `marginalia-feature-${variant}`;
+---
+<section class:list={['marginalia-feature', `marginalia-feature-${variant}`]} aria-labelledby={headingId}>
+  <div class="marginalia-feature-intro">
+    <p class="marginalia-eyebrow">MARGINALIA / 阅读边注</p>
+    <h2 id={headingId}>把目光停下的地方，<br /><em>写在页边。</em></h2>
+    <p>从一扇车窗、一次重逢或一段旋律读起。在喜欢的作品旁，留几行自己的观察。</p>
+    <a class="marginalia-text-link" href="/writing/marginalia/">翻开十则阅读短笺 <span aria-hidden="true">↗</span></a>
+  </div>
+  <div class="marginalia-feature-notes">
+    {selected.map(note => (
+      <article class="marginalia-feature-note"><span class="marginalia-feature-number" aria-hidden="true">{note.number}</span><div><p>{note.kind} <span>／ {note.work}</span></p><h3><a href={marginaliaHref(note)}>{note.title}<span aria-hidden="true">↗</span></a></h3><p class="marginalia-feature-line">{note.line}</p></div></article>
+    ))}
+  </div>
+</section>

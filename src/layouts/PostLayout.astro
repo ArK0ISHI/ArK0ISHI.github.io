@@ -1,6 +1,8 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import ResearchFigureViewer from '../components/ResearchFigureViewer.astro';
+import { marginalia, marginaliaHref } from '../data/marginalia';
+import '../styles/marginalia-post.css';
 
 type Heading = { depth: number; slug: string; text: string };
 type Neighbor = { title: string; href: string };
@@ -37,23 +39,28 @@ const {
   olderPost?: Neighbor;
 };
 const displayDate = date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
-const archiveHref = kind === 'writing' ? '/writing/' : '/notes/';
-const archiveLabel = kind === 'writing' ? '返回写作' : '返回笔记';
-const kindLabel = kind === 'writing' ? 'ESSAY / 写作' : 'NOTE / 笔记';
+const marginalEntry = marginalia.find(note => marginaliaHref(note) === Astro.url.pathname);
+const marginalIndex = marginalEntry ? marginalia.indexOf(marginalEntry) : -1;
+const nextMargin = marginalEntry ? marginalia[(marginalIndex + 1) % marginalia.length] : undefined;
+const archiveHref = marginalEntry ? '/writing/marginalia/' : kind === 'writing' ? '/writing/' : '/notes/';
+const archiveLabel = marginalEntry ? '返回阅读边注' : kind === 'writing' ? '返回写作' : '返回笔记';
+const kindLabel = marginalEntry ? 'MARGINALIA / 阅读边注' : kind === 'writing' ? 'ESSAY / 写作' : 'NOTE / 笔记';
 const defaultScopeNote = '本文用于整理方法、推导与问题意识，不替代完整项目报告；其中示意代码与参数不等同于项目原始实现。';
 const displayedScopeNote = scopeNote ?? (kind === 'note' ? defaultScopeNote : undefined);
 ---
 
 <BaseLayout title={title} description={description}>
   <div class="reading-progress" data-reading-progress role="progressbar" aria-label="文章阅读进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div>
-  <article class="post-shell page-width">
+  <article class:list={['post-shell', 'page-width', { 'post-shell-marginalia': !!marginalEntry }]}>
     <header class="post-header">
       <div class="post-kicker">
         <a href={`/tags/${encodeURIComponent(category)}/`}>{category}</a>
         <span>{kindLabel}</span>
       </div>
+      {marginalEntry && <p class="post-margin-subject"><span>NO. {marginalEntry.number}</span>{marginalEntry.kind} <i aria-hidden="true">/</i> {marginalEntry.work}</p>}
       <h1>{title}</h1>
       <p class="post-description">{description}</p>
+      {marginalEntry && <p class="post-margin-scope">{marginalEntry.spoiler}</p>}
       <div class="post-byline">
         <div><span>{authorLabel}</span><strong>{author}</strong></div>
         <div><span>站内整理</span><time datetime={date.toISOString()}>{displayDate}</time></div>
@@ -66,6 +73,7 @@ const displayedScopeNote = scopeNote ?? (kind === 'note' ? defaultScopeNote : un
       <aside class="post-aside">
         <div class="post-aside-inner">
           <a class="back-link" href={archiveHref}>← {archiveLabel}</a>
+          {marginalEntry && <div class="post-margin-note"><span>留下的一句</span><p>{marginalEntry.line}</p></div>}
           {headings.length > 0 && (
             <nav class="post-toc" aria-label="文章目录">
               <span>阅读航标</span>
@@ -98,13 +106,14 @@ const displayedScopeNote = scopeNote ?? (kind === 'note' ? defaultScopeNote : un
       </div>
     </div>
 
+    {nextMargin && <nav class="post-margin-next" aria-label="继续翻阅阅读边注"><div><span>下一则边注 · {nextMargin.number}</span><a href={marginaliaHref(nextMargin)}>{nextMargin.title}<b aria-hidden="true">↗</b></a></div><a class="post-margin-all" href="/writing/marginalia/">回到十则边注 <span aria-hidden="true">→</span></a></nav>}
     <footer class="post-end">
       <span aria-hidden="true">∴</span>
       <p>谢谢你把这一页读到这里。若它替你保存了一个问题，这次记录便有了回声。</p>
       <a href="/">回到首页</a>
     </footer>
 
-    {(olderPost || newerPost) && (
+    {!marginalEntry && (olderPost || newerPost) && (
       <nav class="post-neighbors" aria-label="前后文章">
         {olderPost ? (
           <a href={olderPost.href}><small>← 较早一篇</small><strong>{olderPost.title}</strong></a>

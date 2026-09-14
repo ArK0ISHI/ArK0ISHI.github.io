@@ -1,0 +1,183 @@
+/* A notebook of reading: paper, a margin rule, and room for a second look. */
+.marginalia-room { --page: min(1120px, calc(100% - 64px)); }
+.marginalia-room :where(a, button):focus-visible,
+.marginalia-feature a:focus-visible,
+.reading-collaboration a:focus-visible { outline: 2px solid var(--red); outline-offset: 5px; }
+.marginalia-room [hidden] { display: none !important; }
+.marginalia-eyebrow { margin: 0 0 18px; color: var(--red); font: 400 10px/1.7 var(--mono); letter-spacing: .11em; }
+.marginalia-text-link { display: inline-flex; justify-content: space-between; align-items: center; gap: 26px; min-height: 44px; border-bottom: 1px solid var(--line-strong); font-size: 12px; line-height: 1.8; }
+.marginalia-text-link span { color: var(--red); }
+.marginalia-room a:hover, .marginalia-feature a:hover, .reading-collaboration a:hover { color: var(--red); }
+.marginalia-hero { display: grid; grid-template-columns: minmax(0, 1fr) 220px; align-items: center; gap: clamp(30px, 7vw, 112px); padding-block: 153px 65px; }
+.marginalia-hero h1 { margin: 0; font: 500 clamp(38px, 4.4vw, 61px)/1.45 var(--serif); letter-spacing: -.035em; }
+.marginalia-hero h1 em { color: var(--red); font-style: normal; }
+.marginalia-intro { margin: 26px 0 0; max-width: 42em; color: var(--ink-soft); font-size: 14px; line-height: 2.1; }
+.marginalia-hero-links { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 28px; margin-top: 19px; }
+.marginalia-hero-links a { display: inline-flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 44px; font-size: 12px; }
+.marginalia-hero-links a:first-child { border-bottom: 1px solid var(--line-strong); }
+.marginalia-hero-links a span { color: var(--red); }
+.marginalia-hero-note { position: relative; padding: 27px 0 28px 27px; border-left: 1px solid color-mix(in srgb, var(--red) 45%, transparent); }
+.marginalia-page-mark { position: absolute; top: -22px; left: 22px; color: var(--red); font: 400 43px/1 var(--serif); }
+.marginalia-hero-note-label { color: var(--ink-soft); margin: 0 0 15px; font-size: 11px; letter-spacing: .14em; }
+.marginalia-hero-note > p:not(.marginalia-hero-note-label) { margin: 0; font-size: 17px; line-height: 2.1; }
+.marginalia-hero-note-sign { display: block; color: var(--ink-soft); margin-top: 25px; font-size: 10px; }
+.marginalia-featured { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); border-block: 1px solid var(--line); padding-block: 36px; gap: clamp(28px, 5vw, 66px); align-items: center; }
+.marginalia-window { position: relative; min-height: 366px; padding: 25px 32px 24px; overflow: hidden; background: #e7e5dc; color: #354c55; }
+.marginalia-window-caption { display: flex; justify-content: space-between; gap: 14px; font: 400 9px/1.7 var(--mono); letter-spacing: .12em; }
+.marginalia-window-frame { margin-top: 26px; padding: 7px; height: 151px; border: 1px solid #91a0a0; border-radius: 46px 46px 36px 36px; box-shadow: inset 0 -3px 0 #354c5510; }
+.marginalia-window-scene { position: relative; height: 100%; overflow: hidden; border-radius: 38px 38px 28px 28px; background: linear-gradient(#b8ced0, #e5e4d1); }
+.marginalia-window-scene::after { content: ''; position: absolute; inset: 0; background: linear-gradient(115deg, transparent 12%, #fff2 12%, #fff2 17%, transparent 17%, transparent 40%, #fff3 40%, #fff3 43%, transparent 43%); }
+.marginalia-moon { position: absolute; top: 20px; right: 25%; width: 27px; height: 27px; border-radius: 50%; background: #f4edce; }
+.marginalia-mountain { position: absolute; bottom: -76px; width: 270px; height: 170px; border-radius: 38% 70% 0 0; transform: rotate(-16deg); background: #7f9c9e; }
+.mountain-back { left: -22px; }
+.mountain-front { width: 360px; height: 126px; bottom: -63px; right: -35px; transform: rotate(10deg); background: #4b7177; }
+.marginalia-horizon { position: absolute; left: 0; right: 0; bottom: 11px; border-top: 1px solid #d9e8dd80; }
+.marginalia-window > p { margin: 22px 0 0; font-size: 21px; line-height: 1.65; letter-spacing: .05em; }
+.marginalia-window > p span { font-size: 17px; }
+.marginalia-window-foot { display: block; margin-top: 15px; font-size: 9px; letter-spacing: .1em; }
+.marginalia-featured-copy .marginalia-eyebrow { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+.marginalia-featured-copy .marginalia-eyebrow span { color: var(--ink-soft); }
+.marginalia-work-label { font-size: 11px; color: var(--ink-soft); }
+.marginalia-featured h2 { margin: 12px 0 17px; font: 500 clamp(29px, 3.05vw, 40px)/1.5 var(--serif); letter-spacing: -.025em; }
+.marginalia-featured-copy > p:not(.marginalia-eyebrow) { margin: 0 0 16px; color: var(--ink-soft); font-size: 13px; line-height: 2.05; }
+.marginalia-featured-copy > small { display: block; margin-top: 17px; color: var(--ink-soft); font-size: 10px; line-height: 1.8; }
+.marginalia-notes, .marginalia-shelf { margin-top: 86px; scroll-margin-top: 100px; }
+.marginalia-section-heading { display: flex; align-items: end; justify-content: space-between; gap: 25px; margin-bottom: 28px; }
+.marginalia-section-heading .marginalia-eyebrow { margin-bottom: 10px; }
+.marginalia-section-heading h2 { margin: 0; font: 500 clamp(23px, 2.5vw, 31px)/1.65 var(--serif); letter-spacing: -.02em; }
+.marginalia-section-heading > p { margin: 0; color: var(--ink-soft); font-size: 11px; line-height: 1.9; flex-shrink: 0; }
+.marginalia-filter-bar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px 24px; padding-bottom: 20px; }
+.marginalia-filters { display: flex; flex-wrap: wrap; gap: 4px 8px; }
+.marginalia-filters button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 8px 13px; border: 1px solid transparent; border-radius: 2px; background: transparent; cursor: pointer; font-size: 12px; line-height: 1.8; transition: color .15s, border-color .15s, background-color .15s; }
+.marginalia-filters button span { font: 400 9px/1.4 var(--mono); color: var(--ink-soft); }
+.marginalia-filters button:hover { color: var(--red); background: var(--wash); }
+.marginalia-filters button[aria-pressed='true'] { color: var(--red); border-color: color-mix(in srgb, var(--red) 40%, transparent); background: color-mix(in srgb, var(--red) 5%, var(--paper)); }
+.marginalia-count { margin: 0; color: var(--ink-soft); font-size: 11px; line-height: 1.7; }
+.marginalia-note-list { border-top: 1px solid var(--line-strong); }
+.marginalia-note { display: grid; grid-template-columns: 40px minmax(0, 1fr) minmax(145px, .3fr); column-gap: 28px; align-items: start; padding-block: 31px; border-bottom: 1px solid var(--line); }
+.marginalia-note-number { padding-top: 4px; color: var(--red); font: 400 11px/1.6 var(--mono); letter-spacing: .1em; }
+.marginalia-note-body { min-width: 0; }
+.marginalia-note-meta { display: flex; flex-wrap: wrap; gap: 5px 17px; margin: 0 0 9px; font-size: 10px; line-height: 1.8; color: var(--ink-soft); }
+.marginalia-note-meta span:first-child { color: var(--red); }
+.marginalia-note h3 { margin: 0 0 10px; font: 500 clamp(21px, 2.15vw, 28px)/1.6 var(--serif); letter-spacing: -.02em; }
+.marginalia-note h3 a { display: flex; align-items: center; justify-content: space-between; gap: 18px; min-height: 44px; }
+.marginalia-note-arrow { flex-shrink: 0; font: 400 20px/1 var(--mono); color: var(--red); }
+.marginalia-note-description { margin: 0; color: var(--ink-soft); font-size: 13px; line-height: 2; max-width: 48em; }
+.marginalia-spoiler { margin: 12px 0 0; color: var(--ink-soft); font-size: 10px; line-height: 1.8; }
+.marginalia-spoiler::before { content: '·'; color: var(--red); margin-right: 7px; }
+.marginalia-note-margin { align-self: center; padding-left: 19px; border-left: 1px solid color-mix(in srgb, var(--red) 38%, transparent); margin: 0 0 0 15px; font-size: 12px; color: var(--ink-soft); line-height: 2.1; }
+.marginalia-reading-key { display: flex; align-items: start; gap: 19px; margin-top: 23px; padding-left: 8px; }
+.marginalia-reading-key > span { color: var(--red); font-size: 25px; line-height: 1.4; }
+.marginalia-reading-key > p { margin: 0; max-width: 64em; color: var(--ink-soft); font-size: 11px; line-height: 2; }
+.marginalia-work-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 52px; border-top: 1px solid var(--line-strong); }
+.marginalia-work { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 19px; padding-block: 30px; border-bottom: 1px solid var(--line); }
+.marginalia-work-number { color: var(--red); font: 400 10px/1.6 var(--mono); padding-top: 4px; }
+.marginalia-work-medium { margin: 0 0 10px; font-size: 10px; color: var(--red); line-height: 1.7; }
+.marginalia-work h3 { margin: 0; font: 500 25px/1.5 var(--serif); }
+.marginalia-work h3 a { display: flex; align-items: center; justify-content: space-between; gap: 14px; min-height: 44px; }
+.marginalia-work h3 a span { color: var(--red); font: 400 17px/1 var(--mono); }
+.marginalia-work-subtitle { margin: 3px 0 8px; font-size: 11px; line-height: 1.8; color: var(--ink-soft); overflow-wrap: anywhere; }
+.marginalia-work-creator { margin: 0; font-size: 10px; line-height: 1.7; color: var(--ink-soft); }
+.marginalia-work-note { margin: 17px 0 0; font-size: 12px; line-height: 2; }
+.marginalia-afterword { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px 25px; margin-top: 58px; padding-top: 25px; border-top: 1px solid var(--line); }
+.marginalia-afterword > p { margin: 0; color: var(--ink-soft); font-size: 13px; }
+/* Reusable excerpts fit the width given by the home, writing, or library page. */
+.marginalia-feature { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(28px, 5vw, 70px); align-items: center; margin-block: 64px; padding-block: 37px; border-block: 1px solid var(--line); }
+.marginalia-feature-intro h2 { margin: 0; font: 500 clamp(27px, 2.7vw, 37px)/1.6 var(--serif); letter-spacing: -.025em; }
+.marginalia-feature-intro h2 em { color: var(--red); font-style: normal; }
+.marginalia-feature-intro > p:not(.marginalia-eyebrow) { margin: 18px 0 15px; max-width: 29em; font-size: 13px; line-height: 2; color: var(--ink-soft); }
+.marginalia-feature-note { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 14px; padding-block: 19px; border-bottom: 1px solid var(--line); }
+.marginalia-feature-note:first-child { padding-top: 0; }
+.marginalia-feature-note:last-child { border-bottom: 0; padding-bottom: 0; }
+.marginalia-feature-number { color: var(--red); font: 400 10px/1.7 var(--mono); padding-top: 2px; }
+.marginalia-feature-note > div > p:first-child { margin: 0 0 3px; color: var(--red); font-size: 10px; line-height: 1.8; }
+.marginalia-feature-note > div > p:first-child span { color: var(--ink-soft); }
+.marginalia-feature-note h3 { margin: 0; font: 500 clamp(19px, 1.8vw, 23px)/1.6 var(--serif); }
+.marginalia-feature-note h3 a { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 44px; }
+.marginalia-feature-note h3 a span { color: var(--red); font: 400 16px/1 var(--mono); flex-shrink: 0; }
+.marginalia-feature-line { margin: 4px 0 0; color: var(--ink-soft); font-size: 11px; line-height: 1.9; }
+.reading-collaboration { margin-block: 75px 30px; }
+.reading-collaboration-cases { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(28px, 5vw, 65px); padding-top: 28px; border-top: 1px solid var(--line-strong); }
+.reading-collaboration-case { position: relative; padding-left: 23px; border-left: 1px solid color-mix(in srgb, var(--red) 45%, transparent); }
+.reading-collaboration-label { margin: 0 0 15px; color: var(--ink-soft); font: 400 9px/1.8 var(--mono); letter-spacing: .075em; }
+.reading-collaboration-label > span { color: var(--red); margin-right: 11px; }
+.reading-collaboration-case h3 { margin: 0 0 8px; font: 500 24px/1.5 var(--serif); }
+.reading-collaboration-role { margin: 0 0 14px; color: var(--red); font-size: 11px; line-height: 1.9; }
+.reading-collaboration-description { margin: 0; color: var(--ink-soft); font-size: 13px; line-height: 2; }
+.reading-collaboration-credit { margin: 17px 0 12px; padding-top: 13px; border-top: 1px solid var(--line); color: var(--ink-soft); font-size: 10px; line-height: 1.9; }
+:root[data-theme='dark'] .marginalia-window { background: #1d2b31; color: #d6d8cc; }
+:root[data-theme='dark'] .marginalia-window-frame { border-color: #677d81; }
+:root[data-theme='dark'] .marginalia-window-scene { background: linear-gradient(#344e60, #768a8c); }
+:root[data-theme='dark'] .mountain-back { background: #567178; }
+:root[data-theme='dark'] .mountain-front { background: #294c58; }
+:root[data-theme='dark'] .marginalia-moon { background: #dbd5b6; }
+@media (max-width: 900px) {
+  .marginalia-hero { grid-template-columns: minmax(0, 1fr) 177px; gap: 34px; padding-top: 130px; }
+  .marginalia-hero h1 { font-size: clamp(34px, 4.6vw, 43px); }
+  .marginalia-hero-note { padding-left: 20px; }
+  .marginalia-hero-note > p:not(.marginalia-hero-note-label) { font-size: 15px; }
+  .marginalia-featured { gap: 30px; }
+  .marginalia-window { padding-inline: 23px; }
+  .marginalia-note { grid-template-columns: 30px minmax(0, 1fr); gap: 21px; }
+  .marginalia-note-margin { display: none; }
+  .marginalia-work-list { column-gap: 30px; }
+}
+@media (max-width: 680px) {
+  .marginalia-room { --page: calc(100% - 40px); }
+  .marginalia-hero { grid-template-columns: 1fr; padding-block: 114px 33px; gap: 27px; }
+  .marginalia-hero h1 { font-size: clamp(30px, 7.1vw, 44px); }
+  .marginalia-intro { margin-top: 19px; font-size: 13px; }
+  .marginalia-hero-note { display: none; }
+  .marginalia-eyebrow { font-size: 9px; margin-bottom: 14px; }
+  .marginalia-hero-links { gap: 8px 23px; margin-top: 13px; }
+  .marginalia-hero-links a { font-size: 11px; gap: 16px; }
+  .marginalia-featured { grid-template-columns: 1fr; gap: 25px; padding-block: 24px 30px; }
+  .marginalia-window { min-height: 280px; padding: 20px 25px; }
+  .marginalia-window-frame { max-width: 440px; margin: 18px auto 0; height: 127px; }
+  .marginalia-window > p { margin-top: 17px; font-size: 18px; }
+  .marginalia-window > p br { display: none; }
+  .marginalia-window > p span { font-size: 15px; }
+  .marginalia-window-foot { margin-top: 12px; }
+  .marginalia-featured-copy .marginalia-eyebrow { margin-bottom: 15px; }
+  .marginalia-featured h2 { font-size: 30px; margin-block: 9px 13px; }
+  .marginalia-featured-copy > small { margin-top: 12px; }
+  .marginalia-notes, .marginalia-shelf { margin-top: 50px; scroll-margin-top: 88px; }
+  .marginalia-section-heading { align-items: start; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+  .marginalia-section-heading h2 { font-size: 24px; }
+  .marginalia-section-heading > p br { display: none; }
+  .marginalia-section-heading > p { font-size: 10px; }
+  .marginalia-filter-bar { gap: 11px; padding-bottom: 17px; }
+  .marginalia-filters { gap: 4px; }
+  .marginalia-filters button { padding: 8px 10px; font-size: 11px; gap: 6px; }
+  .marginalia-count { width: 100%; padding-left: 2px; font-size: 10px; }
+  .marginalia-note { grid-template-columns: 23px minmax(0, 1fr); gap: 12px; padding-block: 25px; }
+  .marginalia-note-number { font-size: 10px; }
+  .marginalia-note h3 { font-size: 21px; }
+  .marginalia-note h3 a { gap: 11px; }
+  .marginalia-note-arrow { font-size: 17px; }
+  .marginalia-note-description { font-size: 12px; }
+  .marginalia-note-meta { font-size: 9px; margin-bottom: 7px; column-gap: 12px; }
+  .marginalia-spoiler { font-size: 9px; }
+  .marginalia-reading-key { gap: 11px; padding-left: 0; }
+  .marginalia-reading-key > p { font-size: 10px; }
+  .marginalia-work-list { grid-template-columns: 1fr; }
+  .marginalia-work { gap: 15px; padding-block: 23px; }
+  .marginalia-work h3 { font-size: 24px; }
+  .marginalia-work-note { margin-top: 12px; }
+  .marginalia-afterword { margin-top: 38px; }
+  .marginalia-afterword > p { font-size: 12px; }
+  .marginalia-feature { grid-template-columns: 1fr; gap: 28px; margin-block: 42px; padding-block: 28px; }
+  .marginalia-feature-intro h2 { font-size: 29px; }
+  .marginalia-feature-intro > p:not(.marginalia-eyebrow) { max-width: 40em; margin-block: 14px 11px; font-size: 12px; }
+  .marginalia-feature-note { grid-template-columns: 24px minmax(0, 1fr); gap: 12px; }
+  .marginalia-feature-note h3 { font-size: 20px; }
+  .marginalia-feature-note > div > p:first-child { font-size: 9px; }
+  .marginalia-feature-line { font-size: 10px; }
+  .reading-collaboration { margin-block: 50px 25px; }
+  .reading-collaboration-cases { grid-template-columns: 1fr; gap: 31px; padding-top: 24px; }
+  .reading-collaboration-case { padding-left: 19px; }
+  .reading-collaboration-case h3 { font-size: 23px; }
+  .reading-collaboration-description { font-size: 12px; }
+  .reading-collaboration-label { font-size: 8px; }
+}
+@media (prefers-reduced-motion: reduce) { .marginalia-filters button { transition: none; } }

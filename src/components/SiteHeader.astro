@@ -53,12 +53,15 @@ const isActive = (href: string) => href === '/' ? pathname === '/' : pathname.st
 </header>
 
 <script>
-  const headerWindow = window as Window & { __arHeaderController?: AbortController };
+  const headerWindow = window as Window & { __arHeaderController?: AbortController; __arHeaderElement?: HTMLElement };
 
   function setupHeader() {
+    const currentHeader = document.querySelector<HTMLElement>('[data-header]');
+    if (currentHeader && headerWindow.__arHeaderElement === currentHeader && headerWindow.__arHeaderController && !headerWindow.__arHeaderController.signal.aborted) return;
     headerWindow.__arHeaderController?.abort();
     const controller = new AbortController();
     headerWindow.__arHeaderController = controller;
+    headerWindow.__arHeaderElement = currentHeader ?? undefined;
 
     const root = document.documentElement;
     let stored: string | null = null;

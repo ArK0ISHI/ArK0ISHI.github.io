@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ArticleRow from '../../components/ArticleRow.astro';
+import HandbookFeature from '../../components/HandbookFeature.astro';
 import '../../styles/library.css';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
@@ -78,6 +79,7 @@ const shelves = [
       </div>
     </article>
 
+    <HandbookFeature />
     <section class="library-written" aria-labelledby="written-pages-title">
       <div class="library-section-heading">
         <div><p class="eyebrow">WRITTEN PAGES / 已写下</p><h2 id="written-pages-title">已经进入档案的书页</h2></div>

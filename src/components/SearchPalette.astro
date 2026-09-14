@@ -22,6 +22,7 @@ const cleanBody = (body = '') => body
   .trim();
 
 const pageItems: SearchItem[] = [
+  { title: '节奏房间：舞萌与 Arcaea', description: '舞萌 DX Rating 15600、十段与 Arcaea 13.050 的成绩快照，完整成绩图与代表记录。', href: '/rhythm/', type: '页面', meta: 'RHYTHM · 音游档案', searchText: '节奏房间 音游 舞萌 DX maimai Arcaea 15600 十段 13.050 成绩 B50 音乐', rank: 21 },
   { title: '首页', description: '个人简介、观测与计算、写作与书页、行旅光影和近来的文字。', href: '/', type: '页面', meta: 'HOME', searchText: '首页 主页 亚略Ar', rank: 20 },
   { title: '笔记', description: '物理课程、实验方法、计算方法与代码工具笔记。', href: '/notes/', type: '页面', meta: 'NOTES', searchText: '笔记 物理 实验 计算 代码 工具', rank: 19 },
   { title: '项目', description: '科研项目、课程大作业、网页与工具的持续档案。', href: '/projects/', type: '页面', meta: 'PROJECTS', searchText: '项目 科研 实验 模型 网页 工具', rank: 18 },
@@ -118,7 +119,7 @@ const serializedIndex = JSON.stringify(searchItems).replaceAll('<', '\\u003c');
     rank: number;
   };
 
-  const searchWindowState = window as Window & { __arSearchController?: AbortController };
+  const searchWindowState = window as Window & { __arSearchController?: AbortController; __arSearchDialog?: HTMLDialogElement };
 
   const normalizeSearch = (value: string) => value.normalize('NFKC').trim().toLocaleLowerCase('zh-CN');
 
@@ -141,9 +142,12 @@ const serializedIndex = JSON.stringify(searchItems).replaceAll('<', '\\u003c');
   }
 
   function setupSearchPalette() {
+    const currentDialog = document.querySelector<HTMLDialogElement>('[data-search-dialog]');
+    if (currentDialog && searchWindowState.__arSearchDialog === currentDialog && searchWindowState.__arSearchController && !searchWindowState.__arSearchController.signal.aborted) return;
     searchWindowState.__arSearchController?.abort();
     const controller = new AbortController();
     searchWindowState.__arSearchController = controller;
+    searchWindowState.__arSearchDialog = currentDialog ?? undefined;
 
     const dialog = document.querySelector<HTMLDialogElement>('[data-search-dialog]');
     const input = dialog?.querySelector<HTMLInputElement>('[data-search-input]');

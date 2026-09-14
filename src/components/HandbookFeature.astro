@@ -1,0 +1,35 @@
+---
+import { handbook } from '../data/handbook';
+---
+<article class="handbook-feature" aria-label="未来科学家研学营手册作品">
+  <a class="handbook-feature-art" href={handbook.href} aria-label="查看《未来科学家》营员手册与精选内页">
+    <img class="handbook-feature-cover" src={handbook.cover} width={handbook.width} height={handbook.height} alt="《未来科学家》蓝色封面，点缀星星与行星弧线" loading="lazy" decoding="async" />
+    <img class="handbook-feature-page" src={handbook.journal} width={handbook.width} height={handbook.height} alt="手册中分栏安排绘画、课堂笔记与实验记录的学习日志页" loading="lazy" decoding="async" />
+    <span>2026 / A4 · {handbook.pages} PAGES</span>
+  </a>
+  <div class="handbook-feature-copy">
+    <p class="handbook-feature-kicker">PUBLICATION DESIGN / 手册与信息设计</p>
+    <h3><a href={handbook.href}>未来科学家</a></h3>
+    <p class="handbook-feature-subtitle">给好奇心，留一页可以写下的地方。</p>
+    <p>为东华大学暑期物理研学探索营制作营员手册。把五天的课程、观察记录、科学词汇与校园地图，整理成一本可以随身翻阅、画写与分享的小册子。</p>
+    <a class="handbook-feature-link" href={handbook.href}>翻阅手册与设计档案 <span aria-hidden="true">↗</span></a>
+  </div>
+</article>
+<style>
+  .handbook-feature { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr); gap: clamp(25px, 4.5vw, 62px); align-items: center; margin-block: 56px; padding-top: 40px; border-top: 1px solid var(--line); }
+  .handbook-feature-art { position: relative; display: grid; grid-template-columns: 1fr .86fr; align-items: center; gap: 12px; padding: 30px 34px 45px; min-width: 0; background: color-mix(in srgb, var(--blue) 12%, var(--paper-deep)); aspect-ratio: 1.46; }
+  .handbook-feature-art img { display: block; width: 100%; height: 100%; min-height: 0; object-fit: contain; filter: drop-shadow(0 10px 10px #0002); transition: transform .3s ease; }
+  .handbook-feature-cover { transform: rotate(-4deg); }
+  .handbook-feature-page { transform: rotate(3deg); max-height: 85%; }
+  .handbook-feature-art span { position: absolute; bottom: 16px; left: 25px; color: var(--ink-soft); font: 400 9px/1.4 var(--mono); letter-spacing: .08em; }
+  .handbook-feature-art:hover .handbook-feature-cover { transform: rotate(-2deg) translateY(-3px); }
+  .handbook-feature-kicker { margin: 0 0 16px; font: 400 9px/1.6 var(--mono); letter-spacing: .1em; color: var(--blue); }
+  .handbook-feature h3 { font: 500 clamp(27px, 3vw, 38px)/1.4 var(--serif); margin: 0 0 12px; }
+  .handbook-feature-subtitle { color: var(--ink); font-size: 15px; margin: 0 0 13px; }
+  .handbook-feature-copy > p:last-of-type { margin: 0; font-size: 13px; line-height: 2; color: var(--ink-soft); }
+  .handbook-feature-link { display: inline-flex; gap: 30px; align-items: center; min-height: 44px; border-bottom: 1px solid var(--line-strong); margin-top: 15px; font-size: 12px; }
+  .handbook-feature-link span { color: var(--red); }
+  a:focus-visible { outline: 2px solid var(--red); outline-offset: 5px; }
+  @media (max-width: 680px) { .handbook-feature { grid-template-columns: 1fr; gap: 25px; margin-block: 40px; padding-top: 32px; } .handbook-feature-art { padding: 24px 28px 40px; } .handbook-feature-kicker { margin-bottom: 12px; font-size: 8px; } .handbook-feature h3 { margin-bottom: 9px; } .handbook-feature-subtitle { font-size: 14px; } }
+  @media (prefers-reduced-motion: reduce) { .handbook-feature-art img { transition: none; } .handbook-feature-art:hover .handbook-feature-cover { transform: rotate(-4deg); } }
+</style>

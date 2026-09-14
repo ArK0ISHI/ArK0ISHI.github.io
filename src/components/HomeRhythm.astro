@@ -1,0 +1,45 @@
+---
+import { rhythmGames } from '../data/rhythm';
+---
+<section class="home-rhythm page-width" id="rhythm-room" aria-labelledby="home-rhythm-title">
+  <header class="rhythm-intro">
+    <p class="rhythm-kicker">OFF THE DESK / 节奏房间</p>
+    <h2 id="home-rhythm-title">书页之外，<br />还有一首<em>正在响。</em></h2>
+    <p>从掌心到街机，留下舞萌 DX 与 Arcaea 的成绩记录。把一段节奏，存成可以回看的刻度。</p>
+    <a href="/rhythm/">进入音游档案 <span aria-hidden="true">↗</span></a>
+  </header>
+  <div class="home-rhythm-cards">
+    {rhythmGames.map(game => (
+      <a class={`home-rhythm-card is-${game.id}`} href={game.href} aria-label={`查看 ${game.name} 成绩档案：${game.ratingLabel} ${game.rating}`}>
+        <div class="rhythm-card-top"><span>{game.name}</span><small>{game.badge}</small></div>
+        <div class="rhythm-card-score"><small>{game.ratingLabel}</small><strong>{game.rating}</strong></div>
+        <div class="rhythm-card-foot"><span>{game.snapshot}</span><span aria-hidden="true">↗</span></div>
+      </a>
+    ))}
+  </div>
+</section>
+<style>
+  .home-rhythm { display: grid; grid-template-columns: 1fr 1.35fr; align-items: center; gap: clamp(32px, 5vw, 76px); padding-block: 12px 20px; margin-block: 80px 90px; }
+  .rhythm-kicker { color: var(--red); font: 400 10px/1.6 var(--mono); letter-spacing: .12em; margin: 0 0 18px; }
+  .rhythm-intro h2 { margin: 0; font: 500 clamp(29px, 3.4vw, 44px)/1.5 var(--serif); letter-spacing: -.03em; }
+  .rhythm-intro h2 em { color: var(--red); font-style: normal; }
+  .rhythm-intro > p:not(.rhythm-kicker) { max-width: 30em; color: var(--ink-soft); font-size: 13px; line-height: 2; margin-block: 20px; }
+  .rhythm-intro > a { display: inline-flex; align-items: center; gap: 40px; min-height: 44px; font-size: 12px; border-bottom: 1px solid var(--line-strong); }
+  .rhythm-intro > a span { color: var(--red); }
+  .home-rhythm-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; min-width: 0; }
+  .home-rhythm-card { --score-accent: #d4c5f4; position: relative; isolation: isolate; display: flex; flex-direction: column; min-width: 0; min-height: 292px; padding: 25px 24px 18px; color: #eeebf6; background: #262435; overflow: hidden; border: 1px solid #51465f; transition: transform .25s ease, box-shadow .25s ease; }
+  .home-rhythm-card.is-arcaea { --score-accent: #b4dedb; background: #172d34; border-color: #38515a; margin-top: 28px; margin-bottom: -28px; }
+  .home-rhythm-card::before { content: ''; width: 190px; height: 190px; border: 1px solid color-mix(in srgb, var(--score-accent) 22%, transparent); border-radius: 50%; position: absolute; right: -90px; top: -75px; box-shadow: 0 0 0 24px color-mix(in srgb, var(--score-accent) 4%, transparent), 0 0 0 49px color-mix(in srgb, var(--score-accent) 3%, transparent); z-index: -1; }
+  .rhythm-card-top { display: flex; gap: 10px; justify-content: space-between; align-items: center; font-size: 15px; }
+  .rhythm-card-top small { color: var(--score-accent); font: 400 9px/1.5 var(--mono); }
+  .rhythm-card-score { margin-block: auto; padding-block: 38px; }
+  .rhythm-card-score > small { display: block; font: 400 9px/1.5 var(--mono); letter-spacing: .18em; color: var(--score-accent); margin-bottom: 10px; }
+  .rhythm-card-score strong { display: block; color: var(--score-accent); font: 400 clamp(33px, 3.5vw, 49px)/1.1 var(--mono); letter-spacing: -.07em; }
+  .rhythm-card-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 15px; border-top: 1px solid #ffffff26; font-size: 9px; color: #c7c8d1; }
+  .rhythm-card-foot > span:last-child { font-size: 18px; }
+  .home-rhythm-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+  a:focus-visible { outline: 2px solid var(--red); outline-offset: 5px; }
+  @media (max-width: 900px) { .home-rhythm { grid-template-columns: 1fr; gap: 28px; } .rhythm-intro h2 br { display: none; } .rhythm-intro > p:not(.rhythm-kicker) { max-width: 43em; } .home-rhythm-card { min-height: 245px; } .rhythm-card-score strong { font-size: 45px; } }
+  @media (max-width: 520px) { .home-rhythm { margin-block: 55px 70px; } .rhythm-intro h2 { font-size: 29px; } .rhythm-intro h2 br { display: block; } .home-rhythm-cards { gap: 12px; } .home-rhythm-card { min-height: 220px; padding: 18px 14px 14px; } .rhythm-card-top { align-items: start; flex-direction: column; gap: 3px; } .rhythm-card-score { padding-block: 28px; } .rhythm-card-score strong { font-size: clamp(28px, 7.7vw, 38px); } .rhythm-card-foot { font-size: 8px; gap: 6px; line-height: 1.8; } }
+  @media (prefers-reduced-motion: reduce) { .home-rhythm-card { transition: none; } .home-rhythm-card:hover { transform: none; } }
+</style>

@@ -1,0 +1,128 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { rhythmGames } from '../../data/rhythm';
+import '../../styles/rhythm.css';
+---
+
+<BaseLayout title="音游 · 节奏房间" description="舞萌 DX 与 Arcaea 的个人成绩档案。两张成绩快照，记录屏幕与街机之间的节奏。">
+  <div class="rhythm-room">
+    <header class="page-hero rhythm-hero">
+      <div class="page-hero-grid">
+        <div><p class="eyebrow">RHYTHM / 音游</p><h1>节奏<em>房间</em></h1></div>
+        <div class="rhythm-introduction">
+          <p class="page-hero-description">在屏幕与街机之间，留下另一种刻度。这里收着舞萌 DX 与 Arcaea 的成绩，也为今后的每一次突破留一个位置。</p>
+          <a href="#score-archive" class="rhythm-inline-link">翻开成绩档案 <span aria-hidden="true">↓</span></a>
+        </div>
+      </div>
+      <div class="rhythm-hero-foot"><span>02 GAMES / 02 SNAPSHOTS</span><span>成绩停在记录的那一刻。</span></div>
+    </header>
+
+    <section class="rhythm-overview page-width" aria-label="两款音游的成绩概览">
+      {rhythmGames.map((game, index) => (
+        <a class={`rhythm-scorecard rhythm-scorecard-${game.id}`} href={`#${game.id}`} aria-label={`${game.name}，${game.ratingLabel} ${game.rating}，查看成绩档案`}>
+          <div class="rhythm-orbit" aria-hidden="true"><i></i><i></i><i></i></div>
+          <div class="rhythm-card-heading"><span class="rhythm-card-number">0{index + 1} / {game.englishName}</span><span class="rhythm-badge">{game.badge}</span></div>
+          <h2>{game.name}</h2>
+          <p class="rhythm-rating"><span>{game.rating}</span><small>{game.ratingLabel}</small></p>
+          <dl class="rhythm-stats">{game.stats.map(stat => <div><dt>{stat.label}</dt><dd>{stat.value}</dd></div>)}</dl>
+          <div class="rhythm-card-footer"><span>{game.snapshot}</span><span class="rhythm-card-arrow" aria-hidden="true">↗</span></div>
+        </a>
+      ))}
+    </section>
+
+    <section class="rhythm-archives page-width" id="score-archive" aria-labelledby="archive-title">
+      <header class="rhythm-section-heading"><div><p class="eyebrow">THE RECORDS</p><h2 id="archive-title">把这一刻存下来</h2></div><p>两张原始成绩图，<br />也给细小的进步一个落点。</p></header>
+      <div class="rhythm-archive-grid">
+        {rhythmGames.map((game, index) => (
+          <article class={`rhythm-archive rhythm-archive-${game.id}`} id={game.id} aria-labelledby={`${game.id}-title`}>
+            <div class="rhythm-archive-title"><h3 id={`${game.id}-title`}>{game.name}</h3><span>ARCHIVE / 0{index + 1}</span></div>
+            <figure>
+              <a class="rhythm-preview" href={game.original} target="_blank" rel="noopener" data-score-open data-score-title={`${game.name} · ${game.archiveName}`} data-score-width={game.width} data-score-height={game.height} aria-label={`放大查看${game.name}完整成绩图`}>
+                <img src={game.thumb} alt={`${game.name}${game.archiveName}，包含 ${game.ratingLabel} ${game.rating} 及曲目成绩。可打开原图放大阅读。`} width={game.width} height={game.height} loading="lazy" decoding="async" />
+                <span class="rhythm-preview-caption">放大阅读成绩图 <span aria-hidden="true">↗</span></span>
+              </a>
+              <figcaption><span>{game.dateNote}</span><a href={game.original} target="_blank" rel="noopener">打开原图 <span aria-hidden="true">↗</span><span class="sr-only">（新窗口）</span></a></figcaption>
+            </figure>
+            <div class="rhythm-score-excerpts"><h4>成绩图中的三首</h4><ul>{game.scores.map((score, scoreIndex) => <li><span class="rhythm-song-order">0{scoreIndex + 1}</span><span class="rhythm-song-name">{score.name}</span><span class="rhythm-song-score"><span class="sr-only">{score.label}：</span>{score.value}</span></li>)}</ul></div>
+            <p class="rhythm-image-credit">成绩图生成工具 / {game.credit}</p>
+          </article>
+        ))}
+      </div>
+      <p class="rhythm-archive-note">以上为所收录成绩图中的记录；不同游戏的数值分别展示。完整曲目与标记请打开原图阅读。</p>
+    </section>
+
+    <aside class="rhythm-coda page-width" aria-labelledby="rhythm-coda-title">
+      <div><p class="eyebrow">BEYOND THE SCORE</p><h2 id="rhythm-coda-title">从成绩里，走回生活。</h2><p>街机也曾出现在我的行旅里。换一页，看看它与实验室、城市夜色相遇的样子。</p></div>
+      <a class="rhythm-coda-link" href="/light-notes/#simit-changning"><span>光影手记</span><strong>微系统所与街机</strong><span aria-hidden="true">↗</span></a>
+    </aside>
+  </div>
+
+  <dialog class="rhythm-viewer" aria-labelledby="rhythm-viewer-title" aria-describedby="rhythm-viewer-hint">
+    <div class="rhythm-viewer-toolbar"><div><p id="rhythm-viewer-title">成绩图</p><span id="rhythm-viewer-hint">放大后可滚动查看细节</span></div><div class="rhythm-viewer-actions"><button type="button" data-score-zoom aria-pressed="false">放大细看</button><a href="/images/rhythm/maimai-original.jpg" target="_blank" rel="noopener" data-score-original>原图 <span aria-hidden="true">↗</span><span class="sr-only">（新窗口）</span></a><button class="rhythm-viewer-close" type="button" data-score-close aria-label="关闭成绩图">×</button></div></div>
+    <div class="rhythm-viewer-stage" tabindex="0" role="region" aria-label="成绩图，可滚动查看"><img alt="" data-score-image /><p class="rhythm-viewer-error" hidden>图片暂时没有加载成功，可点击上方「原图」查看。</p></div>
+  </dialog>
+
+  <script>
+    let cleanupRhythm: (() => void) | undefined;
+    let activeRhythmDialog: HTMLDialogElement | null = null;
+    let activeRhythmController: AbortController | undefined;
+    function setupRhythmViewer() {
+      const dialog = document.querySelector<HTMLDialogElement>('.rhythm-viewer');
+      if (dialog && dialog === activeRhythmDialog && activeRhythmController && !activeRhythmController.signal.aborted) return;
+      cleanupRhythm?.();
+      activeRhythmDialog = dialog;
+      if (!dialog) return;
+      const controller = new AbortController();
+      activeRhythmController = controller;
+      const { signal } = controller;
+      const image = dialog.querySelector<HTMLImageElement>('[data-score-image]')!;
+      const stage = dialog.querySelector<HTMLElement>('.rhythm-viewer-stage')!;
+      const title = dialog.querySelector<HTMLElement>('#rhythm-viewer-title')!;
+      const zoomButton = dialog.querySelector<HTMLButtonElement>('[data-score-zoom]')!;
+      const original = dialog.querySelector<HTMLAnchorElement>('[data-score-original]')!;
+      const error = dialog.querySelector<HTMLElement>('.rhythm-viewer-error')!;
+      let trigger: HTMLAnchorElement | null = null;
+      let previousOverflow = '';
+      let locked = false;
+      const setZoom = (zoomed: boolean) => {
+        dialog.classList.toggle('is-zoomed', zoomed);
+        zoomButton.setAttribute('aria-pressed', String(zoomed));
+        zoomButton.textContent = zoomed ? '适合窗口' : '放大细看';
+        stage.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      };
+      const unlock = () => {
+        if (locked) document.body.style.overflow = previousOverflow;
+        locked = false;
+      };
+      document.querySelectorAll<HTMLAnchorElement>('[data-score-open]').forEach(link => {
+        link.addEventListener('click', event => {
+          if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button !== 0 || typeof dialog.showModal !== 'function') return;
+          event.preventDefault();
+          trigger = link;
+          title.textContent = link.dataset.scoreTitle || '成绩图';
+          image.alt = link.dataset.scoreTitle || '完整成绩图';
+          image.width = Number(link.dataset.scoreWidth);
+          image.height = Number(link.dataset.scoreHeight);
+          image.style.setProperty('--score-width', `${image.width}px`);
+          error.hidden = true;
+          image.src = link.href;
+          original.href = link.href;
+          setZoom(false);
+          previousOverflow = document.body.style.overflow;
+          document.body.style.overflow = 'hidden';
+          locked = true;
+          dialog.showModal();
+        }, { signal });
+      });
+      zoomButton.addEventListener('click', () => setZoom(!dialog.classList.contains('is-zoomed')), { signal });
+      image.addEventListener('error', () => { error.hidden = false; }, { signal });
+      dialog.querySelector('[data-score-close]')?.addEventListener('click', () => dialog.close(), { signal });
+      dialog.addEventListener('click', event => { if (event.target === dialog) dialog.close(); }, { signal });
+      dialog.addEventListener('close', () => { unlock(); trigger?.focus({ preventScroll: true }); }, { signal });
+      cleanupRhythm = () => { if (dialog.open) dialog.close(); unlock(); controller.abort(); };
+    }
+    document.addEventListener('astro:page-load', setupRhythmViewer);
+    document.addEventListener('astro:before-swap', () => cleanupRhythm?.());
+    setupRhythmViewer();
+  </script>
+</BaseLayout>

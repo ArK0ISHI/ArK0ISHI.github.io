@@ -52,3 +52,6 @@
   .profile-about .about-aside p:last-child { margin-bottom: 0; }
   .profile-about .about-copy > p:first-child::first-letter { float: none; margin: 0; color: inherit; font: inherit; }
 }
+.about-inline-link { text-decoration: underline; text-decoration-color: var(--line-strong); text-underline-offset: 5px; }
+.about-inline-link:hover { color: var(--red); }
+.about-inline-link:focus-visible { outline: 2px solid var(--red); outline-offset: 4px; }

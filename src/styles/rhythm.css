@@ -1,0 +1,146 @@
+.rhythm-room { padding-bottom: 18px; }
+.rhythm-room .sr-only, .rhythm-viewer .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.rhythm-hero .page-hero-grid { grid-template-columns: minmax(0, 1fr) minmax(280px, 360px); }
+.rhythm-introduction { max-width: 360px; }
+.rhythm-inline-link { display: inline-flex; align-items: center; gap: 24px; min-height: 44px; margin-top: 15px; color: var(--red); font-size: 12px; }
+.rhythm-hero-foot { display: flex; justify-content: space-between; gap: 20px; margin-top: 38px; color: var(--ink-soft); font-size: 11px; }
+.rhythm-hero-foot > :first-child { font: 10px/1.8 var(--mono); letter-spacing: .1em; }
+.rhythm-overview { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; padding-top: 36px; }
+.rhythm-scorecard { position: relative; isolation: isolate; display: flex; flex-direction: column; min-width: 0; min-height: 345px; padding: 27px 32px 18px; overflow: hidden; color: #f7f4fb; background: #27223f; border: 1px solid rgba(191, 175, 237, .2); border-radius: 5px; box-shadow: 0 20px 45px -30px #252037; transition: transform .25s ease, box-shadow .25s ease; }
+.rhythm-scorecard:hover { transform: translateY(-3px); box-shadow: 0 26px 45px -26px #252037; }
+.rhythm-scorecard-maimai { background: radial-gradient(ellipse at 94% 100%, #51406d, transparent 67%), #242138; --score-accent: #d4bfeb; }
+.rhythm-scorecard-arcaea { background: radial-gradient(ellipse at 95% 100%, #285458, transparent 70%), #182b39; --score-accent: #b6d9d3; }
+.rhythm-orbit { position: absolute; z-index: -1; width: 310px; height: 310px; right: -94px; top: 13px; border: 1px solid color-mix(in srgb, var(--score-accent) 24%, transparent); border-radius: 50%; transform: rotate(-30deg); pointer-events: none; }
+.rhythm-orbit::before, .rhythm-orbit::after { content: ''; position: absolute; border: 1px solid color-mix(in srgb, var(--score-accent) 15%, transparent); border-radius: 50%; inset: 28px; }
+.rhythm-orbit::after { inset: 66px; }
+.rhythm-orbit i { position: absolute; width: 5px; height: 5px; background: var(--score-accent); border-radius: 50%; left: 70px; top: 22px; opacity: .6; box-shadow: 0 0 14px var(--score-accent); }
+.rhythm-orbit i:nth-child(2) { left: 29px; top: 188px; }
+.rhythm-orbit i:nth-child(3) { left: 180px; top: 195px; }
+.rhythm-scorecard-arcaea .rhythm-orbit { width: 280px; height: 350px; border-radius: 45%; transform: rotate(32deg); top: -5px; }
+.rhythm-card-heading { display: flex; justify-content: space-between; align-items: center; gap: 14px; }
+.rhythm-card-number { color: var(--score-accent); font: 10px/1.5 var(--mono); letter-spacing: .08em; }
+.rhythm-badge { padding: 4px 11px; font-size: 11px; letter-spacing: .06em; border: 1px solid color-mix(in srgb, var(--score-accent) 30%, transparent); border-radius: 30px; }
+.rhythm-scorecard h2 { position: relative; margin: 22px 0 0; font-size: 24px; font-weight: 500; line-height: 1.3; }
+.rhythm-scorecard-arcaea h2 { font-family: Georgia, 'Times New Roman', serif; letter-spacing: .01em; }
+.rhythm-rating { display: flex; align-items: baseline; gap: 15px; margin: 3px 0 24px; }
+.rhythm-rating > span { font: 300 clamp(46px, 5.1vw, 68px)/1.3 var(--mono); letter-spacing: -.07em; font-variant-numeric: tabular-nums; }
+.rhythm-rating small { color: var(--score-accent); font: 9px/1.6 var(--mono); letter-spacing: .1em; }
+.rhythm-stats { position: relative; display: flex; flex-wrap: wrap; gap: 16px 32px; margin: auto 0 22px; }
+.rhythm-stats dt { color: var(--score-accent); font: 9px/1.5 var(--mono); letter-spacing: .04em; }
+.rhythm-stats dd { margin: 5px 0 0; font: 15px/1.4 var(--mono); }
+.rhythm-card-footer { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-top: 12px; border-top: 1px solid color-mix(in srgb, var(--score-accent) 23%, transparent); font-size: 10px; color: var(--score-accent); }
+.rhythm-card-arrow { color: #fff; font: 21px/1 var(--mono); }
+.rhythm-archives { padding-top: 88px; scroll-margin-top: 105px; }
+.rhythm-section-heading { display: flex; justify-content: space-between; align-items: end; gap: 24px; padding-bottom: 27px; border-bottom: 1px solid var(--line-strong); }
+.rhythm-section-heading .eyebrow { color: var(--red); }
+.rhythm-section-heading h2 { margin: 12px 0 0; font-size: clamp(25px, 3vw, 36px); font-weight: 500; line-height: 1.5; }
+.rhythm-section-heading > p { margin: 0; color: var(--ink-soft); font-size: 12px; line-height: 1.9; }
+.rhythm-archive-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 38px; }
+.rhythm-archive { min-width: 0; scroll-margin-top: 100px; }
+.rhythm-archive-title { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 27px 0 18px; }
+.rhythm-archive-title h3 { margin: 0; font-size: 21px; font-weight: 500; }
+.rhythm-archive-title > span { color: var(--ink-soft); font: 9px/1.5 var(--mono); letter-spacing: .08em; }
+.rhythm-archive figure { margin: 0; }
+.rhythm-preview { position: relative; display: block; aspect-ratio: 1; background: #e9e6f0; overflow: hidden; border: 1px solid var(--line); border-radius: 3px; }
+.rhythm-archive-arcaea .rhythm-preview { background: #18252f; }
+.rhythm-preview img { position: absolute; inset: 20px 20px 50px; width: calc(100% - 40px); height: calc(100% - 70px); object-fit: contain; filter: drop-shadow(0 6px 9px rgba(0,0,0,.14)); transition: transform .3s ease; }
+.rhythm-preview:hover img { transform: translateY(-3px); }
+.rhythm-preview-caption { position: absolute; bottom: 0; inset-inline: 0; display: flex; justify-content: space-between; align-items: center; min-height: 39px; padding: 8px 19px; border-top: 1px solid rgba(40, 33, 58, .13); color: #433552; font-size: 11px; background: rgba(246, 243, 250, .74); }
+.rhythm-archive-arcaea .rhythm-preview-caption { border-color: rgba(180, 217, 211, .2); color: #c6dfde; background: rgba(11, 23, 32, .6); }
+:root[data-theme='dark'] .rhythm-archive-maimai .rhythm-preview { background: #262337; }
+:root[data-theme='dark'] .rhythm-archive-maimai .rhythm-preview-caption { border-color: rgba(212, 191, 235, .2); color: #d4bfeb; background: #211f30; }
+.rhythm-preview-caption > span { font-family: var(--mono); font-size: 18px; }
+.rhythm-archive figcaption { display: flex; justify-content: space-between; align-items: baseline; gap: 15px; margin-top: 9px; color: var(--ink-soft); font-size: 10px; line-height: 1.8; }
+.rhythm-archive figcaption > a { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; flex: 0 0 auto; border-bottom: 1px solid transparent; }
+.rhythm-archive figcaption > a:hover { color: var(--red); border-color: currentColor; }
+.rhythm-score-excerpts { margin-top: 18px; }
+.rhythm-score-excerpts h4 { margin: 0 0 10px; font-size: 12px; font-weight: 500; letter-spacing: .05em; }
+.rhythm-score-excerpts ul { margin: 0; padding: 0; list-style: none; }
+.rhythm-score-excerpts li { display: grid; grid-template-columns: 20px minmax(0, 1fr) auto; align-items: center; gap: 11px; min-height: 46px; border-top: 1px solid var(--line); }
+.rhythm-song-order { color: var(--ink-soft); font: 9px/1.5 var(--mono); }
+.rhythm-song-name { font-size: 12px; line-height: 1.7; overflow-wrap: anywhere; }
+.rhythm-song-score { color: var(--ink-soft); font: 11px/1.7 var(--mono); font-variant-numeric: tabular-nums; }
+.rhythm-image-credit { color: var(--ink-soft); margin: 12px 0 0; font-size: 9px; }
+.rhythm-archive-note { margin: 37px 0 0; padding-top: 20px; color: var(--ink-soft); font-size: 11px; border-top: 1px solid var(--line); }
+.rhythm-coda { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, 360px); gap: 50px; align-items: center; margin-top: 86px; padding: 32px 0; border-top: 1px solid var(--line-strong); border-bottom: 1px solid var(--line); }
+.rhythm-coda h2 { margin: 13px 0 9px; font-size: 26px; font-weight: 500; }
+.rhythm-coda p:not(.eyebrow) { max-width: 520px; margin: 0; color: var(--ink-soft); font-size: 12px; line-height: 2; }
+.rhythm-coda-link { display: grid; grid-template-columns: 1fr auto; align-items: center; padding: 22px 24px; border: 1px solid var(--line); background: var(--wash); transition: border-color .2s; }
+.rhythm-coda-link:hover { border-color: var(--red); }
+.rhythm-coda-link > :first-child { color: var(--ink-soft); font-size: 10px; }
+.rhythm-coda-link strong { grid-column: 1; margin-top: 6px; font-size: 17px; font-weight: 500; }
+.rhythm-coda-link > :last-child { grid-column: 2; grid-row: 1 / 3; font: 25px/1 var(--mono); color: var(--red); }
+.rhythm-room a:focus-visible, .rhythm-viewer :is(button, a, [tabindex]):focus-visible { outline: 2px solid var(--red); outline-offset: 4px; }
+.rhythm-scorecard:focus-visible { outline-color: var(--ink); }
+.rhythm-viewer { width: min(1400px, calc(100vw - 48px)); max-width: none; height: min(980px, calc(100dvh - 48px)); max-height: none; padding: 0; color: #e8e4dc; background: #101923; border: 1px solid #43505b; border-radius: 6px; box-shadow: 0 24px 90px #0008; overflow: hidden; }
+.rhythm-viewer[open] { display: flex; flex-direction: column; }
+.rhythm-viewer::backdrop { background: rgba(4, 9, 15, .86); backdrop-filter: blur(8px); }
+.rhythm-viewer-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 18px; flex: 0 0 auto; padding: 13px 20px; border-bottom: 1px solid #35404a; }
+.rhythm-viewer-toolbar p { margin: 0; font-size: 14px; line-height: 1.6; }
+.rhythm-viewer-toolbar #rhythm-viewer-hint { color: #b1bdc5; font-size: 10px; }
+.rhythm-viewer-actions { display: flex; align-items: center; gap: 8px; }
+.rhythm-viewer-actions :is(button, a) { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 6px 12px; color: #e8e4dc; background: #1b2935; border: 1px solid #3f4c57; border-radius: 3px; font-size: 12px; white-space: nowrap; cursor: pointer; }
+.rhythm-viewer-actions :is(button, a):hover { border-color: #b7d2dd; }
+.rhythm-viewer-actions .rhythm-viewer-close { width: 44px; padding: 0; font: 30px/1 var(--mono); background: transparent; border-color: transparent; }
+.rhythm-viewer-stage { position: relative; flex: 1 1 auto; min-height: 0; padding: 18px; overflow: auto; overscroll-behavior: contain; touch-action: pan-x pan-y pinch-zoom; }
+.rhythm-viewer-stage img { display: block; width: 100%; height: 100%; object-fit: contain; margin-inline: auto; }
+.rhythm-viewer.is-zoomed .rhythm-viewer-stage img { width: var(--score-width); min-width: var(--score-width); max-width: none; height: auto; margin-inline: 0; object-fit: initial; }
+.rhythm-viewer-error { text-align: center; font-size: 13px; color: #ded4d4; }
+@media (max-width: 900px) {
+  .rhythm-hero .page-hero-grid { grid-template-columns: 1fr; gap: 25px; }
+  .rhythm-introduction { max-width: 600px; }
+  .rhythm-scorecard { padding: 22px 23px 16px; }
+  .rhythm-rating { display: block; margin: 6px 0 24px; }
+  .rhythm-rating > span { font-size: clamp(42px, 6vw, 59px); }
+  .rhythm-rating small { display: block; margin-top: 3px; }
+  .rhythm-stats { column-gap: 21px; }
+  .rhythm-archive-grid { gap: 26px; }
+  .rhythm-preview img { inset: 13px 13px 45px; width: calc(100% - 26px); height: calc(100% - 58px); }
+  .rhythm-archive figcaption { align-items: flex-start; }
+  .rhythm-archive figcaption > span { padding-top: 11px; }
+  .rhythm-coda { gap: 25px; grid-template-columns: minmax(0, 1fr) 260px; }
+}
+@media (max-width: 680px) {
+  .rhythm-hero-foot { display: grid; gap: 4px; margin-top: 25px; }
+  .rhythm-overview { grid-template-columns: 1fr; gap: 18px; padding-top: 26px; }
+  .rhythm-scorecard { min-height: 320px; padding: 21px 25px 16px; }
+  .rhythm-scorecard h2 { margin-top: 21px; }
+  .rhythm-rating { display: flex; gap: 15px; margin-bottom: 22px; }
+  .rhythm-rating > span { font-size: clamp(46px, 12vw, 62px); }
+  .rhythm-rating small { margin-top: 0; font-size: 8px; }
+  .rhythm-stats { gap: 14px 26px; }
+  .rhythm-stats dt { font-size: 8px; }
+  .rhythm-stats dd { font-size: 13px; }
+  .rhythm-archives { padding-top: 53px; }
+  .rhythm-section-heading { display: block; padding-bottom: 20px; }
+  .rhythm-section-heading > p { margin-top: 13px; }
+  .rhythm-section-heading > p br { display: none; }
+  .rhythm-archive-grid { grid-template-columns: 1fr; gap: 24px; }
+  .rhythm-preview img { inset: 17px 17px 47px; width: calc(100% - 34px); height: calc(100% - 64px); }
+  .rhythm-archive-title { padding-top: 23px; }
+  .rhythm-song-score { font-size: 10px; }
+  .rhythm-archive-note { margin-top: 25px; line-height: 1.9; }
+  .rhythm-coda { grid-template-columns: 1fr; margin-top: 52px; gap: 22px; }
+  .rhythm-coda h2 { font-size: 24px; }
+  .rhythm-coda-link { padding: 18px 21px; }
+  .rhythm-viewer { width: calc(100vw - 16px); height: calc(100dvh - 24px); }
+  .rhythm-viewer-toolbar { padding: 11px 10px; align-items: start; flex-wrap: wrap; gap: 8px; }
+  .rhythm-viewer-toolbar > div:first-child { padding-inline: 4px; padding-right: 30px; }
+  .rhythm-viewer-actions { width: 100%; gap: 8px; }
+  .rhythm-viewer-actions :is(button, a) { font-size: 11px; min-height: 44px; }
+  .rhythm-viewer-actions .rhythm-viewer-close { margin-left: auto; }
+  .rhythm-viewer-stage { padding: 8px; }
+}
+@media (max-width: 360px) {
+  .rhythm-scorecard { padding-inline: 20px; }
+  .rhythm-rating { gap: 10px; }
+  .rhythm-rating > span { font-size: 44px; }
+  .rhythm-stats { gap: 12px 20px; }
+  .rhythm-stats dt { font-size: 7px; }
+  .rhythm-stats dd { font-size: 12px; }
+  .rhythm-preview img { inset: 12px 12px 44px; width: calc(100% - 24px); height: calc(100% - 56px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rhythm-scorecard, .rhythm-preview img { transition: none; }
+  .rhythm-scorecard:hover, .rhythm-preview:hover img { transform: none; }
+}

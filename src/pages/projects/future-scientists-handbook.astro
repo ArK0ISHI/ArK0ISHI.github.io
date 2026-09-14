@@ -1,0 +1,142 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { handbook, handbookPages } from '../../data/handbook';
+import '../../styles/handbook.css';
+const structure = [
+  { number: '01', title: '开始探索', pages: 'PDF 02—07', text: '欢迎信、课程安排与每日提醒，把第一次翻开手册时需要知道的事放在前面。科学记录小方法，再把观察与提问变成可以着手的动作。' },
+  { number: '02', title: '记录发现', pages: 'PDF 08—17', text: '五天，每天上午与下午各一页。用稳定的分栏与色块区分课堂、实验、制作和分享，也为图画、问题与老师的评语留出空白。' },
+  { number: '03', title: '回看与查阅', pages: 'PDF 18—21', text: '结营页整理收获，词汇表解释新概念，校园地图帮助找到活动地点。记录可以随着课程继续，也可以在离营之后重新翻开。' },
+];
+---
+<BaseLayout title="未来科学家｜研学手册与信息设计" description="亚略 Ar 为东华大学暑期物理研学探索营制作的 21 页 A4 营员手册：五天课程、学习日志、科学词汇和校园地图。查看精选书页与完整 PDF。" image={handbook.cover}>
+  <article class="handbook-archive">
+    <header class="handbook-hero page-width">
+      <div class="handbook-hero-copy">
+        <a class="handbook-breadcrumb" href="/writing/">← 写作与排印</a>
+        <p class="handbook-kicker">2026 / A FIELD COMPANION</p>
+        <h1>未来科学家<span>给好奇心，<br /><em>留一页空白。</em></span></h1>
+        <p class="handbook-deck">东华大学暑期物理研学探索营 · 营员手册</p>
+        <p class="handbook-lead">一本可以画写、提问、记录与分享的小册子。把五天的物理探索，编排成营员可以随手翻阅、逐日填写的书页。</p>
+        <div class="handbook-actions"><a class="handbook-primary" href="#handbook-pages">翻看精选书页 <span aria-hidden="true">↓</span></a><a href={handbook.pdf} target="_blank" rel="noopener" data-astro-reload>打开完整 PDF <span aria-hidden="true">↗</span><span class="sr-only">（新窗口）</span></a></div>
+        <p class="handbook-credit">手册制作与版式设计 · 亚略 Ar <span>原稿署名：ArK0ishi</span></p>
+      </div>
+      <figure class="handbook-cover-stage">
+        <div class="handbook-cover-orbit" aria-hidden="true"></div>
+        <span class="handbook-stage-label">FUTURE SCIENTISTS / 未来科学家</span>
+        <a href={`${handbook.pdf}#page=1`} target="_blank" rel="noopener" data-astro-reload aria-label="打开《未来科学家》完整手册 PDF（新窗口）"><img src={handbook.cover} alt="《未来科学家》2026 学生手册封面：蓝色天空、星星、行星弧线与浅绿色地平线" width={handbook.width} height={handbook.height} fetchpriority="high" /></a>
+        <figcaption><span>一本等待发现填满的手册</span><span>A4 / 2026</span></figcaption>
+      </figure>
+      <dl class="handbook-facts">
+        <div><dt>FORMAT / 成品</dt><dd>A4 <span>· {handbook.pages} 页</span></dd></div>
+        <div><dt>JOURNEY / 课程</dt><dd>5 <span>天物理探索</span></dd></div>
+        <div><dt>JOURNAL / 记录</dt><dd>10 <span>页学习日志</span></dd></div>
+        <div><dt>MADE WITH / 排印</dt><dd>LaTeX</dd></div>
+      </dl>
+    </header>
+
+    <section class="handbook-concept page-width" aria-labelledby="handbook-concept-title">
+      <div class="handbook-section-heading"><p class="handbook-kicker">01 / FROM INFORMATION TO DISCOVERY</p><h2 id="handbook-concept-title">把必要的信息排好，<br />把发现的位置<em>留出来。</em></h2></div>
+      <div class="handbook-concept-copy"><p>手册里的内容有两种节奏：课程、地点与词汇需要一眼找到；猜想、图画与实验观察，需要在使用时慢慢写下。版式以蓝绿为底，用小块暖色标出不同记录区域，让提示与留白一起构成页面。</p><p>上午日志将绘画区与课堂、实验笔记并置；下午日志继续收纳科学故事、测量、制作和分享。同样的结构贯穿五天，打开新的一页，也能接着熟悉的顺序记录。</p><blockquote>“希望这本小册子能陪伴你记录问题、留下发现、整理收获。”<cite>— 手册欢迎信</cite></blockquote></div>
+    </section>
+
+    <section class="handbook-structure page-width" aria-label="手册的三个阅读阶段">
+      {structure.map(item => <article><div><span>{item.number}</span><small>{item.pages}</small></div><h3>{item.title}</h3><p>{item.text}</p></article>)}
+    </section>
+
+    <section class="handbook-gallery-section" id="handbook-pages" aria-labelledby="handbook-pages-title">
+      <div class="page-width">
+        <header class="handbook-gallery-heading"><div><p class="handbook-kicker">02 / SELECTED PAGES</p><h2 id="handbook-pages-title">翻几页，走进五天的<em>探索。</em></h2></div><p>点开书页，可以放大细读。<br />页码按 PDF 文件顺序标记。</p></header>
+        <div class="handbook-gallery">
+          {handbookPages.map((item, index) => <figure>
+            <a class="handbook-page-preview" href={item.src} data-handbook-page={index} aria-label={`放大查看：${item.title}，PDF 第 ${item.page} 页`} target="_blank" rel="noopener" data-astro-reload><img src={item.src} alt={item.description} width={handbook.width} height={handbook.height} loading="lazy" decoding="async" /><span class="handbook-enlarge" aria-hidden="true">放大书页 ↗</span></a>
+            <figcaption><p><span>{item.category}</span><span>PDF {String(item.page).padStart(2, '0')}</span></p><h3>{item.title}</h3><p class="handbook-page-description">{item.description}</p></figcaption>
+          </figure>)}
+        </div>
+      </div>
+    </section>
+
+    <section class="handbook-download page-width" aria-labelledby="handbook-download-title">
+      <div><p class="handbook-kicker">03 / KEEP A COPY</p><h2 id="handbook-download-title">完整的二十一页，<br /><em>在这里翻开。</em></h2><p>保留成品的全部书页与原有署名。网页选页之外，还可以查看完整课程安排、下午日志与结营记录。</p></div>
+      <div class="handbook-download-card"><span class="handbook-file-format">PDF</span><h3>2026 未来科学家<br />营员手册</h3><p>A4 · {handbook.pages} 页 · {handbook.pdfSize}</p><a class="handbook-primary" href={handbook.pdf} target="_blank" rel="noopener" data-astro-reload>在线打开手册 <span aria-hidden="true">↗</span><span class="sr-only">（新窗口）</span></a><a class="handbook-save" href={handbook.pdf} download="2026未来科学家_营员手册.pdf" data-astro-reload>下载 PDF <span aria-hidden="true">↓</span></a></div>
+    </section>
+    <nav class="handbook-next page-width" aria-label="继续翻阅其他作品"><a href="/blog/latex-touhou-typesetting/"><small>MORE EDITORIAL WORK</small><span>东方紫雨幽蝶 · 长篇整理与排印 <b aria-hidden="true">→</b></span></a><a href="/rhythm/"><small>OFF THE DESK</small><span>换一种节奏，去音游房间坐坐 <b aria-hidden="true">→</b></span></a></nav>
+  </article>
+
+  <dialog class="handbook-viewer" data-handbook-viewer aria-labelledby="handbook-viewer-title">
+    <header><div><p>SELECTED PAGE / 书页细读</p><h2 id="handbook-viewer-title" data-handbook-viewer-title>精选书页</h2></div><button type="button" data-handbook-close aria-label="关闭书页" autofocus>关闭 <span aria-hidden="true">×</span></button></header>
+    <div class="handbook-viewer-toolbar"><button type="button" data-handbook-prev aria-label="上一张书页">← 上一页</button><span data-handbook-position role="status" aria-live="polite"></span><button type="button" data-handbook-zoom aria-pressed="false">放大细读</button><button type="button" data-handbook-next aria-label="下一张书页">下一页 →</button></div>
+    <div class="handbook-viewer-canvas" data-handbook-canvas tabindex="0" aria-label="书页图像，放大后可滚动查看"><img data-handbook-image src={handbookPages[0].src} width={handbook.width} height={handbook.height} alt={handbookPages[0].description} /></div>
+    <footer><span>← → 翻页 · Esc 关闭</span><a data-handbook-pdf href={handbook.pdf} target="_blank" rel="noopener" data-astro-reload>在 PDF 中查看 <span aria-hidden="true">↗</span><span class="sr-only">（新窗口）</span></a></footer>
+  </dialog>
+  <script is:inline type="application/json" data-handbook-index set:html={JSON.stringify(handbookPages).replaceAll('<', '\\u003c')}></script>
+</BaseLayout>
+
+<script>
+  const handbookWindow = window as Window & { __arHandbookController?: AbortController; __arHandbookDialog?: HTMLDialogElement };
+  function setupHandbook() {
+    const dialog = document.querySelector<HTMLDialogElement>('[data-handbook-viewer]');
+    if (dialog && handbookWindow.__arHandbookDialog === dialog && handbookWindow.__arHandbookController && !handbookWindow.__arHandbookController.signal.aborted) return;
+    handbookWindow.__arHandbookController?.abort();
+    handbookWindow.__arHandbookDialog = dialog ?? undefined;
+    const index = document.querySelector('[data-handbook-index]');
+    if (!dialog || !index) return;
+    const pages = JSON.parse(index.textContent || '[]') as { src: string; page: number; title: string; description: string }[];
+    if (!pages.length) return;
+    const controller = new AbortController();
+    handbookWindow.__arHandbookController = controller;
+    const options = { signal: controller.signal };
+    const picture = dialog.querySelector<HTMLImageElement>('[data-handbook-image]')!;
+    const canvas = dialog.querySelector<HTMLElement>('[data-handbook-canvas]')!;
+    const title = dialog.querySelector<HTMLElement>('[data-handbook-viewer-title]')!;
+    const position = dialog.querySelector<HTMLElement>('[data-handbook-position]')!;
+    const zoom = dialog.querySelector<HTMLButtonElement>('[data-handbook-zoom]')!;
+    const previous = dialog.querySelector<HTMLButtonElement>('[data-handbook-prev]')!;
+    const next = dialog.querySelector<HTMLButtonElement>('[data-handbook-next]')!;
+    const pdf = dialog.querySelector<HTMLAnchorElement>('[data-handbook-pdf]')!;
+    let selected = 0;
+    let focused: HTMLElement | null = null;
+    let enlarged = false;
+    const setZoom = (value: boolean) => {
+      enlarged = value;
+      canvas.classList.toggle('is-zoomed', value);
+      zoom.setAttribute('aria-pressed', String(value));
+      zoom.textContent = value ? '适应窗口' : '放大细读';
+      canvas.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    };
+    const show = (value: number) => {
+      selected = Math.max(0, Math.min(pages.length - 1, value));
+      const page = pages[selected];
+      picture.src = page.src;
+      picture.alt = page.description;
+      title.textContent = page.title;
+      position.textContent = `${selected + 1} / ${pages.length} · PDF ${page.page}`;
+      pdf.href = `/documents/future-scientists-handbook-2026.pdf#page=${page.page}`;
+      previous.disabled = selected === 0;
+      next.disabled = selected === pages.length - 1;
+      setZoom(false);
+    };
+    document.querySelectorAll<HTMLAnchorElement>('[data-handbook-page]').forEach(link => {
+      link.addEventListener('click', event => {
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0 || typeof dialog.showModal !== 'function') return;
+        event.preventDefault(); focused = link;
+        show(Number(link.dataset.handbookPage));
+        dialog.showModal(); document.body.classList.add('handbook-viewer-open');
+      }, options);
+    });
+    dialog.querySelector('[data-handbook-close]')?.addEventListener('click', () => dialog.close(), options);
+    previous.addEventListener('click', () => show(selected - 1), options);
+    next.addEventListener('click', () => show(selected + 1), options);
+    zoom.addEventListener('click', () => setZoom(!enlarged), options);
+    dialog.addEventListener('keydown', event => {
+      if (enlarged && event.target === canvas) return;
+      if (event.key === 'ArrowRight') { event.preventDefault(); show(selected + 1); }
+      if (event.key === 'ArrowLeft') { event.preventDefault(); show(selected - 1); }
+    }, options);
+    dialog.addEventListener('click', event => { if (event.target === dialog) dialog.close(); }, options);
+    dialog.addEventListener('close', () => { document.body.classList.remove('handbook-viewer-open'); if (focused?.isConnected) focused.focus({ preventScroll: true }); }, options);
+    controller.signal.addEventListener('abort', () => { if (dialog.open) dialog.close(); document.body.classList.remove('handbook-viewer-open'); }, { once: true });
+    document.addEventListener('astro:before-swap', () => controller.abort(), { ...options, once: true });
+  }
+  document.addEventListener('astro:page-load', setupHandbook);
+  setupHandbook();
+</script>

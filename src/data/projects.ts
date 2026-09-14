@@ -101,4 +101,15 @@ export const projects: Project[] = [
     result: '四档棋力 · 四种规则 · 本机搜索与存档',
     detailHref: '/projects/gomoku/',
   },
+  {
+    id: 'future-scientists-handbook',
+    number: 'P.08',
+    title: '未来科学家：物理研学营营员手册',
+    subtitle: 'A field companion for young explorers',
+    description: '为东华大学暑期物理研学探索营制作 21 页 A4 手册，将五天的课程、学习日志、科学词汇与校园地图编排在一起，为观察、提问、记录和分享提供清楚的入口。',
+    reflection: '一本供营员使用的手册，怎样同时容纳必要的信息与等待他们写下的发现？',
+    tags: ['信息设计', 'LaTeX', '科学教育'],
+    result: '21 页 A4 成品 · 精选内页与完整 PDF',
+    detailHref: '/projects/future-scientists-handbook/',
+  },
 ];

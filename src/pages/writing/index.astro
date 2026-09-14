@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ArticleRow from '../../components/ArticleRow.astro';
+import HandbookFeature from '../../components/HandbookFeature.astro';
 import '../../styles/writing.css';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft && data.kind === 'writing'))
@@ -17,7 +18,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft && data.kin
     </div>
   </header>
   <section class="writing-features page-width" aria-labelledby="writing-features-title">
-    <header class="writing-section-heading"><h2 id="writing-features-title">先翻开这两页</h2><p>SELECTED WORK / 文字与排印</p></header>
+    <header class="writing-section-heading"><h2 id="writing-features-title">从文字，到可以翻阅的作品</h2><p>SELECTED WORK / 文字与排印</p></header>
     <div class="writing-feature-grid">
       <article class="writing-feature writing-feature-essay" aria-labelledby="writing-essay-title">
         <figure>
@@ -53,6 +54,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft && data.kin
       </article>
     </div>
   </section>
+  <div class="page-width"><HandbookFeature /></div>
   <section class="page-content writing-index" id="writing-index" aria-labelledby="writing-index-title">
     <div class="page-controls"><h2 id="writing-index-title">全部文字</h2><span class="page-count">{String(posts.length).padStart(2, '0')} ESSAYS</span></div>
     {posts.map((post, index) => <ArticleRow post={post} number={String(index + 1).padStart(2, '0')} />)}

@@ -5,6 +5,7 @@ import HomeHero from '../components/HomeHero.astro';
 import HomeResearch from '../components/HomeResearch.astro';
 import HomeExhibition from '../components/HomeExhibition.astro';
 import HomeFieldnotes from '../components/HomeFieldnotes.astro';
+import HomeRhythm from '../components/HomeRhythm.astro';
 import ArticleRow from '../components/ArticleRow.astro';
 import { projects } from '../data/projects';
 import { lightNotePhotos } from '../data/lightNotes';
@@ -42,14 +43,16 @@ const honors = [
       <a href="#research"><small>01</small>观测与计算</a>
       <a href="#writing-exhibition"><small>02</small>写作与书页</a>
       <a href="#fieldnotes"><small>03</small>行旅与光影</a>
-      <a href="#latest"><small>04</small>近来的文字</a>
+      <a href="#rhythm-room"><small>04</small>节奏与记录</a>
+      <a href="#latest"><small>05</small>近来的文字</a>
     </nav>
     <HomeResearch />
     <div id="writing-exhibition" class="edition-anchor"><HomeExhibition /></div>
     <div id="fieldnotes" class="edition-anchor"><HomeFieldnotes /></div>
+    <HomeRhythm />
     <section id="latest" class="edition-reading page-width" aria-labelledby="reading-title" data-reading-room>
       <header class="edition-heading" data-reveal>
-        <div><p class="edition-kicker">04 / NOTES & MARGINALIA</p><h2 id="reading-title">近来的<em>文字。</em></h2></div>
+        <div><p class="edition-kicker">05 / NOTES & MARGINALIA</p><h2 id="reading-title">近来的<em>文字。</em></h2></div>
         <p>有时推导，有时回望。<br />把暂时想清楚的，认真写下来。</p>
       </header>
       <div class="reading-toolbar">

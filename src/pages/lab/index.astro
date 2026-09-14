@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ExperimentGlyph from '../../components/ExperimentGlyph.astro';
+import { experiments } from '../../data/experiments';
+import '../../styles/experiment-desk.css';
+---
+<BaseLayout title="桌上的小实验" description="动手改变双摆的初始角度，在三秒钟的网格里观察机器人取舍，再转动一记任意球的三维轨迹。亚略 Ar 的互动研究作品。">
+  <div class="experiment-desk page-width">
+    <header class="desk-hero">
+      <a class="desk-back" href="/projects/">← 项目与研究档案</a>
+      <div class="desk-hero-layout">
+        <div><p class="desk-kicker">AR'S NOTEBOOK / INTERACTIVE STUDIES</p><h1>桌上的<br /><em>小实验。</em></h1></div>
+        <div class="desk-intro"><span class="desk-edition">VOL. 01 — 03</span><p>有些问题，<br />值得亲手改变一个条件。</p><p>这里放着三件可以操作的研究作品。<br />先动手，再沿着变化，走回模型本身。</p><a href="#desk-studies">选一个开始 <span aria-hidden="true">↓</span></a></div>
+      </div>
+      <div class="desk-margin"><span>初始条件 · 有限时间 · 观察视角</span><span>三个入口，一份好奇心。</span></div>
+    </header>
+    <section id="desk-studies" class="desk-studies" aria-label="三项互动研究">
+      {experiments.map(experiment => <article class="desk-study">
+        <a class="desk-art" href={experiment.href} aria-label={`${experiment.action}：${experiment.title}`}><span class="desk-art-number">EXPERIMENT / {experiment.number}</span><ExperimentGlyph kind={experiment.id} /><small>概念示意 · 进入后可操作</small></a>
+        <div class="desk-study-copy">
+          <p class="desk-kicker">{experiment.number} / {experiment.english}</p>
+          <h2><a href={experiment.href}>{experiment.title}</a></h2>
+          <p class="desk-question">{experiment.question}</p>
+          <p class="desk-description">{experiment.description}</p>
+          <ul class="desk-topics" aria-label="观察主题">{experiment.topics.map(topic => <li>{topic}</li>)}</ul>
+          <div class="desk-invitation"><span>不妨这样试</span><p>{experiment.prompt}</p></div>
+          <a class="desk-enter" href={experiment.href}>{experiment.action}<span aria-hidden="true">↗</span></a>
+          <p class="desk-provenance">{experiment.provenance}</p>
+        </div>
+      </article>)}
+    </section>
+    <aside class="desk-afterword" aria-labelledby="desk-afterword-title"><p class="desk-kicker">A NOTE ON MODELS / 桌边的一句话</p><h2 id="desk-afterword-title">看见变化，也问一句<em>为什么。</em></h2><p>轨迹的分离，需要和数值误差一起看；一次策略领先，需要放回随机事件里理解。每个实验都留有模型与参数说明，方便你在好奇之后，多走一步。</p><a href="/notes/">继续翻物理与计算笔记 <span aria-hidden="true">↗</span></a></aside>
+  </div>
+</BaseLayout>

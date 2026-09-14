@@ -1,0 +1,39 @@
+.experiment-desk { padding-top:120px; }
+.desk-back { display:inline-flex; min-height:44px; align-items:center; color:var(--ink-soft); font-size:11px; margin-bottom:30px; }
+.desk-hero-layout { display:grid; grid-template-columns:1.2fr 1fr; gap:60px; align-items:end; }
+.desk-kicker { margin:0 0 18px; font:400 9px/1.8 var(--mono); letter-spacing:.1em; color:var(--ink-soft); }
+.desk-hero h1 { margin:0; font:500 clamp(50px,7vw,92px)/1.27 var(--serif); letter-spacing:-.045em; }
+.experiment-desk em { font-style:normal; color:var(--red); }
+.desk-edition { color:var(--red); font:400 10px/1.8 var(--mono); letter-spacing:.1em; }
+.desk-intro > p:first-of-type { font:400 clamp(23px,2.5vw,32px)/1.65 var(--serif); margin:17px 0; }
+.desk-intro > p:last-of-type { color:var(--ink-soft); font-size:13px; line-height:2; margin:0 0 14px; }
+.desk-intro > a { display:inline-flex; gap:50px; min-height:44px; align-items:center; border-bottom:1px solid var(--line-strong); font-size:12px; }
+.desk-intro > a span { color:var(--red); }
+.desk-margin { margin-top:48px; padding-block:17px; display:flex; justify-content:space-between; gap:15px; font-size:10px; color:var(--ink-soft); border-block:1px solid var(--line); }
+.desk-studies { scroll-margin-top:100px; }
+.desk-study { display:grid; grid-template-columns:1fr 1fr; gap:clamp(35px,6vw,85px); padding-block:65px; align-items:center; border-bottom:1px solid var(--line); }
+.desk-art { position:relative; display:flex; align-items:center; aspect-ratio:1.05; padding:45px 25px; background:#13222a; }
+.desk-study:nth-child(2) .desk-art { background:#1c242c; }
+.desk-study:nth-child(3) .desk-art { background:#202735; }
+.desk-art-number { position:absolute; top:23px; left:26px; color:#b6c6c7; font:400 9px/1.8 var(--mono); letter-spacing:.12em; }
+.desk-art > small { position:absolute; bottom:22px; left:26px; color:#aabbbc; font-size:10px; }
+.desk-study h2 { font:500 clamp(29px,3.5vw,42px)/1.5 var(--serif); letter-spacing:-.035em; margin:0 0 13px; }
+.desk-question { color:var(--red); font-size:13px; margin:0 0 15px; }
+.desk-description { color:var(--ink-soft); font-size:13px; line-height:2.1; margin:0; max-width:35em; }
+.desk-topics { display:flex; gap:8px 20px; flex-wrap:wrap; padding:0; margin:20px 0 24px; list-style:none; color:var(--ink-soft); font-size:10px; }
+.desk-invitation { border-left:2px solid var(--line-strong); padding-left:16px; margin-block:20px; }
+.desk-invitation > span { color:var(--ink-soft); font-size:10px; }
+.desk-invitation > p { margin:6px 0 0; font-size:12px; line-height:1.9; }
+.desk-enter { display:inline-flex; align-items:center; justify-content:space-between; min-height:48px; gap:60px; font-size:13px; border-bottom:1px solid var(--red); }
+.desk-enter > span { color:var(--red); font-size:18px; }
+.desk-provenance { color:var(--ink-soft); font-size:10px; margin:15px 0 0; }
+.desk-afterword { max-width:680px; padding-block:70px 85px; }
+.desk-afterword h2 { font:500 clamp(26px,3vw,35px)/1.7 var(--serif); margin:0 0 20px; text-wrap:balance; }
+.desk-afterword > p:not(.desk-kicker) { font-size:13px; line-height:2.1; color:var(--ink-soft); }
+.desk-afterword a { display:inline-flex; align-items:center; gap:30px; min-height:44px; margin-top:13px; font-size:12px; }
+.experiment-desk a:hover:not(.desk-art) { color:var(--red); }
+.experiment-desk a:focus-visible { outline:2px solid var(--red); outline-offset:5px; }
+@media(max-width:760px) {
+  .experiment-desk { padding-top:91px; } .desk-back { margin-bottom:23px; } .desk-hero-layout { grid-template-columns:1fr; gap:28px; } .desk-hero h1 { font-size:64px; } .desk-intro > p:first-of-type { font-size:25px; margin-block:10px; } .desk-intro > p:last-of-type { font-size:12px; } .desk-edition { font-size:9px; } .desk-margin { margin-top:28px; font-size:9px; flex-wrap:wrap; gap:7px; }
+  .desk-study { grid-template-columns:1fr; gap:28px; padding-block:37px; } .desk-art { aspect-ratio:1.55; padding:22px 35px; } .desk-art-number { font-size:8px; top:16px; left:18px; } .desk-art > small { bottom:13px; left:18px; font-size:8px; } .desk-study h2 { font-size:32px; } .desk-kicker { font-size:8px; margin-bottom:12px; } .desk-question { font-size:12px; } .desk-topics { margin-block:17px; } .desk-afterword { padding-block:43px 50px; }
+}

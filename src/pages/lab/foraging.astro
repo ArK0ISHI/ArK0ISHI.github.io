@@ -1,0 +1,54 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import '../../styles/foraging.css';
+const policies = [
+  { id: 'nearest', index: 'A', name: '先到眼前最近的地方', english: 'NEAREST REACHABLE', description: '挑选剩余时间内能赶到的最近食饵；没有目标时，原地等待。', accent: 'mint' },
+  { id: 'rolling', index: 'B', name: '给下一步留一点余地', english: 'ROLLING HEURISTIC', description: '同时考虑分值、路程、眼前可衔接的目标，以及公开的出现分布。', accent: 'apricot' },
+];
+---
+
+<BaseLayout title="三秒之间 · 机器人决策实验" description="在 10 × 10 的网格里，对照两种机器人食饵捕获策略。相同的随机序列，不同的即时选择。">
+  <div class="foraging-page" data-foraging>
+    <header class="foraging-hero page-width">
+      <a class="foraging-back" href="/lab/">← 桌上的小实验</a>
+      <div class="foraging-title-row"><div><p class="eyebrow">EXPERIMENT 02 / DECISION UNDER TIME</p><h1>三秒<em>之间</em></h1></div><p class="foraging-intro">往左，是眼前的收获。<br />往右，也许离下一次机会更近。<br /><span>把一个决策问题，放在桌面上看。</span></p></div>
+      <div class="foraging-constraints" aria-label="模型的基本条件"><span><strong>10 × 10</strong> 个格点</span><span><strong>1 m/s</strong> 行进速度</span><span><strong>3 s</strong> 食饵寿命</span><span><strong>60 s</strong> 一轮观察</span></div>
+    </header>
+
+    <section class="foraging-experiment page-width" aria-labelledby="foraging-stage-title">
+      <div class="foraging-stage-heading"><div><p class="eyebrow">ONE WORLD, TWO CHOICES</p><h2 id="foraging-stage-title">同一场相遇，两种走法</h2></div><p>按下开始，看看分岔从哪里发生。</p></div>
+      <div class="foraging-controls">
+        <div class="foraging-playback"><button type="button" class="foraging-primary" data-foraging-play aria-pressed="false">开始观察 <span aria-hidden="true">▶</span></button><button type="button" data-foraging-reset>重放本轮</button><button type="button" data-foraging-seed>换一场相遇</button></div>
+        <div class="foraging-options"><label>出现分布<select data-foraging-distribution><option value="hotspots">聚集在几处热区</option><option value="uniform">各处机会相同</option></select></label><label>播放速度<select data-foraging-speed><option value="1">1 倍</option><option value="2">2 倍</option><option value="4">4 倍</option></select></label></div>
+      </div>
+      <div class="foraging-time-row"><span data-foraging-phase>准备就绪</span><label class="foraging-time">实验时间 <output data-foraging-time>00.0</output><span> / 60.0 s</span></label><span class="foraging-seed-label">场景编号 <output data-foraging-seed-value>23917</output></span></div>
+      <progress class="foraging-progress" data-foraging-progress max="60" value="0" aria-label="本轮实验进度"></progress>
+
+      <div class="foraging-boards">
+        {policies.map(policy => <article class={`foraging-board foraging-board-${policy.accent}`} aria-labelledby={`foraging-${policy.id}-title`}>
+          <header class="foraging-board-heading"><div><p><span>{policy.index}</span> {policy.english}</p><h3 id={`foraging-${policy.id}-title`}>{policy.name}</h3></div><div class="foraging-score"><strong data-foraging-score={policy.id}>0</strong><span>累计得分</span><button type="button" class="foraging-board-toggle" data-foraging-toggle aria-label="开始观察两台机器人" aria-pressed="false">开始</button></div></header>
+          <canvas width="480" height="480" data-foraging-canvas={policy.id} role="img" aria-label={`${policy.name}的网格动画。机器人沿格线移动，圆点为食饵；画面下方实时显示目标解释和收获。`}></canvas>
+          <div class="foraging-board-metrics"><span>捕获 <strong data-foraging-captured={policy.id}>0</strong> 枚</span><span>行走 <strong data-foraging-distance={policy.id}>0.0</strong> m</span><span>已过期 <strong data-foraging-expired={policy.id}>0</strong> 枚</span></div>
+          <p class="foraging-decision" data-foraging-reason={policy.id}>正在准备格点与目标。</p>
+          <p class="foraging-policy-description">{policy.description}</p>
+        </article>)}
+      </div>
+      <div class="foraging-legend"><span><i class="foraging-legend-robot"></i>机器人</span><span><i class="foraging-legend-food"></i>数字是分值，外圈是剩余寿命</span><span><i class="foraging-legend-route"></i>当前意向路线</span><span><i class="foraging-legend-heat"></i>出现概率的公开先验</span></div>
+      <p class="foraging-comparison" data-foraging-comparison>两台机器人从 (4, 4) 出发，各自在同一组食饵的副本中运行，互不争抢。换分布会重置本轮。</p>
+      <p class="sr-only" role="status" aria-live="polite" data-foraging-announcement></p>
+      <noscript><p class="foraging-no-script">开启 JavaScript 后可以播放这组实验。下面保留了模型条件和策略说明。</p></noscript>
+    </section>
+
+    <section class="foraging-reading page-width" aria-labelledby="foraging-reading-title">
+      <div class="foraging-reading-lead"><p class="eyebrow">WHAT TO LOOK FOR</p><h2 id="foraging-reading-title">眼前的最短路，<br />未必是下一刻的好位置。</h2><p>这个问题来自我的数模工作：当机会很快消失，决策既要赶得上当下，也要给未来留下空间。</p></div>
+      <div class="foraging-reading-notes"><article><span>01</span><div><h3>先问：还来得及吗？</h3><p>食饵出现后才会被看见。机器人沿格线走，每跨一格需要一秒；距离超过剩余寿命的目标，直接排除。到期的那个瞬间抵达，仍算捕获。</p></div></article><article><span>02</span><div><h3>再问：到那里之后呢？</h3><p>滚动策略会估计能否顺路拿到另一枚已出现的食饵，也考虑终点附近的机会覆盖。它只能使用眼前的信息和公开分布，并不知道下一枚食饵在哪里。</p></div></article><article><span>03</span><div><h3>不要让一轮输赢代替结论。</h3><p>换一场相遇，或者把分布改成均匀，再比较一次。启发式有自己的偏好；一次分数更高，不代表它在所有环境里都更好。</p></div></article></div>
+    </section>
+
+    <section class="foraging-method page-width" aria-labelledby="foraging-method-title">
+      <div><p class="eyebrow">MODEL NOTE</p><h2 id="foraging-method-title">把演示的边界写清楚</h2><p>这是围绕「短寿命随机食饵捕获」制作的网页教学演示，用来观察决策过程。下列采样方式与启发式参数为本页设定，不代表原论文算法或实验结果。</p></div>
+      <details><summary>展开模型、策略与复现说明 <span aria-hidden="true">＋</span></summary><div class="foraging-method-content"><h3>场地与时钟</h3><p>9 m × 9 m 方形场地，10 × 10 个间隔 1 m 的格点。机器人从 (4, 4) 静止出发，以 1 m/s 沿格线移动；只在格点重新决策，最短路统一先沿横向、再沿纵向。模拟以 0.05 s 固定步长推进，播放倍速仅改变观看速度。</p><h3>如何出现、如何消失</h3><p>开局出现 4 枚食饵，之后每 0.5 s 出现 1 枚。分值为 1–9 的均匀整数；寿命均为 3 s，允许重叠，同格食饵可一起捕获。「已过期」统计所有未捕获而到期的食饵，包含远处不可达的食饵。60 s 结束时仍有寿命的食饵不计入已过期。</p><p>均匀分布下每个格点等概率。热区分布在 (3, 3)、(7, 6)、(2, 8) 叠加宽度 1.1 格、相对权重 0.5 / 0.35 / 0.15 的高斯权重，各格另加 0.025 后统一归一化。这张分布事先对两种策略公开。</p><h3>两种策略</h3><p>A 选择可及时抵达的最近食饵，距离相同则先选出现较早的；无目标时等待。B 对可达食饵计算「分值 + 0.65 × 可衔接的最高分 − 1.4 × 距离 + 2 × 终点三步内出现概率」，每到格点重新选目标。第二枚食饵也必须已经出现，且预计抵达时尚未过期；没有可达食饵时，按「三步覆盖概率 − 0.025 × 距离」寻找等待位置。</p><h3>同一场景，可以再看一次</h3><p>场景编号决定随机序列。「重放本轮」保留编号和分布；「换一场相遇」改变编号。复制当前页面地址，可以把这一场景留到下次。两台机器人拥有各自的捕获记录，始终接收同一组出现时间、坐标与分值。策略只接收当下可见食饵，没有读取未来事件的入口。</p></div></details>
+    </section>
+    <nav class="foraging-next page-width" aria-label="继续探索小实验"><a href="/lab/"><span>回到桌面</span><strong>三种观察，放在一起</strong><span aria-hidden="true">↗</span></a><a href="/lab/double-pendulum/"><span>另一个问题</span><strong>微小偏差，会走多远？</strong><span aria-hidden="true">↗</span></a></nav>
+  </div>
+  <script>import '../../scripts/foraging';</script>
+</BaseLayout>

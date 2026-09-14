@@ -89,6 +89,11 @@ const highest = huashuCupTrajectory.samples[highestIndex];
     <p id="trajectory-operation-help">拖动图面改变方向；方向键微调，Home 复位，＋/− 缩放。坐标原点位于球门线中点，x 沿球门线，y 指向场内，z 竖直向上。逐点误差为两台相机像素回投距离的平均值。</p>
   </div>
 
+  <nav class="trajectory-related" aria-label="更多互动研究">
+    <a href="/lab/">桌上的小实验 <span aria-hidden="true">↗</span></a>
+    <a href="/lab/double-pendulum/">双摆与混沌</a>
+    <a href="/lab/foraging/">三秒钟的取舍</a>
+  </nav>
   <p class="sr-only" data-trajectory-live aria-live="polite"></p>
   <script is:inline type="application/json" data-trajectory-data set:html={serializedData}></script>
 </section>

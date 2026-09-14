@@ -1,3 +1,9 @@
+#trajectory-explorer { scroll-margin-top: 100px; }
+.trajectory-related { display:flex; flex-wrap:wrap; gap:8px 24px; padding:8px 24px; border-top:1px solid var(--line); font-size:11px; }
+.prose .trajectory-related a { display:inline-flex; min-height:44px; align-items:center; gap:16px; color:var(--ink-soft); border:0; }
+.prose .trajectory-related a:first-child { color:var(--red); margin-right:auto; }
+.trajectory-related a:focus-visible { outline:2px solid var(--red); outline-offset:3px; }
+
 .trajectory-explorer {
   --trajectory-red: #a72a3f;
   --trajectory-blue: #365f77;

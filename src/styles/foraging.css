@@ -1,0 +1,112 @@
+.foraging-page { padding: 132px 0 96px; }
+.foraging-back { display: inline-block; color: var(--ink-soft); font-size: 13px; margin-bottom: 38px; }
+.foraging-back:hover { color: var(--red); }
+.foraging-title-row { display: flex; align-items: end; justify-content: space-between; gap: 32px; }
+.foraging-title-row h1 { margin: 8px 0 0; font-size: clamp(46px, 7vw, 82px); line-height: 1.2; font-weight: 500; letter-spacing: -.065em; }
+.foraging-title-row h1 em { font-style: normal; color: var(--red); }
+.foraging-intro { margin: 0 0 4px; color: var(--ink-soft); font-size: 17px; line-height: 2; }
+.foraging-intro span { display: inline-block; margin-top: 9px; font-size: 13px; }
+.foraging-constraints { display: flex; flex-wrap: wrap; gap: 12px 36px; padding: 27px 0; border-block: 1px solid var(--line); margin-top: 39px; color: var(--ink-soft); font-size: 12px; }
+.foraging-constraints strong { color: var(--ink); font: 400 17px var(--mono); margin-right: 8px; }
+.foraging-experiment { margin-top: 60px; }
+.foraging-stage-heading { display: flex; justify-content: space-between; align-items: end; gap: 20px; margin-bottom: 25px; }
+.foraging-stage-heading h2 { font-size: clamp(23px, 3vw, 31px); margin: 5px 0 0; font-weight: 500; }
+.foraging-stage-heading > p { color: var(--ink-soft); font-size: 13px; margin: 0 0 6px; }
+.foraging-controls { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 17px 0; }
+.foraging-playback, .foraging-options { display: flex; align-items: center; gap: 10px; }
+.foraging-controls button { min-height: 44px; padding: 10px 16px; border: 1px solid var(--line); background: transparent; font-size: 13px; cursor: pointer; border-radius: 3px; }
+.foraging-controls button:hover { border-color: var(--ink-soft); background: var(--wash); }
+.foraging-controls .foraging-primary { background: var(--ink); color: var(--paper); border-color: var(--ink); min-width: 123px; }
+.foraging-controls .foraging-primary:hover { background: var(--red); border-color: var(--red); }
+.foraging-primary span { margin-left: 10px; font-size: 10px; }
+.foraging-options { gap: 18px; }
+.foraging-options label { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--ink-soft); }
+.foraging-options select { min-height: 44px; max-width: 170px; padding: 8px 27px 8px 10px; color: var(--ink); font: inherit; background: var(--paper); border: 1px solid var(--line); border-radius: 3px; cursor: pointer; }
+.foraging-page :is(button, select, summary, a):focus-visible { outline: 2px solid var(--red); outline-offset: 5px; }
+.foraging-time-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 10px 0 13px; font-size: 12px; color: var(--ink-soft); }
+.foraging-time output { font: 400 18px var(--mono); color: var(--ink); margin-left: 8px; }
+.foraging-time > span { font: 400 12px var(--mono); }
+.foraging-seed-label output { font-family: var(--mono); margin-left: 5px; }
+.foraging-progress { display: block; appearance: none; width: 100%; height: 2px; border: 0; border-radius: 0; background: var(--line); color: var(--red); margin-bottom: 21px; }
+.foraging-progress::-webkit-progress-bar { background: var(--line); }
+.foraging-progress::-webkit-progress-value { background: var(--red); }
+.foraging-progress::-moz-progress-bar { background: var(--red); }
+.foraging-boards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.foraging-board { --foraging-accent: #9ed9c5; min-width: 0; padding: 26px 26px 23px; border: 1px solid #33454d; border-radius: 4px; background: #111d26; color: #edece5; box-shadow: 0 20px 50px #0615220b; }
+.foraging-board-apricot { --foraging-accent: #f3c196; }
+.foraging-board-heading { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+.foraging-board-heading p { margin: 0 0 9px; font: 400 10px var(--mono); letter-spacing: .08em; color: #a4b6c1; }
+.foraging-board-heading p > span { display: inline-grid; place-items: center; width: 22px; height: 22px; border: 1px solid #72828b; margin-right: 8px; color: var(--foraging-accent); }
+.foraging-board-heading h3 { margin: 0; font-size: clamp(16px, 1.9vw, 22px); font-weight: 500; }
+.foraging-score { display: grid; flex-shrink: 0; justify-items: end; }
+.foraging-score strong { font: 400 38px var(--mono); line-height: 1.15; color: var(--foraging-accent); }
+.foraging-score span { color: #adbbc3; font-size: 10px; margin-top: 4px; }
+.foraging-board-toggle { display: none; }
+.foraging-board canvas { display: block; width: 100%; height: auto; aspect-ratio: 1; margin: 15px 0 5px; }
+.foraging-board-metrics { display: flex; justify-content: space-between; gap: 8px; padding: 14px 0; border-block: 1px solid #34444f; color: #a9bac4; font-size: 11px; }
+.foraging-board-metrics strong { color: #eceae1; font: 400 15px var(--mono); margin: 0 3px; }
+.foraging-decision { font-size: 13px; color: var(--foraging-accent); line-height: 1.85; min-height: 48px; margin: 18px 0 8px; }
+.foraging-policy-description { color: #adbbc3; font-size: 11px; line-height: 1.85; margin: 0; }
+.foraging-legend { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 22px; color: var(--ink-soft); font-size: 11px; padding-top: 20px; }
+.foraging-legend > span { display: inline-flex; gap: 8px; align-items: center; }
+.foraging-legend i { display: inline-block; width: 13px; height: 13px; flex-shrink: 0; }
+.foraging-legend-robot { border: 2px solid var(--blue); transform: rotate(45deg) scale(.7); }
+.foraging-legend-food { border: 2px solid var(--lamp); border-radius: 50%; }
+.foraging-legend-route { height: 0 !important; width: 19px !important; border-top: 1px dashed var(--ink-soft); }
+.foraging-legend-heat { background: radial-gradient(circle, #4eafa99c, transparent); }
+.foraging-comparison { margin: 20px 0 0; color: var(--ink-soft); font-size: 13px; line-height: 1.9; border-left: 2px solid var(--line-strong); padding-left: 16px; }
+.foraging-reading { margin-top: 88px; display: grid; grid-template-columns: .9fr 1.1fr; gap: 10%; }
+.foraging-reading-lead h2 { font-size: clamp(24px, 3vw, 34px); font-weight: 500; line-height: 1.65; letter-spacing: -.03em; margin: 12px 0 22px; }
+.foraging-reading-lead > p:last-child { font-size: 14px; color: var(--ink-soft); max-width: 370px; line-height: 2; }
+.foraging-reading-notes article { display: flex; gap: 20px; border-top: 1px solid var(--line); padding: 23px 0; }
+.foraging-reading-notes article > span { font: 400 12px var(--mono); color: var(--red); padding-top: 7px; }
+.foraging-reading-notes h3 { margin: 0 0 10px; font-size: 17px; font-weight: 500; }
+.foraging-reading-notes p { color: var(--ink-soft); font-size: 13px; line-height: 2; margin: 0; }
+.foraging-method { margin-top: 68px; padding-block: 30px; border-block: 1px solid var(--line); display: grid; grid-template-columns: 1fr 1fr; gap: 8%; align-items: start; }
+.foraging-method h2 { font-size: 21px; font-weight: 500; margin: 7px 0 13px; }
+.foraging-method p { font-size: 12px; color: var(--ink-soft); line-height: 2; margin: 10px 0; }
+.foraging-method summary { display: flex; justify-content: space-between; cursor: pointer; padding: 17px 0; list-style: none; font-size: 14px; }
+.foraging-method summary::-webkit-details-marker { display: none; }
+.foraging-method details[open] summary span { transform: rotate(45deg); }
+.foraging-method-content h3 { font-size: 14px; font-weight: 500; margin: 22px 0 5px; }
+.foraging-next { margin-top: 46px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.foraging-next a { display: grid; grid-template-columns: 1fr auto; padding: 23px 0; border-bottom: 1px solid var(--line); gap: 7px; }
+.foraging-next a > span:first-child { grid-column: 1 / -1; color: var(--ink-soft); font-size: 11px; }
+.foraging-next strong { font-size: 17px; font-weight: 500; }
+.foraging-next a:hover strong { color: var(--red); }
+@media (max-width: 1050px) { .foraging-controls { align-items: start; flex-direction: column; } .foraging-options { width: 100%; justify-content: space-between; } }
+@media (max-width: 760px) {
+  .foraging-page { padding-top: 103px; padding-bottom: 60px; }
+  .foraging-back { margin-bottom: 26px; }
+  .foraging-title-row { display: block; }
+  .foraging-title-row .eyebrow { font-size: 9px; }
+  .foraging-intro { margin: 24px 0 0; font-size: 15px; }
+  .foraging-constraints { display: grid; grid-template-columns: 1fr 1fr; gap: 15px 12px; margin-top: 27px; padding: 22px 0; font-size: 10px; }
+  .foraging-constraints strong { font-size: 14px; margin-right: 4px; }
+  .foraging-experiment { margin-top: 40px; }
+  .foraging-stage-heading { display: block; margin-bottom: 16px; }
+  .foraging-stage-heading > p { margin-top: 13px; }
+  .foraging-playback { width: 100%; gap: 7px; }
+  .foraging-controls button { padding: 9px 10px; font-size: 11px; flex: 1; }
+  .foraging-controls .foraging-primary { min-width: 106px; }
+  .foraging-options { gap: 10px; }
+  .foraging-options label { align-items: start; flex-direction: column; gap: 5px; }
+  .foraging-options select { max-width: 190px; width: 100%; }
+  .foraging-time-row { flex-wrap: wrap; row-gap: 7px; font-size: 10px; }
+  .foraging-time output { font-size: 16px; }
+  .foraging-seed-label { width: 100%; }
+  .foraging-boards { grid-template-columns: 1fr; gap: 17px; }
+  .foraging-board { padding: 21px 19px 20px; }
+  .foraging-board-heading h3 { font-size: 18px; }
+  .foraging-score strong { font-size: 32px; }
+  .foraging-board-toggle { display: block; min-width: 54px; min-height: 44px; background: transparent; border: 1px solid #607680; border-radius: 3px; color: var(--foraging-accent); font-size: 12px; margin-top: 9px; cursor: pointer; }
+  .foraging-board-toggle:hover { background: #a9c2d015; }
+  .foraging-board-metrics { font-size: 10px; }
+  .foraging-board-metrics strong { font-size: 13px; }
+  .foraging-reading { margin-top: 57px; grid-template-columns: 1fr; gap: 22px; }
+  .foraging-reading-lead > p:last-child { max-width: none; }
+  .foraging-method { margin-top: 34px; grid-template-columns: 1fr; gap: 9px; }
+  .foraging-next { grid-template-columns: 1fr; gap: 5px; margin-top: 20px; }
+  .foraging-decision { min-height: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .foraging-page *, .foraging-page *::before, .foraging-page *::after { scroll-behavior: auto; transition: none !important; } }

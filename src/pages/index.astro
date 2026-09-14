@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import HomeHero from '../components/HomeHero.astro';
 import HomeResearch from '../components/HomeResearch.astro';
+import ExperimentsShelf from '../components/ExperimentsShelf.astro';
 import HomeExhibition from '../components/HomeExhibition.astro';
 import HomeFieldnotes from '../components/HomeFieldnotes.astro';
 import HomeRhythm from '../components/HomeRhythm.astro';
@@ -47,6 +48,7 @@ const honors = [
       <a href="#latest"><small>05</small>近来的文字</a>
     </nav>
     <HomeResearch />
+    <ExperimentsShelf home />
     <div id="writing-exhibition" class="edition-anchor"><HomeExhibition /></div>
     <div id="fieldnotes" class="edition-anchor"><HomeFieldnotes /></div>
     <HomeRhythm />

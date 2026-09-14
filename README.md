@@ -24,6 +24,7 @@ npm run preview
 
 - 封面与入口：`src/components/HomeHero.astro`、`src/styles/home-a.css`
 - 研究展台：`src/components/HomeResearch.astro`
+- 互动实验入口：`src/components/ExperimentsShelf.astro`、`src/data/experiments.ts`
 - 写作与书页：`src/components/HomeExhibition.astro`
 - 光影选集：`src/components/HomeFieldnotes.astro`
 - 首页编排与响应式样式：`src/pages/index.astro`、`src/styles/home-edition.css`
@@ -70,6 +71,21 @@ npm run sync:music
 ```
 
 两张专辑均为器乐作品，网易云目前返回的 LRC 主要是作曲署名和“纯音乐”提示，因此播放器的歌词面板不会出现演唱歌词。曲目、封面、录音和 LRC 的权利仍归相应创作者、发行方与平台；公开站点只保存构建时取得的元数据和 LRC，不把音频文件提交进仓库。网络或地区限制导致网易云音源全部不可用时，播放器会切换到 `src/data/music.ts` 中声明的 CC0 备用音源。
+
+## 桌上的小实验
+
+`/lab/` 将双摆、机器人决策与原有任意球观察器放在一起。首页、项目档案、站内检索及各实验之间均有入口。
+
+- `/lab/double-pendulum/`：等质量、等杆长的平面理想双摆；在正则角度与动量变量下使用 RK4 或固定步长隐式中点法，分别观察初值微扰和数值能量误差。
+- `/lab/foraging/`：9 m 方形场地、10 × 10 格点、1 m/s 移动、3 s 食饵寿命；两种策略在同一随机序列的独立副本中运行。查询参数 `seed` 与 `distribution` 保留场景，策略不读取未来事件。
+- `/blog/huashu-cup-a-2026/#trajectory-explorer`：原研究的 29 组坐标、多视角及原始点对照。
+
+前两项为根据课程与数模主题制作的网页演示；网页新增的参数与策略在各页模型说明中列出，不作为原报告的实验结果。模拟核心位于 `src/lib/experiments/`，界面与页面生命周期位于 `src/scripts/`。修改数值方法或决策规则后运行：
+
+```bash
+npm run test:experiments
+npm run build
+```
 
 ## 部署到 GitHub Pages
 

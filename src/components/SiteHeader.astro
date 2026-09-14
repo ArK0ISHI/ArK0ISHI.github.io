@@ -5,7 +5,7 @@ import avatar from '../assets/avatar.jpg';
 
 const pathname = Astro.url.pathname;
 const isHome = pathname === '/';
-const isActive = (href: string) => href === '/' ? pathname === '/' : pathname.startsWith(href);
+const isActive = (href: string) => href === '/' ? pathname === '/' : pathname.startsWith(href) || (href === '/projects/' && pathname.startsWith('/lab/'));
 ---
 
 <header class:list={['site-header', { 'is-home': isHome }]} data-header>

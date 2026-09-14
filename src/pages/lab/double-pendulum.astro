@@ -1,0 +1,63 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import '../../styles/double-pendulum.css';
+---
+
+<BaseLayout title="双摆｜让一点点不同，走向远方" description="桌上的小实验：调整双摆初始角度，看微小差异怎样展开；在同一组初值下比较 RK4 与隐式中点法的能量误差。">
+  <article class="pendulum-page" data-pendulum>
+    <header class="pendulum-hero page-width">
+      <a class="pendulum-back" href="/lab/">← 桌上的小实验</a>
+      <p class="pendulum-kicker">EXPERIMENT 01 / CHAOS &amp; COMPUTATION</p>
+      <div class="pendulum-title-row"><h1>让一点点不同，<br />走向<em>远方。</em></h1><span class="pendulum-title-note">两根摆杆。<br />两条几乎重合的路。<br />一个逐渐分开的未来。</span></div>
+      <p class="pendulum-intro">把第二根摆的初始角度轻轻挪动，再同时松手。这里没有随机力，只有相同的方程，和起点里藏着的一点差别。</p>
+      <div class="pendulum-meta"><span>双摆 · 计算物理</span><span>可交互的课程主题延伸</span><a href="#pendulum-notes">阅读实验札记 ↓</a></div>
+    </header>
+
+    <section class="pendulum-workbench page-width" aria-labelledby="pendulum-bench-title">
+      <div class="pendulum-workbench-top"><h2 id="pendulum-bench-title">双摆观察台</h2><span>01 / THE BUTTERFLY NEXT DOOR</span></div>
+      <div class="pendulum-lab-grid">
+        <div class="pendulum-stage-wrap">
+          <div class="pendulum-stage-meta"><p><i class="pendulum-key original"></i>原始初值 <span>实线</span></p><p><i class="pendulum-key nearby"></i>微小扰动 <span>虚线</span></p></div>
+          <canvas class="pendulum-stage" data-pendulum-canvas role="img" aria-label="两组双摆的运动与末端轨迹：金色实线为原始初值，蓝色虚线为微小扰动。下方同时提供时间和末端距离的文字读数。">请启用 JavaScript 查看双摆模拟。原始初值与只改变第二摆初始角度的扰动组将同时演化。</canvas>
+          <div class="pendulum-stage-actions"><button type="button" data-pendulum-stage-play aria-pressed="false">开始观察 <span aria-hidden="true">▶</span></button><button type="button" data-pendulum-stage-reset aria-label="重置双摆实验">重置 ↺</button></div>
+          <div class="pendulum-stage-bottom"><span>轨迹保留最近 8 秒</span><span data-pendulum-status role="status">准备就绪，点击开始观察</span></div>
+          <div class="pendulum-readouts"><div><span>模拟时间</span><output data-pendulum-time>0.00 <small>s</small></output></div><div><span>两组末端距离</span><output data-pendulum-distance>0.0017 <small>m</small></output></div><div><span>轨迹使用方法</span><output class="pendulum-method-readout" data-pendulum-method-label>RK4</output></div></div>
+        </div>
+
+        <form class="pendulum-controls" aria-label="双摆实验设置" onsubmit="return false;">
+          <div class="pendulum-control-heading"><span>从这里，拨动起点</span><small>INITIAL CONDITIONS</small></div>
+          <label class="pendulum-slider-label" for="pendulum-angle1">第一摆初始角度 <output for="pendulum-angle1" data-pendulum-angle1-value>120°</output></label>
+          <input id="pendulum-angle1" name="angle1" type="range" min="-175" max="175" step="1" value="120" />
+          <label class="pendulum-slider-label" for="pendulum-angle2">第二摆初始角度 <output for="pendulum-angle2" data-pendulum-angle2-value>−20°</output></label>
+          <input id="pendulum-angle2" name="angle2" type="range" min="-175" max="175" step="1" value="-20" />
+          <label class="pendulum-slider-label" for="pendulum-perturbation">第二摆的微小扰动 <output for="pendulum-perturbation" data-pendulum-perturbation-value>0.1°</output></label>
+          <input id="pendulum-perturbation" name="perturbation" type="range" min="0" max="1" step="0.001" value="0.1" />
+          <p class="pendulum-control-note">角度从竖直向下计起，两组都从静止释放。改动设置后，实验回到起点。</p>
+          <div class="pendulum-presets" aria-label="选择初值预设"><button type="button" data-pendulum-preset="chaotic" aria-pressed="true">大幅摆动</button><button type="button" data-pendulum-preset="gentle" aria-pressed="false">小角度</button><button type="button" data-pendulum-preset="identical" aria-pressed="false">完全相同</button></div>
+          <div class="pendulum-select-row"><label for="pendulum-method">轨迹方法<select id="pendulum-method" name="method"><option value="rk4">RK4 · 四阶</option><option value="midpoint">隐式中点 · 二阶辛方法</option></select></label><label for="pendulum-step">固定步长<select id="pendulum-step" name="step"><option value="60">1/60 s</option><option value="120" selected>1/120 s</option><option value="240">1/240 s</option></select></label></div>
+          <div class="pendulum-playback"><button type="button" class="pendulum-play" data-pendulum-play aria-pressed="false">开始观察 <span aria-hidden="true">▶</span></button><button type="button" data-pendulum-reset aria-label="重置双摆实验">重置 ↺</button></div>
+          <button type="button" class="pendulum-forward" data-pendulum-forward>向前计算 10 秒 <span aria-hidden="true">→</span></button>
+          <p class="pendulum-control-note pendulum-session-note">每次观察最多 120 秒；离开观察台会自动暂停。</p>
+        </form>
+      </div>
+
+      <div class="pendulum-energy-section">
+        <div class="pendulum-energy-heading"><div><p class="pendulum-kicker">A SECOND QUESTION</p><h3>分开的是轨迹，<br /><em>守住的是能量吗？</em></h3></div><p>下面让两种方法从<strong>同一组原始初值</strong>出发，使用相同步长。曲线展示计算造成的能量偏差，与上方的初值扰动分开观察。</p></div>
+        <div class="pendulum-energy-legend"><p><i class="pendulum-key original"></i>RK4 <output data-pendulum-energy-rk4>0.00000%</output></p><p><i class="pendulum-key nearby"></i>隐式中点 <output data-pendulum-energy-midpoint>0.00000%</output></p><span>ΔE / 3mgl · 纵轴自动缩放</span></div>
+        <canvas class="pendulum-energy-chart" data-pendulum-energy-canvas role="img" aria-label="RK4 与隐式中点法的能量偏差随模拟时间变化，带正负符号。上方提供当前数值，下方提供全程最大绝对偏差。">启用 JavaScript 后显示两种方法的能量误差曲线。</canvas>
+        <p class="pendulum-energy-caption">本次最大绝对偏差：<span data-pendulum-energy-max>RK4 0.00000% · 隐式中点 0.00000%</span></p>
+      </div>
+      <noscript><p class="pendulum-noscript">这个实验需要 JavaScript。你仍然可以阅读下方模型说明与参考资料。</p></noscript>
+    </section>
+
+    <section class="pendulum-notes page-width" id="pendulum-notes" aria-labelledby="pendulum-notes-title">
+      <header><p class="pendulum-kicker">NOTES FROM THE DESK</p><h2 id="pendulum-notes-title">看见分岔，<br />也追问<em>怎么算。</em></h2><p>从计算物理课程中的双摆与数值方法比较出发，为网页重新制作的交互演示。这里的实时曲线来自当前参数，不代表原汇报的实验结果。</p></header>
+      <div class="pendulum-note-grid"><article><span>01 / 先看起点</span><h3>把差别调到零</h3><p>选择“完全相同”，两组轨迹会重合。再加入 0.1° 的扰动，观察大幅摆动与小角度摆动有什么不同。并非每一组双摆初值都会显出同样的混沌特征。</p></article><article><span>02 / 再看误差</span><h3>能量守恒，不等于算得分毫不差</h3><p>理想双摆没有摩擦，总机械能守恒；离散计算仍有误差。RK4 的短时误差可以更小，辛方法的价值在于保留几何结构。辛并不等于精确守恒能量。</p></article><article><span>03 / 最后换步长</span><h3>漂亮的轨迹，也需要复核</h3><p>把步长减半，从同一初值重做。先比较短时结果，再观察长期差异。轨迹分离是一种现象展示；单凭两条曲线，不能测定李雅普诺夫指数或严格证明混沌。</p></article></div>
+      <details class="pendulum-model"><summary>翻开模型与计算说明 <span aria-hidden="true">＋</span></summary><div class="pendulum-model-body"><div><h3>理想模型</h3><p>两根无质量刚性杆，长度各 1 m；两个质点，质量各 1 kg；重力加速度 g = 9.81 m/s²。无空气阻力、无关节摩擦，运动限定在同一平面。θ₁、θ₂ 均以竖直向下为零。</p><p>用正则坐标 (θ₁, θ₂, p₁, p₂) 演化。令 δ = θ₁ − θ₂，在上述单位和参数下，哈密顿量为：</p><p class="pendulum-formula">H = (p₁² + 2p₂² − 2p₁p₂ cos δ) / [2(2 − cos² δ)] − g(2 cos θ₁ + cos θ₂)</p></div><div><h3>两种求解方法</h3><p>经典 RK4 为四阶显式方法；隐式中点法为二阶方法，在正则哈密顿变量下具有辛结构。中点方程用牛顿迭代求解，固定步长；若求解不收敛，实验暂停并提示重置。</p><p>能量偏差显示 (E(t) − E(0)) / (3mgl)，m = 1 kg，l = 1 m。采用固定的 29.43 J 能量尺度，避免初始总能量接近零时，相对误差失去意义。图中符号表示能量增减，不是绝对值。</p><p>参考：<a href="https://www.myphysicslab.com/pendulum/double-pendulum-en.html" target="_blank" rel="noopener">MyPhysicsLab · 双摆方程 ↗</a>；<a href="https://unige.ch/~hairer/poly_geoint/week2.pdf" target="_blank" rel="noopener">E. Hairer · 几何数值积分讲义，定理 3 ↗</a>。</p></div></div></details>
+    </section>
+    <nav class="pendulum-next page-width" aria-label="继续探索桌上的小实验"><a href="/lab/foraging/"><small>EXPERIMENT 02</small><span>机器人，该往哪里走？ <b aria-hidden="true">→</b></span></a><a href="/blog/huashu-cup-a-2026/#trajectory-explorer"><small>EXPERIMENT 03</small><span>跟随一脚任意球的轨迹 <b aria-hidden="true">→</b></span></a></nav>
+  </article>
+</BaseLayout>
+<script>
+  import '../../scripts/double-pendulum';
+</script>

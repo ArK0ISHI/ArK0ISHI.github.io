@@ -1,0 +1,35 @@
+---
+interface Props { kind: 'double-pendulum' | 'foraging' | 'free-kick' }
+const { kind } = Astro.props;
+---
+<svg class="experiment-glyph" viewBox="0 0 320 220" fill="none" aria-hidden="true">
+  {kind === 'double-pendulum' && <>
+    <path d="M60 45H260M160 45V195" stroke="currentColor" opacity=".16" stroke-dasharray="3 6" />
+    <circle cx="160" cy="45" r="3" fill="currentColor" />
+    <path d="M160 45L107 105L170 163" stroke="#84c7c2" stroke-width="2" />
+    <path d="M160 45L207 110L150 169" stroke="#e0b881" stroke-width="1.6" stroke-dasharray="5 5" />
+    <circle cx="107" cy="105" r="6" fill="#84c7c2" /><circle cx="170" cy="163" r="8" fill="#84c7c2" />
+    <circle cx="207" cy="110" r="6" stroke="#e0b881" stroke-width="2" /><circle cx="150" cy="169" r="8" stroke="#e0b881" stroke-width="2" />
+    <path d="M72 144Q83 193 139 199M216 148Q213 185 177 196" stroke="currentColor" opacity=".25" />
+  </>}
+  {kind === 'foraging' && <>
+    {Array.from({length: 10}, (_, i) => <>
+      <path d={`M${70 + i * 20} 20V200`} stroke="currentColor" opacity=".12" />
+      <path d={`M70 ${20 + i * 20}H250`} stroke="currentColor" opacity=".12" />
+    </>)}
+    <path d="M110 160V120H190V80" stroke="#84c7c2" stroke-width="2" stroke-linejoin="round" />
+    <path d="M110 160H210V160H230" stroke="#e0b881" stroke-width="1.5" stroke-dasharray="5 5" />
+    <rect x="103" y="153" width="14" height="14" rx="3" fill="#84c7c2" />
+    <circle cx="190" cy="80" r="7" fill="#84c7c2" /><circle cx="190" cy="80" r="14" stroke="#84c7c2" opacity=".45" />
+    <circle cx="230" cy="160" r="7" stroke="#e0b881" stroke-width="2" /><circle cx="90" cy="60" r="4" fill="currentColor" opacity=".35" />
+    <circle cx="150" cy="40" r="4" fill="currentColor" opacity=".35" />
+  </>}
+  {kind === 'free-kick' && <>
+    <path d="M36 177L132 207L286 119L193 89ZM132 207V184M36 177V154M286 119V96" stroke="currentColor" opacity=".2" />
+    <path d="M208 153V81L253 55V127M208 81L226 87L270 61L253 55M253 127L270 133V61" stroke="currentColor" opacity=".4" />
+    <path d="M67 166Q135 12 239 81" stroke="#84c7c2" stroke-width="2" />
+    <path d="M67 166L239 139V81" stroke="#e0b881" stroke-dasharray="3 5" opacity=".65" />
+    <circle cx="67" cy="166" r="4" fill="#84c7c2" /><circle cx="148" cy="71" r="4" fill="#84c7c2" /><circle cx="239" cy="81" r="6" fill="#e0b881" />
+  </>}
+</svg>
+<style>.experiment-glyph { width: 100%; height: 100%; color: #e3e8e6; }</style>

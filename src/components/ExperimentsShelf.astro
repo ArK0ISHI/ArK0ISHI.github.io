@@ -1,0 +1,47 @@
+---
+import { experiments } from '../data/experiments';
+import ExperimentGlyph from './ExperimentGlyph.astro';
+interface Props { home?: boolean }
+const { home = false } = Astro.props;
+---
+<section class:list={['experiments-shelf', {'page-width': home}]} id="experiment-desk" aria-labelledby="experiment-desk-title">
+  <header>
+    <div><p class="shelf-kicker">THE EXPERIMENT DESK / 可以动手的研究</p><h2 id="experiment-desk-title">桌上的<em>小实验。</em></h2></div>
+    <a class="shelf-visit" href="/lab/">走近实验桌 <span aria-hidden="true">↗</span></a>
+  </header>
+  <p class="shelf-intro">改一个角度，换一种策略，转一次视角。把问题交到你手里。</p>
+  <div class="shelf-grid">
+    {experiments.map(experiment => <a class="shelf-experiment" href={experiment.href}>
+      <div class="shelf-figure"><ExperimentGlyph kind={experiment.id} /><span>{experiment.number} / 示意</span></div>
+      <div class="shelf-copy"><small>{experiment.english}</small><h3>{experiment.title}</h3><p>{experiment.question}</p><span class="shelf-action">{experiment.action}<b aria-hidden="true">↗</b></span></div>
+    </a>)}
+  </div>
+</section>
+<style>
+  .experiments-shelf { padding-bottom: clamp(55px, 7vw, 96px); }
+  .experiments-shelf > header { display:flex; justify-content:space-between; align-items:end; gap:20px; border-top:1px solid var(--line); padding-top:35px; }
+  .shelf-kicker { color:var(--ink-soft); font:400 9px/1.8 var(--mono); letter-spacing:.1em; margin:0 0 13px; }
+  .experiments-shelf h2 { font:500 clamp(27px,3.4vw,40px)/1.5 var(--serif); letter-spacing:-.04em; margin:0; }
+  .experiments-shelf em { color:var(--red); font-style:normal; }
+  .shelf-intro { color:var(--ink-soft); font-size:12px; line-height:1.9; margin:15px 0 29px; }
+  .shelf-visit { display:inline-flex; min-height:44px; align-items:center; gap:22px; font-size:12px; white-space:nowrap; }
+  .shelf-visit span { color:var(--red); }
+  .shelf-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:25px; }
+  .shelf-experiment { min-width:0; }
+  .shelf-figure { position:relative; aspect-ratio:1.65; background:#13222a; overflow:hidden; }
+  .shelf-experiment:nth-child(2) .shelf-figure { background:#1c242c; }
+  .shelf-experiment:nth-child(3) .shelf-figure { background:#202735; }
+  .shelf-figure > span { position:absolute; top:13px; left:16px; color:#aabbbc; font:400 8px/1.5 var(--mono); letter-spacing:.07em; }
+  .shelf-copy { padding:20px 0 0; border-bottom:1px solid var(--line); }
+  .shelf-copy > small { color:var(--ink-soft); font:400 8px/1.7 var(--mono); letter-spacing:.08em; }
+  .shelf-copy h3 { margin:9px 0 8px; font:500 23px/1.6 var(--serif); }
+  .shelf-copy p { color:var(--ink-soft); font-size:12px; margin:0; }
+  .shelf-action { display:flex; align-items:center; justify-content:space-between; min-height:54px; margin-top:12px; font-size:11px; }
+  .shelf-action b { font-size:17px; color:var(--red); font-weight:400; transition:transform .2s ease; }
+  .shelf-experiment:hover h3, .shelf-visit:hover { color:var(--red); }
+  .shelf-experiment:hover .shelf-action b { transform:translate(2px,-2px); }
+  .experiments-shelf a:focus-visible { outline:2px solid var(--red); outline-offset:5px; }
+  @media(max-width:760px) { .shelf-grid { grid-template-columns:1fr; gap:27px; } .shelf-experiment { display:grid; grid-template-columns:128px minmax(0,1fr); gap:19px; align-items:center; } .shelf-figure { aspect-ratio:1; } .shelf-figure > span { top:9px; left:9px; font-size:7px; } .shelf-copy { padding:0; } .shelf-copy > small { font-size:7px; letter-spacing:0; } .shelf-copy h3 { font-size:20px; margin-block:5px; } .shelf-copy p { font-size:11px; } .shelf-action { min-height:44px; margin-top:6px; } .shelf-visit { gap:8px; font-size:11px; } }
+  @media(max-width:380px) { .experiments-shelf > header { display:block; } .shelf-visit { margin-top:8px; } .shelf-experiment { grid-template-columns:100px minmax(0,1fr); gap:14px; } .shelf-copy h3 { font-size:18px; } }
+  @media(prefers-reduced-motion:reduce) { .shelf-action b { transition:none; } }
+</style>

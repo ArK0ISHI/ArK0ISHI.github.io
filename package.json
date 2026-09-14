@@ -13,6 +13,7 @@
     "build": "astro check && astro build",
     "preview": "astro preview",
     "check": "astro check",
+    "test:experiments": "node --experimental-strip-types --test scripts/test-pendulum.mjs scripts/test-foraging.mjs",
     "sync:music": "node scripts/sync-netease-music.mjs"
   },
   "dependencies": {

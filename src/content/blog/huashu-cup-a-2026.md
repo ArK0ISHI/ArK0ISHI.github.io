@@ -76,7 +76,7 @@ $$
 
 论文把同一条轨迹拆成地面投影、斜视图和侧视图。下面的观察器直接读取制图所用的 29 组坐标。桌面端可以自由拖动；手机端左右拖动时改变方向，页面仍可上下滚动。三个视角按钮对应论文的主要观察方向，打开原始测量点后还能比较平滑前后的细小偏差。
 
-<div data-huashu-trajectory-mount>
+<div id="trajectory-explorer" data-huashu-trajectory-mount>
   <figure>
     <img src="/images/projects/huashu-cup-a-2026/reconstructed-trajectory-fig9-11.webp" alt="平滑三维任意球轨迹的地面投影、斜视图和侧视图" width="1544" height="1984" loading="lazy" decoding="async" />
     <figcaption>图 4　平滑轨迹的地面投影、三维斜视图与侧视图。交互脚本不可用时，这张论文原图会保留下来。</figcaption>

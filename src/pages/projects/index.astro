@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProjectRow from '../../components/ProjectRow.astro';
+import ExperimentsShelf from '../../components/ExperimentsShelf.astro';
 import { projects } from '../../data/projects';
 import '../../styles/project-index.css';
 
@@ -30,6 +31,7 @@ const selectedStudies = [
         ))}
       </div>
     </section>
+    <ExperimentsShelf />
     <div class="page-controls"><span class="page-count">{String(projects.length).padStart(2, '0')} PROJECTS</span><span class="eyebrow">CONTINUING ARCHIVE / 持续整理</span></div>
     {projects.map(project => <ProjectRow project={project} />)}
   </section>

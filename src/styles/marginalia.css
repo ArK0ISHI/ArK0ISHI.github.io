@@ -44,7 +44,7 @@
 .marginalia-notes, .marginalia-shelf { margin-top: 86px; scroll-margin-top: 100px; }
 .marginalia-section-heading { display: flex; align-items: end; justify-content: space-between; gap: 25px; margin-bottom: 28px; }
 .marginalia-section-heading .marginalia-eyebrow { margin-bottom: 10px; }
-.marginalia-section-heading h2 { margin: 0; font: 500 clamp(23px, 2.5vw, 31px)/1.65 var(--serif); letter-spacing: -.02em; }
+.marginalia-section-heading h2 { margin: 0; font: 500 clamp(23px, 2.5vw, 31px)/1.65 var(--serif); letter-spacing: -.02em; text-wrap: balance; }
 .marginalia-section-heading > p { margin: 0; color: var(--ink-soft); font-size: 11px; line-height: 1.9; flex-shrink: 0; }
 .marginalia-filter-bar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px 24px; padding-bottom: 20px; }
 .marginalia-filters { display: flex; flex-wrap: wrap; gap: 4px 8px; }

@@ -1,0 +1,51 @@
+.moon-gate { position: relative; width: 184px; max-width: 100%; margin-top: 10px; color: var(--ink-soft); text-align: center; }
+.moon-gate-trigger { position: relative; display: grid; place-items: center; width: 100%; height: 138px; padding: 0; border: 0; background: transparent; cursor: pointer; -webkit-tap-highlight-color: transparent; touch-action: manipulation; user-select: none; isolation: isolate; }
+.moon-gate-trigger:focus-visible { outline: 1px solid var(--lamp); outline-offset: 5px; border-radius: 8px; }
+.moon-gate-orbit { position: absolute; border: 1px solid var(--line); border-radius: 50%; pointer-events: none; transition: opacity .6s, border-color .6s, transform .8s; }
+.moon-gate-orbit-outer { width: 138px; height: 138px; transform: rotate(-28deg) scaleY(.62); }
+.moon-gate-orbit-inner { width: 114px; height: 114px; opacity: .18; transform: rotate(36deg) scaleY(.58); }
+.moon-gate-satellite { position: absolute; left: 30px; top: 96px; width: 5px; height: 5px; border-radius: 50%; background: var(--lamp); box-shadow: 108px -58px 0 -1px var(--blue); }
+.moon-gate-face { position: relative; display: block; width: 68px; height: 68px; border-radius: 50%; overflow: hidden; background: #151d28; box-shadow: 0 0 0 1px rgba(172, 184, 194, .28), 0 6px 22px rgba(16, 22, 30, .14); transition: box-shadow .5s, transform .5s; }
+.moon-gate-face img { width: 100%; height: 100%; object-fit: cover; opacity: .85; }
+.moon-gate-face::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(105deg, transparent 10%, rgba(9, 16, 27, .25) 32%, rgba(9, 16, 27, .92) 72%); transform: translateX(0); transition: transform .8s, opacity .8s; }
+.moon-gate-spark { position: absolute; width: 78px; height: 78px; border: 1px solid var(--lamp); opacity: 0; border-radius: 50%; pointer-events: none; }
+.moon-gate-hint { display: block; min-height: 22px; margin-top: -3px; font-size: 10px; letter-spacing: .05em; opacity: 0; transform: translateY(-3px); transition: opacity .3s, transform .3s; }
+.moon-gate:hover .moon-gate-hint, .moon-gate:focus-within .moon-gate-hint, .moon-gate.is-touched .moon-gate-hint, .moon-gate[data-unlocked='true'] .moon-gate-hint { opacity: 1; transform: none; }
+.moon-gate:hover .moon-gate-face, .moon-gate:focus-within .moon-gate-face { box-shadow: 0 0 0 1px rgba(192, 192, 179, .6), 0 0 28px rgba(180, 164, 130, .18); }
+.moon-gate[data-phase='1'] .moon-gate-orbit-inner, .moon-gate[data-phase='2'] .moon-gate-orbit-inner, .moon-gate[data-phase='3'] .moon-gate-orbit-inner { opacity: .85; border-color: var(--lamp); }
+.moon-gate[data-phase='1'] .moon-gate-face::after { transform: translateX(10%); }
+.moon-gate[data-phase='2'] .moon-gate-face::after { transform: translateX(42%); opacity: .7; }
+.moon-gate[data-phase='3'] .moon-gate-face::after { transform: translateX(100%); opacity: 0; }
+.moon-gate[data-phase='2'] .moon-gate-face, .moon-gate[data-phase='3'] .moon-gate-face { box-shadow: 0 0 0 1px rgba(201, 202, 191, .65), 0 0 26px rgba(185, 169, 141, .16); }
+.moon-gate.is-touched .moon-gate-spark { animation: moon-echo .65s ease-out; }
+.moon-gate-status { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+body.moon-dialog-open { overflow: hidden; }
+.moon-welcome { width: min(540px, calc(100vw - 32px)); max-height: calc(100dvh - 32px); margin: auto; padding: 28px 32px 24px; overflow-y: auto; overscroll-behavior: contain; color: #eee9df; color-scheme: dark; border: 1px solid #4b525a; border-radius: 3px; background: radial-gradient(ellipse at 50% 0%, rgba(125, 149, 166, .15), transparent 65%), #111923; box-shadow: 0 32px 140px rgba(0, 0, 0, .48); text-align: center; }
+.moon-welcome::backdrop { background: rgba(5, 10, 18, .7); backdrop-filter: blur(7px); }
+.moon-welcome[open] { animation: moon-welcome-in .65s cubic-bezier(.16, 1, .3, 1) both; }
+.moon-welcome-close { position: absolute; top: 8px; right: 8px; display: grid; place-items: center; width: 44px; height: 44px; padding: 12px; border: 0; border-radius: 50%; background: transparent; color: #aab7c5; cursor: pointer; }
+.moon-welcome-close:hover { background: rgba(209, 218, 222, .08); color: #eee9df; }
+.moon-welcome-close svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.3; }
+.moon-welcome-art { position: relative; display: grid; place-items: center; width: 180px; height: 144px; margin: 8px auto 14px; }
+.moon-welcome-art img { position: relative; width: 96px; height: 96px; border-radius: 50%; box-shadow: 0 0 55px rgba(179, 181, 158, .12); }
+.moon-welcome-orbit { position: absolute; width: 174px; height: 174px; border: 1px solid #6a6e65; border-radius: 50%; transform: rotate(-30deg) scaleY(.58); }
+.moon-welcome-orbit::before { content: ''; position: absolute; inset: 12px; border: 1px solid #3c4b59; border-radius: 50%; }
+.moon-welcome-cross { position: absolute; right: 7px; top: 31px; color: #d1bd90; font: 300 18px/1 var(--mono); }
+.moon-welcome-eyebrow { margin: 0 0 14px; color: #c8b58c; font: 400 9px/1.5 var(--mono); letter-spacing: .22em; }
+.moon-welcome h2 { margin: 0; font-family: var(--serif); font-size: clamp(21px, 4vw, 27px); font-weight: 500; line-height: 1.6; letter-spacing: .08em; }
+.moon-welcome h2 span { white-space: nowrap; }
+.moon-welcome-copy { margin: 19px auto 28px; color: #b5bfca; font-size: 12px; line-height: 2.15; }
+.moon-welcome-actions { display: flex; justify-content: center; gap: 12px; }
+.moon-welcome-enter, .moon-welcome-later { display: inline-flex; align-items: center; justify-content: center; min-height: 46px; padding: 10px 22px; border: 1px solid #4d5a66; border-radius: 2px; font: 500 12px/1.5 var(--serif); cursor: pointer; }
+.moon-welcome-enter { gap: 22px; border-color: #c4b188; background: #c4b188; color: #111923; }
+.moon-welcome-enter:hover { border-color: #e0cfaa; background: #e0cfaa; }
+.moon-welcome-later { background: transparent; color: #b5bfca; }
+.moon-welcome-later:hover { background: rgba(209, 218, 222, .08); color: #eee9df; }
+.moon-welcome :is(a, button):focus-visible { outline: 2px solid #e0cfaa; outline-offset: 4px; }
+.moon-welcome-note { margin: 22px 0 0; padding-top: 19px; border-top: 1px solid #2d3945; color: #98a5b3; font-size: 10px; line-height: 1.8; }
+@keyframes moon-echo { from { opacity: .55; transform: scale(.9); } to { opacity: 0; transform: scale(1.45); } }
+@keyframes moon-welcome-in { from { opacity: 0; transform: translateY(15px) scale(.98); } to { opacity: 1; transform: none; } }
+@media (max-width: 600px) { .moon-gate { flex-basis: 100%; width: 184px; max-width: 184px; margin: 4px auto 0; } }
+@media (max-width: 380px) { .moon-welcome { padding-inline: 19px; } .moon-welcome-actions { gap: 8px; } .moon-welcome-enter, .moon-welcome-later { padding-inline: 18px; } }
+@media (hover: none) { .moon-gate-hint { opacity: .8; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .moon-gate *, .moon-gate *::after, .moon-welcome[open] { animation: none; transition: none; } }

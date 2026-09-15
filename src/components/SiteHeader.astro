@@ -23,6 +23,9 @@ const isActive = (href: string) => href === '/' ? pathname === '/' : pathname.st
           <small>{item.en}</small>
         </a>
       ))}
+      <a class:list={['nav-link', 'moon-nav-link', { active: isActive('/moon/') }]} href="/moon/" aria-current={isActive('/moon/') ? 'page' : undefined} data-moon-nav hidden>
+        <span>月之暗面</span><small>Far Side</small>
+      </a>
     </nav>
 
     <div class="header-actions">
@@ -49,6 +52,9 @@ const isActive = (href: string) => href === '/' ? pathname === '/' : pathname.st
         <em>{item.en}</em>
       </a>
     ))}
+    <a class:list={['mobile-link', 'moon-mobile-link', { active: isActive('/moon/') }]} href="/moon/" aria-current={isActive('/moon/') ? 'page' : undefined} data-moon-nav hidden>
+      <small>☾</small><span>月之暗面</span><em>Far Side</em>
+    </a>
   </nav>
 </header>
 
@@ -119,8 +125,12 @@ const isActive = (href: string) => href === '/' ? pathname === '/' : pathname.st
     }, { capture: true, signal: controller.signal });
     menu?.querySelectorAll('a').forEach(link => link.addEventListener('click', () => setMenu(false), { signal: controller.signal }));
     header?.querySelector('[data-search-trigger]')?.addEventListener('click', () => setMenu(false), { capture: true, signal: controller.signal });
-    const desktop = window.matchMedia('(min-width: 901px)');
-    desktop.addEventListener('change', () => { if (desktop.matches) setMenu(false); }, { signal: controller.signal });
+    const closeMenuOnDesktop = () => {
+      const hasMoon = header?.dataset.moonUnlocked === 'true';
+      if (window.matchMedia(hasMoon ? '(min-width: 1101px)' : '(min-width: 901px)').matches) setMenu(false);
+    };
+    window.addEventListener('resize', closeMenuOnDesktop, { signal: controller.signal });
+    document.addEventListener('ar:moon-state', () => queueMicrotask(closeMenuOnDesktop), { signal: controller.signal });
     controller.signal.addEventListener('abort', () => setMenu(false), { once: true });
     document.addEventListener('astro:before-swap', () => controller.abort(), { once: true, signal: controller.signal });
 
@@ -143,3 +153,29 @@ const isActive = (href: string) => href === '/' ? pathname === '/' : pathname.st
   document.addEventListener('astro:page-load', setupHeader);
   setupHeader();
 </script>
+
+<style>
+  [data-moon-nav][hidden] { display: none !important; }
+  .moon-nav-link { padding-left: 12px; border-left: 1px solid var(--line); }
+  .moon-nav-link span { color: var(--blue); font-size: 12px; letter-spacing: .04em; white-space: nowrap; }
+  .moon-nav-link.active span { color: var(--red); }
+  .moon-mobile-link small { color: var(--lamp); font-size: 17px; }
+  @media (min-width: 1101px) {
+    .site-header[data-moon-unlocked='true'] .header-inner { grid-template-columns: 160px minmax(0, 1fr) 120px; }
+    .site-header[data-moon-unlocked='true'] .desktop-nav { gap: clamp(14px, 1.6vw, 22px); }
+  }
+  @media (min-width: 901px) and (max-width: 1100px) {
+    .site-header[data-moon-unlocked='true'] .header-inner { grid-template-columns: 1fr auto; }
+    .site-header[data-moon-unlocked='true'] .desktop-nav { display: none; }
+    .site-header[data-moon-unlocked='true'] .menu-button { display: grid; }
+    .site-header[data-moon-unlocked='true'] .mobile-nav { position: fixed; inset: 84px 0 auto; height: calc(100dvh - 84px); overflow-y: auto; overscroll-behavior: contain; padding: 16px max(24px, calc((100vw - 800px) / 2)) 28px; background: var(--paper); color: var(--ink); }
+    .site-header[data-moon-unlocked='true'] .mobile-nav:not([hidden]) { display: block; }
+    .site-header[data-moon-unlocked='true'] .mobile-link { display: grid; grid-template-columns: 42px 1fr auto; align-items: baseline; padding: 18px 0; border-bottom: 1px solid var(--line); }
+    .site-header[data-moon-unlocked='true'] .mobile-link small, .site-header[data-moon-unlocked='true'] .mobile-link em { color: var(--ink-soft); font: 300 9px/1 var(--mono); letter-spacing: .1em; font-style: normal; text-transform: uppercase; }
+    .site-header[data-moon-unlocked='true'] .mobile-link span { font-size: 24px; }
+    .site-header[data-moon-unlocked='true'] .mobile-link.active span { color: var(--red); }
+    .site-header[data-moon-unlocked='true'] .moon-mobile-link small { color: var(--lamp); font-size: 17px; }
+    :global(body.menu-open) { overflow: hidden; }
+    .site-header[data-moon-unlocked='true'] .mobile-nav a:focus-visible { outline: 2px solid var(--red); outline-offset: -2px; }
+  }
+</style>

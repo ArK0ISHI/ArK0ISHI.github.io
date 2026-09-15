@@ -1,47 +1,46 @@
-# 万景幕 · 设计与交互验收
+# Moon observatory — design and release QA
 
-日期：2026-09-15。范围：新增 `/kaleidoscope/` 及首页、光影、边注、搜索入口。
+The approved change adds a footer moon, exact 39-activation discovery, a welcome dialog, conditional navigation and a public aggregate-data observatory. This is an intentional redesign of the supplied offline dashboard using the existing portfolio style.
 
-## 视觉基准
+## Visual evidence
 
-延续现有站点的宋体标题、纸本底色、朱红强调和暗色阅读表面。新页面依据现有代码与摄影设计，没有声称逐像素复刻外部设计稿。
+Evidence is outside the public repository under ../round-nine/:
 
-- 视觉来源：`src/styles/global.css`、`src/components/HomeFieldnotes.astro`，以及 `public/images/journal/2026-summer/` 内的三张 2000 × 1500 摄影：`20260716-191447-full.webp`、`20260713-101553-full.webp`、`20260705-224241-full.webp`。
-- 全页实现截图：本地证据目录 `../round-eight/production/page-{320,390,768,1440}-{light,dark}.png`。
-- 清晰的局部对照：同目录 `clean-frame-hangzhou-1440-{chance,curated}.png`、`clean-frame-nanjing-390-chance.png`、`clean-frame-shanghai-320-chance.png`。
-- 原摄影与实现截图已在同一比较输入中查看：杭州原图／两种模式，南京原图／手机窗口，上海原图／小屏窗口。全页截图另用于检查字体、留白和阅读层级。
-- 浏览器像素密度为 1；全页检查视口为 320/390 × 844、768/1440 × 1080 CSS px，局部对照使用 1200 px 高视口。局部截图按真实窗口边界裁切，没有缩放后再比较。精确窗口边界记录在 `../round-eight/production/report.json` 的 `geometry` 中。
-- 桌面窗口有意采用横向裁切，手机接近原照片比例；可从“看完整照片”访问完整公开归档。照片本身没有重绘。
+- site-reference.png: production homepage, dark theme, 1440 × 1000 CSS/physical pixels, DPR 1.
+- dashboard-reference.png: supplied local dashboard overview, dark theme, same viewport. Original HTML and personal records are not copied to the repository.
+- observatory-release.png: static production build at port 4340, unlocked overview, same viewport.
+- design-comparison.png: source site and implementation reduced uniformly to 720 × 500 each, side by side in a 1440 × 500 canvas. Different content and composition are intentional; comparison checks typography, palette and header continuity.
+- local/overview-desktop.png and local/overview-390.png: full-page overview captures.
+- local/groups-mobile.png, local/courses-mobile.png, local/overview-mobile.png, local/semesters-desktop.png: focused charts, controls and table states.
+- local/welcome-desktop.png: moon image, dialog typography, focus and primary action.
+- local/chart-export.png: image export with embedded title and scope.
+- ../moon-gate-evidence/: footer, mobile/desktop menus, dialog, storage and navigation checks.
 
-## 五项视觉检查
+## Iterations and findings
 
-1. 字体：沿用 Noto Serif SC 与 DM Mono；标题、辅助文字、正文分层明确，320–1440 px 下无标题或长观察文字溢出。
-2. 布局：大幅车窗、窗台说明、观看控制、三站入口和窗边手记依次展开；手机改为单列，三个站点保留直接切换。
-3. 颜色：纸本与暗色主题均经过浏览器查看；“修饰风景”调整显示色彩及玻璃光泽，原摄影细节位置保持一致。
-4. 影像：采用本站现有摄影和响应式图片来源；九个观察点按原图坐标绑定，图像与观察点一同进行轻微缩放。未使用缺乏网站使用授权的外部插画。
-5. 文案：九则观察围绕可见细节展开；上海明确为飞机舷窗摄影，杭州—南京—上海为原创想象编排，原作意象来源在页面结尾标明。
+1. Removed duplicated visible chart headings while preserving semantic HTML headings. Increased table text and provided 420 px for ten-category plots. Revised mobile groups/courses captures show readable labels and values.
+2. Corrected course counts to enrolled people, with the release threshold separately based on at least ten graded people.
+3. Corrected fixed four-cohort scope in PNG and CSV exports. Added a course-semester table and rectangular CSV metadata columns.
+4. Restored focus after select replacement; added dialog Tab wrapping; kept focus on a visible element after relocking.
 
-## 发现与修复历史
+No actionable P0/P1/P2 findings remain. The moon intentionally overlaps the hero background at narrow widths while text remains readable. Long chart labels shorten inside plots; their full text is retained in tables and accessible descriptions.
 
-- P2：窗内说明与部分小屏观察点重叠。先将说明移到左上，再在 1000 px 以下只显示城市；重复地点保留在窗台。最终 24 个场景／尺寸／主题组合均无标记与说明重叠。
-- P3：靠边观察点的外部焦点线被窗框裁切。改为数字圆内的高对比焦点线；右侧标签向左展开。
-- P3：320 px 顶栏装饰文字零碎换行。小屏隐藏中间短句，两端保持完整。
-- P2：已有正文状态下 Ctrl 打开另一个观察点，会带上旧 detail。每个链接现生成独立的目标 scene/detail 并同步 view/tone；调节滑杆后链接也立即更新。
-- P2：隐藏观察点后收起正文，焦点可能落到 body。现在返回对应的可见目录链接。
-- 截图记录：早期证据在 `../round-eight/visual-review/`，修复后证据在 `../round-eight/production/`；交互复查在 `../round-eight/interaction/`。
+## Fidelity surfaces
 
-## 功能验收
+- Fonts: existing Noto Serif SC headings and DM Mono numbers, system sans for controls/charts/tables; mobile and desktop hierarchy inspected.
+- Spacing: site page width and header retained; metrics become two columns, charts stack, filters wrap, wide tables scroll locally.
+- Colors: page-local navy, warm white and muted gold, blue, violet and green; global saved theme is unchanged. Series text and line patterns supplement color.
+- Images: real NASA LRO far-side imagery, 768 px hero and 160 px trigger/dialog, with credit and source link in notes.
+- Content: GPA and percentage scores, administrative cohorts and changing sample populations, incomplete periods and top-20 course-sample selection bias are distinguished.
 
-- 三场景、两种观看方式、九个热点、修饰滑杆、观察目录、展开和收起。
-- 分享复制、剪贴板不可用时的可选地址、刷新、复制地址后打开、Ctrl 新标签页、文章返回。
-- 方向键、Home/End、可见焦点及隐藏标记后的焦点恢复。
-- 动态效果暂停、系统减少动态效果初始值及运行中变化；用户主动开启前保持静止。
-- 图片失败提示与重试；关闭 JavaScript 后三张照片、九则正文和原生锚点仍可用。
-- 320/390/768/1440 px 明暗八组生产版检查，未发现横向溢出或页面脚本错误。
-- 正式构建：180 页；92 个文件检查无错误、警告或提示。
+## Verification
 
-## 开放项与实现清单
+../round-nine/local/report.json records the static build browser run at http://127.0.0.1:4340. Passed: locked direct route; exact 39th unlock; welcome CTA; lazy aggregate loading; four views; cohort/metric filters; sorting/search/empty state/pagination; course and term tables; PNG/CSV exports; keyboard navigation; persisted views; relock and reload. No horizontal document overflow at 320, 390, 768, 1024 or 1440 px; zero browser exceptions.
 
-无待处理的 P0/P1/P2 发现。本次已完成所列实现与修复。验证覆盖桌面 Edge 的实际浏览器渲染和手机尺寸模拟，未声明完成所有浏览器及实体设备认证。
+Gate checks additionally cover phases 13/26, refresh/navigation count, held-key suppression, Space, persistent and cross-tab unlock/reset, storage failures, reduced motion, and real Astro transitions.
+
+Build: 99 checked files, zero errors/warnings/hints, 181 static pages. Hidden route has noindex/nofollow/noarchive and is absent from sitemap, search data and RSS. These controls are not authentication.
+
+Data verification: deterministic generator check, population/bin conservation, independent cohort statistics, minimum group sizes. Final new build files were scanned against all 15,205 source identifiers: no identity fields, names, personal arrays or private paths. Compiled aggregate equals source aggregate exactly. Original source remains outside the website.
 
 final result: passed

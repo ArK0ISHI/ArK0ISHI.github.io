@@ -1,5 +1,7 @@
 ---
 import WeatherSignal from './WeatherSignal.astro';
+import { Image } from 'astro:assets';
+import duskArt from '../assets/home/dusk-observers.png';
 import { neteaseMusic } from '../data/music';
 import '../styles/home-a.css';
 
@@ -8,9 +10,13 @@ const initialTrackCount = neteaseMusic.tracks.length;
 
 <section class="home-a" aria-labelledby="home-a-title">
   <div class="home-a-scene">
-    <img
+    <Image
       class="home-a-art"
-      src="/images/home/dusk-observers.png"
+      src={duskArt}
+      widths={[800, 1280, 1920, 2500]}
+      sizes="(max-width: 680px) 1200px, (max-width: 900px) 1400px, 100vw"
+      format="webp"
+      quality={85}
       alt="暮色云层与山野之间，两位同行者望向远方"
       width="2500"
       height="1450"

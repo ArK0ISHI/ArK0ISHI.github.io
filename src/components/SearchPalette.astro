@@ -85,16 +85,16 @@ const serializedIndex = JSON.stringify(searchItems).replaceAll('<', '\\u003c');
     <div class="search-field" role="search">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.4"></circle><path d="m15.5 15.5 4 4"></path></svg>
       <label class="sr-only" for="archive-search-input">搜索文章、项目与标签</label>
-      <input id="archive-search-input" data-search-input type="search" inputmode="search" autocomplete="off" placeholder="例如：误差场、LaTeX、记忆……" />
+      <input id="archive-search-input" data-search-input type="search" inputmode="search" autocomplete="off" aria-controls="archive-search-results" placeholder="例如：误差场、LaTeX、记忆……" />
       <kbd>ESC</kbd>
     </div>
 
     <div class="search-summary">
-      <p data-search-status aria-live="polite">最近整理的记录</p>
+      <p data-search-status role="status" aria-live="polite" aria-atomic="true">最近整理的记录</p>
       <button type="button" data-search-random>随机漫游一页 <span>↗</span></button>
     </div>
 
-    <div class="search-results" data-search-results></div>
+    <div id="archive-search-results" class="search-results" data-search-results></div>
     <div class="search-empty" data-search-empty hidden>
       <span aria-hidden="true">∅</span>
       <h3>这一条路径还没有留下记录</h3>
@@ -183,13 +183,15 @@ const serializedIndex = JSON.stringify(searchItems).replaceAll('<', '\\u003c');
     };
 
     const renderResults = (rawQuery = '') => {
-      const ranked = items
+      const hasQuery = Boolean(normalizeSearch(rawQuery));
+      const matches = items
         .map(item => ({ item, score: scoreItem(item, rawQuery) }))
         .filter(result => result.score >= 0)
-        .sort((a, b) => b.score - a.score)
-        .slice(0, rawQuery ? 12 : 7);
+        .sort((a, b) => b.score - a.score);
+      const ranked = hasQuery ? matches : matches.slice(0, 7);
 
       results.replaceChildren();
+      results.scrollTop = 0;
       ranked.forEach(({ item }) => {
         const link = document.createElement('a');
         link.className = 'search-result';
@@ -215,15 +217,20 @@ const serializedIndex = JSON.stringify(searchItems).replaceAll('<', '\\u003c');
         results.append(link);
       });
 
-      const hasQuery = Boolean(normalizeSearch(rawQuery));
-      status.textContent = hasQuery ? `找到 ${ranked.length} 条相关记录` : '最近整理的记录';
+      status.textContent = hasQuery
+        ? (matches.length ? `找到 ${matches.length} 条相关记录，已全部显示` : '没有找到相关记录')
+        : '最近整理的记录';
       empty.hidden = ranked.length > 0;
       results.hidden = ranked.length === 0;
     };
 
     const openSearch = () => {
+      if (dialog.open) {
+        input.focus();
+        return;
+      }
       previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-      if (!dialog.open) dialog.showModal();
+      dialog.showModal();
       document.body.classList.add('search-open');
       renderResults(input.value);
       requestAnimationFrame(() => input.focus());
@@ -240,8 +247,15 @@ const serializedIndex = JSON.stringify(searchItems).replaceAll('<', '\\u003c');
       if (event.target === dialog) closeSearch();
     }, { signal: controller.signal });
     dialog.addEventListener('close', () => {
+      if (dialog.open) return;
       document.body.classList.remove('search-open');
-      previousFocus?.focus();
+      const canRestore = (element: HTMLElement | null): element is HTMLElement => Boolean(
+        element?.isConnected && element !== document.body && element !== document.documentElement &&
+        element.getClientRects().length && !element.closest('[inert]')
+      );
+      const returnTarget = canRestore(previousFocus) ? previousFocus : [...triggers].find(canRestore);
+      returnTarget?.closest('[data-header]')?.classList.remove('hidden-header');
+      returnTarget?.focus({ preventScroll: true });
     }, { signal: controller.signal });
     dialog.querySelector('[data-search-random]')?.addEventListener('click', () => {
       if (articleItems.length === 0) return;

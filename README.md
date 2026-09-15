@@ -23,11 +23,13 @@ npm run preview
 首页采用暮色封面与纸本杂志式编排，依次呈现个人开卷、研究切换展台、写作与排印作品、行旅照片、可筛选文章及经历入口。内容继续读取现有文章与项目数据，保留所有原有详情页。
 
 - 封面与入口：`src/components/HomeHero.astro`、`src/styles/home-a.css`
+- 封面原图：`src/assets/home/dusk-observers.png`；构建时生成不同宽度的 WebP，保留原画构图与署名。
 - 研究展台：`src/components/HomeResearch.astro`
 - 互动实验入口：`src/components/ExperimentsShelf.astro`、`src/data/experiments.ts`
 - 写作与书页：`src/components/HomeExhibition.astro`
 - 光影选集：`src/components/HomeFieldnotes.astro`
 - 首页编排与响应式样式：`src/pages/index.astro`、`src/styles/home-edition.css`
+- 首页篇章条：`src/scripts/home-contents.ts`；滚动时标明当前篇章，小屏可横向浏览六个入口。
 
 - 站点名称、关键词与联系方式：`src/data/site.ts`
 - 项目档案：`src/data/projects.ts`
@@ -57,6 +59,8 @@ draft: false
 ```
 
 `category` 可用值定义在 `src/content.config.ts`。`kind` 为 `note` 时进入“笔记”，为 `writing` 时进入“写作”。数学公式使用标准 Markdown 语法：行内 `$E=mc^2$`，块级公式用两个美元符号包围。
+
+写作页承载完整文字目录与精选作品，书架按作品和主题提供阅读路线。调整书架时保留已有文章与章节链接，主题数量由实际内容计算。
 
 新增文章会自动进入顶部的“档案检索”，也会自动生成阅读时间、文章目录和前后篇导航。检索可通过导航栏放大镜或 `Ctrl/⌘ + K` 打开。
 

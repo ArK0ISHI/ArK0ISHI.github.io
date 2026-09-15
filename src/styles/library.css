@@ -1,14 +1,14 @@
 /* The shelf opens with a book; reading notes follow its pages. */
 .library-room { --page: min(1180px, calc(100% - 64px)); }
 .library-room :is(a, button):focus-visible { outline: 2px solid var(--red); outline-offset: 5px; }
-.library-room :is(#library-novel, #written-pages-title) { scroll-margin-top: 110px; }
+.library-room :is(#library-novel, #library-themes, #marginalia-feature-library, #written-pages-title) { scroll-margin-top: 110px; }
 .library-room .library-hero { padding-block: 140px 40px; }
 .library-room .library-hero .page-hero-grid { grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 70px; }
 .library-room .library-hero h1 { font-size: clamp(44px, 5.3vw, 68px); font-weight: 500; line-height: 1.35; }
 .library-room .library-hero h1 em { font: inherit; }
 .library-hero-note { max-width: 390px; justify-self: end; }
 .library-hero-note .page-hero-description { font-size: 14px; }
-.library-hero-note nav { display: flex; gap: 28px; margin-top: 16px; }
+.library-hero-note nav { display: flex; flex-wrap: wrap; gap: 6px 24px; margin-top: 16px; }
 .library-hero-note nav a { display: inline-flex; align-items: center; justify-content: space-between; gap: 18px; min-height: 44px; border-bottom: 1px solid var(--line-strong); font-size: 12px; }
 .library-hero-note nav span { color: var(--red); }
 .library-room .library-content { margin-top: 34px; }
@@ -42,10 +42,20 @@
 .library-room .library-preface p:last-child { font-size: 13px; }
 .library-room .library-map-heading { margin-top: 42px; align-items: baseline; justify-content: space-between; }
 .library-map-heading h2 { margin: 0; font-size: 23px; font-weight: 500; }
+.library-themes { margin-top: 56px; }
+.library-map-heading > div .eyebrow { color: var(--red); margin: 0 0 10px; font-size: 9px; }
+.library-map-heading .library-map-note { margin: 0; color: var(--ink-soft); font-size: 11px; line-height: 1.9; }
 .library-room .library-grid { margin-top: 24px; }
-.library-room .library-entry { min-height: 250px; }
-.library-room .library-entry h2 { font-size: 22px; font-weight: 500; }
+.library-room .library-entry { min-height: 222px; }
+.library-room .library-entry h3 { margin: 24px 0 13px; font: 500 22px/1.6 var(--serif); }
 .library-room .library-entry > p:not(.eyebrow) { line-height: 1.8; }
+.library-writing-door { display: flex; align-items: center; justify-content: space-between; gap: 25px; padding-block: 27px; border-bottom: 1px solid var(--line); }
+.library-writing-door .eyebrow { color: var(--red); font-size: 9px; margin: 0 0 12px; }
+.library-writing-door h2 { font: 500 25px/1.6 var(--serif); margin: 0 0 10px; }
+.library-writing-door > div > p:last-child { font-size: 12px; color: var(--ink-soft); margin: 0; }
+.library-writing-door > a { display: inline-flex; align-items: center; justify-content: space-between; gap: 26px; flex-shrink: 0; min-height: 44px; border-bottom: 1px solid var(--line-strong); font-size: 12px; }
+.library-writing-door > a span { color: var(--red); }
+.library-writing-door > a:hover { color: var(--red); }
 .library-photo-note { display: flex; align-items: center; gap: 24px; margin-top: 50px; padding-block: 24px; border-block: 1px solid var(--line); }
 .library-photo-note > img { width: 132px; height: 96px; object-fit: cover; }
 .library-photo-note .eyebrow { font-size: 9px; color: var(--ink-soft); }
@@ -66,7 +76,9 @@
   .library-room .library-hero h1 { margin-top: 12px; font-size: 42px; line-height: 1.25; }
   .library-hero-note { max-width: none; justify-self: start; }
   .library-hero-note .page-hero-description { font-size: 13px; line-height: 1.9; }
-  .library-hero-note nav { margin-top: 12px; gap: 26px; }
+  .library-hero-note nav { margin-top: 12px; gap: 6px 24px; }
+  .library-hero-note nav a { font-size: 11px; gap: 11px; }
+  .library-room :is(#library-novel, #library-themes, #marginalia-feature-library, #written-pages-title) { scroll-margin-top: 88px; }
   .library-room .library-content { margin-top: 24px; }
   .library-novel { grid-template-columns: 106px minmax(0, 1fr); gap: 18px 18px; padding: 22px 18px 14px; }
   .library-novel-cover { padding: 0; align-self: start; }
@@ -90,11 +102,18 @@
   .library-room .library-section-heading { gap: 12px; padding-bottom: 20px; }
   .library-room .library-preface { gap: 10px; margin-top: 30px; padding-block: 20px; }
   .library-room .library-map-heading { margin-top: 32px; gap: 14px; }
+  .library-themes { margin-top: 39px; }
+  .library-map-heading { flex-wrap: wrap; }
+  .library-map-heading .library-map-note { font-size: 10px; }
   .library-map-heading h2 { font-size: 21px; }
   .library-map-heading .eyebrow { font-size: 8px; }
   .library-room .library-grid { gap: 16px; }
-  .library-room .library-entry { min-height: 210px; padding: 22px; }
-  .library-room .library-entry h2 { font-size: 21px; margin-top: 28px; }
+  .library-room .library-entry { min-height: 198px; padding: 22px; }
+  .library-room .library-entry h3 { font-size: 21px; margin-top: 21px; }
+  .library-writing-door { align-items: start; flex-direction: column; gap: 13px; padding-block: 8px 24px; }
+  .library-writing-door h2 { font-size: 23px; }
+  .library-writing-door > div > p:last-child { font-size: 11px; }
+  .library-writing-door > a { font-size: 11px; }
   .library-photo-note { gap: 16px; margin-top: 32px; padding-block: 20px; }
   .library-photo-note > img { width: 82px; height: 100px; }
   .library-photo-note .eyebrow { font-size: 8px; }

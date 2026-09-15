@@ -59,7 +59,7 @@ const categories: MarginaliaKind[] = ['叙事细读', '秘封札记', '听歌随
       </div>
       <div class="marginalia-note-list" id="marginalia-note-list">
         {marginalia.map(note => (
-          <article class="marginalia-note" data-note-kind={note.kind}>
+          <article class="marginalia-note" id={`note-${note.id}`} data-note-kind={note.kind}>
             <span class="marginalia-note-number" aria-hidden="true">{note.number}</span>
             <div class="marginalia-note-body">
               <p class="marginalia-note-meta"><span>{note.kind}</span><span>{note.work}</span></p>

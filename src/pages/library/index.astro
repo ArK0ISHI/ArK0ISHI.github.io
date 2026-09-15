@@ -1,14 +1,13 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import ArticleRow from '../../components/ArticleRow.astro';
 import HandbookFeature from '../../components/HandbookFeature.astro';
 import MarginaliaFeature from '../../components/MarginaliaFeature.astro';
 import '../../styles/library.css';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-const writtenPages = posts.filter(post => ['文学批评', '装帧与排版', '东方Project'].includes(post.data.category) || post.data.tags.includes('阅读边注'));
+const writingCount = posts.filter(post => post.data.kind === 'writing').length;
 const novelEntries = (await getCollection('novel', ({ data }) => data.book === '东方紫雨幽蝶'))
   .sort((a, b) => a.data.order - b.data.order);
 const chapters = novelEntries.filter(entry => entry.data.kind === 'chapter');
@@ -22,6 +21,24 @@ const countTheme = (theme: string) => posts.filter(post => post.data.category ==
 const shelves = [
   {
     no: 'SHELF 01',
+    title: '东方同人与幻想',
+    desc: '从《年代记》与《无限螺旋》，沿着人物、记忆与讲述的位置继续阅读。',
+    href: `/tags/${encodeURIComponent('东方Project')}/`,
+    count: countTheme('东方Project'),
+    unit: '篇文字',
+    tags: '同人 RPG · 手书 · 幻想',
+  },
+  {
+    no: 'SHELF 02',
+    title: '秘封故事与科学',
+    desc: '从《卯酉东海道》的车窗，到《大空魔术》的日常对话。',
+    href: `/tags/${encodeURIComponent('秘封俱乐部')}/`,
+    count: countTheme('秘封俱乐部'),
+    unit: '篇文字',
+    tags: '器乐专辑 · 附带故事',
+  },
+  {
+    no: 'SHELF 03',
     title: '视觉小说与叙事',
     desc: '关于记忆、选择、界面与元叙事的阅读记录。',
     href: `/tags/${encodeURIComponent('视觉小说')}/`,
@@ -30,16 +47,16 @@ const shelves = [
     tags: '记忆 · 界面 · 元游戏',
   },
   {
-    no: 'SHELF 02',
-    title: '《东方紫雨幽蝶》全文',
-    desc: '按章节阅读 coolcate 的长篇小说，并从目录进入间奏、原作者感言与整理校订记。',
-    href: '/library/ziyudie/',
-    count: chapters.length,
-    unit: '章正文',
-    tags: `${interludes.length} 篇间奏 · ${afterwords.length} 篇后记`,
+    no: 'SHELF 04',
+    title: '音乐与故事',
+    desc: '听一段旋律怎样牵起阅读，也辨认歌词里说话的人。',
+    href: `/tags/${encodeURIComponent('音乐叙事')}/`,
+    count: countTheme('音乐叙事'),
+    unit: '篇文字',
+    tags: '聆听 · 叙述声音 · 回响',
   },
   {
-    no: 'SHELF 03',
+    no: 'SHELF 05',
     title: '装帧与校订',
     desc: 'LaTeX 版式实验、文本整理、字形选择与阅读节奏。',
     href: `/tags/${encodeURIComponent('装帧与排版')}/`,
@@ -48,7 +65,7 @@ const shelves = [
     tags: 'LaTeX · Typography · Editorial',
   },
   {
-    no: 'SHELF 04',
+    no: 'SHELF 06',
     title: '研究与写作方法',
     desc: '把写作、研究、计算与个人知识管理放在同一张工作台上。',
     href: `/tags/${encodeURIComponent('方法')}/`,
@@ -64,7 +81,7 @@ const shelves = [
   <header class="page-hero library-hero">
     <div class="page-hero-grid">
       <div><p class="eyebrow">LIBRARY / 书架</p><h1>读过的书<br />与<em>留下的页</em></h1></div>
-      <div class="library-hero-note"><p class="page-hero-description">这里有可以逐章翻阅的长篇，也有阅读之后留下的评论与校订手记。先打开一本书，再沿着文字之间的关系慢慢走。</p><nav aria-label="书架篇章"><a href="#library-novel">全文阅读 <span aria-hidden="true">↓</span></a><a href="#written-pages-title">评论与手记 <span aria-hidden="true">↓</span></a></nav></div>
+      <div class="library-hero-note"><p class="page-hero-description">这里有可以逐章翻阅的长篇，也有阅读之后留下的评论与校订手记。先打开一本书，再沿着文字之间的关系慢慢走。</p><nav aria-label="书架篇章"><a href="#library-novel">全文阅读 <span aria-hidden="true">↓</span></a><a href="#library-themes">按主题找 <span aria-hidden="true">↓</span></a><a href="#marginalia-feature-library">页边短笺 <span aria-hidden="true">↓</span></a></nav></div>
     </div>
   </header>
   <div class="page-content library-content">
@@ -80,32 +97,30 @@ const shelves = [
       </div>
     </article>
 
-    <MarginaliaFeature variant="library" />
-    <HandbookFeature />
-    <section class="library-written" aria-labelledby="written-pages-title">
-      <div class="library-section-heading">
-        <div><p class="eyebrow">WRITTEN PAGES / 已写下</p><h2 id="written-pages-title">已经进入档案的书页</h2></div>
-        <span>{String(writtenPages.length).padStart(2, '0')} ENTRIES</span>
+    <section class="library-themes" id="library-themes" aria-labelledby="library-themes-title">
+      <div class="page-controls library-map-heading"><div><p class="eyebrow">A READING MAP / 主题索引</p><h2 id="library-themes-title">沿着一个兴趣，找到下一页。</h2></div><p class="library-map-note">从作品、声音，走到整理文字的手艺。</p></div>
+      <div class="library-grid">
+        {shelves.map(shelf => (
+          <a class="library-entry" href={shelf.href}>
+            <p class="eyebrow">{shelf.no}</p>
+            <span class="library-count">{shelf.count > 0 ? `${String(shelf.count).padStart(2, '0')} ${shelf.unit}` : '等待整理'}</span>
+            <h3>{shelf.title}</h3>
+            <p>{shelf.desc}</p>
+            <footer><span>{shelf.tags}</span><b aria-hidden="true">↗</b></footer>
+          </a>
+        ))}
       </div>
-      {writtenPages.map((post, index) => <ArticleRow post={post} number={String(index + 1).padStart(2, '0')} />)}
     </section>
-
+    <MarginaliaFeature variant="library" />
+    <section class="library-writing-door" id="written-pages-title" aria-labelledby="library-writing-door-title">
+      <div><p class="eyebrow">THE WRITING ROOM / 写作档案</p><h2 id="library-writing-door-title">把留下的文字，接着读下去。</h2><p>评论、阅读边注与校订手记，按时间收在写作室里。</p></div>
+      <a href="/writing/#writing-index">浏览全部 {writingCount} 篇文字 <span aria-hidden="true">↗</span></a>
+    </section>
+    <HandbookFeature />
     <aside class="library-preface">
       <p class="eyebrow">A NOTE FROM THE DESK</p>
       <p>这里不按读完的数量计数。尚未形成公开笔记的阅读先留在纸面；遇到值得继续追问的问题，再把它编进索引。</p>
     </aside>
-    <div class="page-controls library-map-heading"><h2>按主题慢慢归档</h2><span class="eyebrow">A READING MAP</span></div>
-    <div class="library-grid">
-      {shelves.map(shelf => (
-        <a class="library-entry" href={shelf.href}>
-          <p class="eyebrow">{shelf.no}</p>
-          <span class="library-count">{shelf.count > 0 ? `${String(shelf.count).padStart(2, '0')} ${shelf.unit}` : '等待整理'}</span>
-          <h2>{shelf.title}</h2>
-          <p>{shelf.desc}</p>
-          <footer><span>{shelf.tags}</span><b aria-hidden="true">↗</b></footer>
-        </a>
-      ))}
-    </div>
     <a class="library-photo-note" href="/light-notes/"><img src="/images/journal/2026-summer/20260716-191447-thumb.webp" width="720" height="540" loading="lazy" decoding="async" alt="西湖晚霞与同行的小偶" /><div><p class="eyebrow">BEYOND THE PAGE / 书页之外</p><p>换一种方式阅读日常。</p><span>光影札记 · 七月的旅途档案 <b aria-hidden="true">↗</b></span></div></a>
   </div>
   </div>

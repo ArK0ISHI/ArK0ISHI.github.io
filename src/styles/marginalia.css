@@ -97,6 +97,11 @@
 .marginalia-feature-note h3 a span { color: var(--red); font: 400 16px/1 var(--mono); flex-shrink: 0; }
 .marginalia-feature-line { margin: 4px 0 0; color: var(--ink-soft); font-size: 11px; line-height: 1.9; }
 .reading-collaboration { margin-block: 75px 30px; }
+.reading-collaboration-phrase { display: inline-block; }
+.reading-collaboration-feedback { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); align-items: start; gap: clamp(28px, 5vw, 70px); padding-top: 31px; border-top: 1px solid var(--line-strong); }
+.reading-collaboration-feedback .marginalia-section-heading { margin: 0; }
+.reading-collaboration-feedback .reading-collaboration-cases { grid-template-columns: minmax(0, 1fr); border-top: 0; padding-top: 0; }
+.reading-collaboration-feedback .marginalia-section-heading h2 { font-size: clamp(24px, 2.55vw, 31px); }
 .reading-collaboration-cases { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(28px, 5vw, 65px); padding-top: 28px; border-top: 1px solid var(--line-strong); }
 .reading-collaboration-case { position: relative; padding-left: 23px; border-left: 1px solid color-mix(in srgb, var(--red) 45%, transparent); }
 .reading-collaboration-label { margin: 0 0 15px; color: var(--ink-soft); font: 400 9px/1.8 var(--mono); letter-spacing: .075em; }
@@ -174,6 +179,7 @@
   .marginalia-feature-note > div > p:first-child { font-size: 9px; }
   .marginalia-feature-line { font-size: 10px; }
   .reading-collaboration { margin-block: 50px 25px; }
+  .reading-collaboration-feedback { grid-template-columns: 1fr; gap: 24px; padding-top: 24px; }
   .reading-collaboration-cases { grid-template-columns: 1fr; gap: 31px; padding-top: 24px; }
   .reading-collaboration-case { padding-left: 19px; }
   .reading-collaboration-case h3 { font-size: 23px; }

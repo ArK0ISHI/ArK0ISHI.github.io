@@ -16,7 +16,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft && data.kin
   <header class="page-hero writing-hero">
     <div class="page-hero-grid">
       <div><p class="eyebrow">WRITING / 写作</p><h1>记忆、幻想<br />与<em>叙事</em></h1></div>
-      <div class="writing-introduction"><p class="page-hero-description">物理追问世界如何运行，文学追问我们如何感受、记忆并讲述这个世界。从页边的几行观察，到一篇评论、一本整理稿，让阅读留下可以翻阅的形状。</p><a class="writing-index-link" href="#writing-index">浏览全部 {posts.length} 篇文字 <span aria-hidden="true">↓</span></a></div>
+      <div class="writing-introduction"><p class="page-hero-description">物理追问世界如何运行，文学追问我们如何感受、记忆并讲述这个世界。从页边的几行观察，到一篇评论、一本整理稿，让阅读留下可以翻阅的形状。</p><nav class="writing-page-nav" aria-label="写作页目录"><a href="#marginalia-feature-writing"><span aria-hidden="true">01</span> 精选短笺</a><a href="#writing-features-title"><span aria-hidden="true">02</span> 文字作品</a><a href="#writing-collaboration-title"><span aria-hidden="true">03</span> 参与校订</a><a href="#writing-index"><span aria-hidden="true">04</span> 全部文字 <small>{posts.length}</small></a></nav></div>
     </div>
   </header>
   <div class="page-width"><MarginaliaFeature variant="writing" /></div>
@@ -57,7 +57,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft && data.kin
       </article>
     </div>
   </section>
-  <div class="page-width"><ReadingCollaboration headingId="writing-collaboration-title" /><HandbookFeature /></div>
+  <div class="page-width"><ReadingCollaboration headingId="writing-collaboration-title" variant="feedback" /><HandbookFeature /></div>
   <section class="page-content writing-index" id="writing-index" aria-labelledby="writing-index-title">
     <div class="page-controls"><h2 id="writing-index-title">全部文字</h2><span class="page-count">{String(posts.length).padStart(2, '0')} ESSAYS</span></div>
     {posts.map((post, index) => <ArticleRow post={post} number={String(index + 1).padStart(2, '0')} />)}

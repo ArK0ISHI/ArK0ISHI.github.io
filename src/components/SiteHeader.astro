@@ -125,10 +125,15 @@ const isActive = (href: string) => href === '/' ? pathname === '/' : pathname.st
     document.addEventListener('astro:before-swap', () => controller.abort(), { once: true, signal: controller.signal });
 
     let lastY = window.scrollY;
+    header?.addEventListener('focusin', () => {
+      header?.classList.remove('hidden-header');
+      lastY = window.scrollY;
+    }, { signal: controller.signal });
     const updateHeader = () => {
       const y = window.scrollY;
+      const containsFocus = header?.contains(document.activeElement);
       header?.classList.toggle('scrolled', y > 16);
-      header?.classList.toggle('hidden-header', y > lastY && y > 180 && !document.body.classList.contains('menu-open'));
+      header?.classList.toggle('hidden-header', y > lastY && y > 180 && !containsFocus && !document.body.classList.contains('menu-open'));
       lastY = y;
     };
     updateHeader();

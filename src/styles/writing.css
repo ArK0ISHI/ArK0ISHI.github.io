@@ -9,6 +9,12 @@
 .writing-introduction .page-hero-description { font-size: 14px; line-height: 2; }
 .writing-index-link { display: inline-flex; align-items: center; justify-content: space-between; gap: 28px; min-height: 44px; margin-top: 16px; font-size: 12px; border-bottom: 1px solid var(--line-strong); }
 .writing-index-link span { color: var(--red); }
+.writing-page-nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 23px; margin-top: 20px; }
+.writing-page-nav a { display: flex; align-items: center; gap: 11px; min-height: 44px; border-bottom: 1px solid var(--line); font-size: 12px; line-height: 1.7; }
+.writing-page-nav a > span { color: var(--red); font: 400 9px/1.4 var(--mono); }
+.writing-page-nav a > small { margin-left: auto; color: var(--ink-soft); font: 400 10px/1.4 var(--mono); }
+.writing-page-nav a:hover { color: var(--red); border-color: var(--line-strong); }
+.writing-room :is(#marginalia-feature-writing, #writing-features-title, #writing-collaboration-title) { scroll-margin-top: 110px; }
 .writing-features { margin-top: 34px; }
 .writing-section-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 22px; }
 .writing-section-heading h2 { margin: 0; font-size: 17px; font-weight: 500; }
@@ -59,6 +65,9 @@
   .writing-introduction { max-width: none; justify-self: start; }
   .writing-introduction .page-hero-description { font-size: 13px; line-height: 1.95; }
   .writing-index-link { margin-top: 12px; }
+  .writing-page-nav { margin-top: 14px; gap: 4px 20px; }
+  .writing-page-nav a { font-size: 11px; }
+  .writing-room :is(#marginalia-feature-writing, #writing-features-title, #writing-collaboration-title) { scroll-margin-top: 88px; }
   .writing-features { margin-top: 25px; }
   .writing-section-heading { gap: 5px; margin-bottom: 18px; }
   .writing-section-heading h2 { font-size: 16px; }

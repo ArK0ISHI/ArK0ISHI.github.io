@@ -1,7 +1,8 @@
 /* A quiet, editorial introduction to the archive. Scoped to the homepage. */
 .home-edition { --page: min(1180px, calc(100% - 64px)); }
+main:has(> .home-edition) { overflow: clip; }
 .home-edition [hidden] { display: none !important; }
-.home-edition section[id], .home-edition .edition-anchor { scroll-margin-top: 108px; }
+.home-edition section[id], .home-edition .edition-anchor { scroll-margin-top: 158px; }
 .home-edition a:focus-visible, .home-edition button:focus-visible, .home-edition [tabindex='0']:focus-visible { outline: 2px solid var(--red); outline-offset: 5px; }
 .home-edition .edition-kicker { margin: 0 0 22px; color: var(--red); font: 400 10px/1.6 var(--mono); letter-spacing: .13em; }
 .home-edition .edition-text-link { display: inline-flex; align-items: center; min-height: 44px; margin-top: 24px; padding-block: 8px; border-bottom: 1px solid var(--line-strong); font-size: 13px; transition: color .2s, border-color .2s; }
@@ -16,9 +17,13 @@
 .archive-counts dt { font-size: 11px; color: var(--ink-soft); }
 .archive-counts dd { margin: 6px 0 0; font: 300 35px/1.2 var(--mono); letter-spacing: -.06em; }
 .archive-counts dd span { margin-left: 8px; font: 400 10px/1.4 var(--serif); color: var(--ink-soft); }
-.edition-contents { display: flex; flex-wrap: wrap; align-items: center; gap: 18px 42px; border-block: 1px solid var(--line); padding-block: 10px; }
-.edition-contents > span { margin-right: auto; font: 400 9px/1.5 var(--mono); letter-spacing: .1em; color: var(--ink-soft); }
-.edition-contents a { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; font-size: 12px; }
+.edition-contents { position: sticky; top: 84px; z-index: 60; display: flex; align-items: center; gap: 24px; border-block: 1px solid var(--line); padding-block: 4px; background: var(--paper); transition: top .35s ease; }
+.site-header.hidden-header ~ main .edition-contents { top: 0; }
+.edition-contents > span { flex: 0 0 auto; margin-right: auto; font: 400 9px/1.5 var(--mono); letter-spacing: .1em; color: var(--ink-soft); }
+.edition-contents-links { display: flex; align-items: center; gap: clamp(12px, 2vw, 30px); min-width: 0; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: thin; scrollbar-color: var(--line-strong) transparent; padding: 3px; }
+.edition-contents a { display: inline-flex; align-items: center; flex-shrink: 0; gap: 8px; min-height: 44px; font-size: 12px; white-space: nowrap; border-bottom: 1px solid transparent; }
+.edition-contents a[aria-current='location'] { color: var(--red); border-bottom-color: var(--red); }
+.home-edition .edition-contents a:focus-visible { outline-offset: 2px; }
 .edition-contents a:hover { color: var(--red); }
 .edition-contents small { color: var(--red); font: 400 9px/1 var(--mono); }
 .edition-heading { display: grid; grid-template-columns: 1.2fr 1fr; gap: 48px; align-items: end; margin-bottom: 40px; }
@@ -59,8 +64,9 @@
 .edition-honor-list a:hover { color: var(--red); }
 @media (max-width: 1020px) {
   .edition-prologue { column-gap: 50px; }
-  .edition-contents { gap: 8px 26px; }
-  .edition-contents > span { width: 100%; padding-top: 10px; }
+  .edition-contents { gap: 0; }
+  .edition-contents > span { display: none; }
+  .edition-contents-links { width: 100%; justify-content: space-between; }
   .honors-layout { gap: 40px; }
 }
 @media (max-width: 760px) {
@@ -73,7 +79,9 @@
   .prologue-copy .prologue-name { font-size: 16px; margin-bottom: 10px; }
   .archive-counts { gap: 14px; margin-top: 20px; padding-top: 15px; }
   .archive-counts dd { font-size: 27px; margin-top: 4px; }
-  .edition-contents { display: grid; grid-template-columns: 1fr 1fr; gap: 0 20px; padding-block: 6px; }
+  .home-edition section[id], .home-edition .edition-anchor { scroll-margin-top: 144px; }
+  .edition-contents { padding-block: 3px; }
+  .edition-contents-links { gap: 24px; justify-content: flex-start; }
   .edition-contents > span { display: none; }
   .edition-contents a { font-size: 12px; }
   .edition-heading { grid-template-columns: 1fr; gap: 20px; margin-bottom: 27px; }
@@ -91,6 +99,7 @@
   .edition-honors { padding-block: 45px; }
   .edition-honor-list > div { grid-template-columns: 45px 1fr; gap: 14px; }
 }
+@media (max-width: 900px) { .edition-contents { top: 70px; } }
 @media (prefers-reduced-motion: reduce) {
   .home-edition *, .home-edition *::before, .home-edition *::after { scroll-behavior: auto !important; transition-duration: 0s !important; animation-duration: 0s !important; }
 }

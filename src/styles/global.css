@@ -111,6 +111,7 @@ button { color: inherit; font: inherit; }
 }
 
 .site-header.hidden-header { transform: translateY(-100%); }
+.site-header:focus-within { transform: translateY(0); transition: background-color .35s ease, border-color .35s ease; }
 
 .header-inner {
   width: var(--page);

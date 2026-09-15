@@ -40,6 +40,8 @@ const {
 };
 const displayDate = date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
 const marginalEntry = marginalia.find(note => marginaliaHref(note) === Astro.url.pathname);
+const titlePhrases = marginalEntry ? (title.match(/[^，：？！。；]+[，：？！。；]?/gu) ?? [title]) : [title];
+const singleMarginHeading = marginalEntry && headings.length === 1 ? headings[0] : undefined;
 const marginalIndex = marginalEntry ? marginalia.indexOf(marginalEntry) : -1;
 const nextMargin = marginalEntry ? marginalia[(marginalIndex + 1) % marginalia.length] : undefined;
 const archiveHref = marginalEntry ? '/writing/marginalia/' : kind === 'writing' ? '/writing/' : '/notes/';
@@ -51,14 +53,14 @@ const displayedScopeNote = scopeNote ?? (kind === 'note' ? defaultScopeNote : un
 
 <BaseLayout title={title} description={description}>
   <div class="reading-progress" data-reading-progress role="progressbar" aria-label="文章阅读进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div>
-  <article class:list={['post-shell', 'page-width', { 'post-shell-marginalia': !!marginalEntry }]}>
+  <article class:list={['post-shell', 'page-width', { 'post-shell-marginalia': !!marginalEntry }]} data-marginalia-post={marginalEntry?.id}>
     <header class="post-header">
       <div class="post-kicker">
         <a href={`/tags/${encodeURIComponent(category)}/`}>{category}</a>
         <span>{kindLabel}</span>
       </div>
       {marginalEntry && <p class="post-margin-subject"><span>NO. {marginalEntry.number}</span>{marginalEntry.kind} <i aria-hidden="true">/</i> {marginalEntry.work}</p>}
-      <h1>{title}</h1>
+      <h1>{marginalEntry ? titlePhrases.map(phrase => <span class="post-title-phrase">{phrase}</span>) : title}</h1>
       <p class="post-description">{description}</p>
       {marginalEntry && <p class="post-margin-scope">{marginalEntry.spoiler}</p>}
       <div class="post-byline">
@@ -72,7 +74,7 @@ const displayedScopeNote = scopeNote ?? (kind === 'note' ? defaultScopeNote : un
     <div class="post-grid">
       <aside class="post-aside">
         <div class="post-aside-inner">
-          <a class="back-link" href={archiveHref}>← {archiveLabel}</a>
+          <a class="back-link" href={archiveHref} data-marginalia-return={marginalEntry ? '' : undefined}>← <span data-marginalia-return-label={marginalEntry ? '' : undefined}>{archiveLabel}</span></a>
           {marginalEntry && <div class="post-margin-note"><span>留下的一句</span><p>{marginalEntry.line}</p></div>}
           {headings.length > 0 && (
             <nav class="post-toc" aria-label="文章目录">
@@ -89,7 +91,8 @@ const displayedScopeNote = scopeNote ?? (kind === 'note' ? defaultScopeNote : un
         </div>
       </aside>
       <div class="prose">
-        {headings.length > 0 && (
+        {singleMarginHeading && <a class="post-margin-source-jump" href={`#${singleMarginHeading.slug}`}>查看{singleMarginHeading.text}<span aria-hidden="true">↓</span></a>}
+        {headings.length > 0 && !singleMarginHeading && (
           <details class="post-toc-mobile">
             <summary>阅读目录 <span>{String(headings.length).padStart(2, '0')} 节</span></summary>
             <nav aria-label="文章目录">
@@ -106,7 +109,7 @@ const displayedScopeNote = scopeNote ?? (kind === 'note' ? defaultScopeNote : un
       </div>
     </div>
 
-    {nextMargin && <nav class="post-margin-next" aria-label="继续翻阅阅读边注"><div><span>下一则边注 · {nextMargin.number}</span><a href={marginaliaHref(nextMargin)}>{nextMargin.title}<b aria-hidden="true">↗</b></a></div><a class="post-margin-all" href="/writing/marginalia/">回到十则边注 <span aria-hidden="true">→</span></a></nav>}
+    {nextMargin && <nav class="post-margin-next" aria-label="继续翻阅阅读边注"><div><span>下一则边注 · {nextMargin.number}</span><a href={marginaliaHref(nextMargin)}>{nextMargin.title}<b aria-hidden="true">↗</b></a></div><a class="post-margin-all" href="/writing/marginalia/" data-marginalia-return><span data-marginalia-return-label>回到十则边注</span><span aria-hidden="true">→</span></a></nav>}
     <footer class="post-end">
       <span aria-hidden="true">∴</span>
       <p>谢谢你把这一页读到这里。若它替你保存了一个问题，这次记录便有了回声。</p>
@@ -126,6 +129,8 @@ const displayedScopeNote = scopeNote ?? (kind === 'note' ? defaultScopeNote : un
   </article>
   <ResearchFigureViewer />
 </BaseLayout>
+
+<script>import '../scripts/marginalia';</script>
 
 <script>
   const readingWindow = window as Window & {

@@ -18,7 +18,7 @@ const neteaseMusicSync = () => ({
 export default defineConfig({
   site: process.env.SITE_URL || 'https://example.com',
   output: 'static',
-  integrations: [neteaseMusicSync(), mdx(), sitemap()],
+  integrations: [neteaseMusicSync(), mdx(), sitemap({ filter: (page) => !new URL(page).pathname.startsWith('/moon/') })],
   markdown: {
     processor: unified({
       remarkPlugins: [remarkMath],

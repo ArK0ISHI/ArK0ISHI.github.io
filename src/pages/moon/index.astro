@@ -1,0 +1,84 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import '../../styles/moon-observatory.css';
+const views = [
+  { id: 'overview', no: '01', label: '总览', en: 'DISTRIBUTION' },
+  { id: 'semesters', no: '02', label: '学期轨迹', en: 'TRAJECTORIES' },
+  { id: 'groups', no: '03', label: '学院与专业', en: 'PERSPECTIVES' },
+  { id: 'courses', no: '04', label: '课程探索', en: 'COURSE NOTES' },
+];
+---
+<BaseLayout title="月之暗面" description="一间藏在主页背面的数据观察室。关于绩点分布、学期变化与课程的另一组坐标。" noindex bodyClass="moon-page">
+  <article class="mo page-width" data-observatory>
+    <header class="mo-hero">
+      <div class="mo-hero-copy">
+        <p class="mo-eyebrow"><span class="mo-coordinate">AN OBSERVATORY ON THE OTHER SIDE</span><span class="mo-serial">NO. 039</span></p>
+        <h1>月之<span>暗面</span><small>THE FAR SIDE</small></h1>
+        <p class="mo-intro">在数字的另一侧，<br class="mo-mobile-break" />看看学习留下的轨迹。</p>
+        <p class="mo-subtitle">四届绩点 · 总览、学期与课程</p>
+      </div>
+      <figure class="mo-moon">
+        <img src="/images/moon/lro-farside.webp" width="768" height="763" alt="LRO 拍摄的月球背面，密集的撞击坑勾勒出月面地形" fetchpriority="high" />
+        <figcaption><span>另一面的坐标</span><span>LRO / LUNAR FAR SIDE</span></figcaption>
+      </figure>
+    </header>
+
+    <section class="mo-locked" data-mo-locked aria-labelledby="mo-locked-title">
+      <p class="mo-eyebrow">A PAGE YET TO BE FOUND</p>
+      <h2 id="mo-locked-title">这扇门，要从月亮那边打开。</h2>
+      <p>往页脚走走。那轮安静的小月亮，也许藏着另一面。</p>
+      <a class="mo-button" href="#moon-entry">去看看月亮 <span aria-hidden="true">↓</span></a>
+      <noscript><p>这间观察室需要启用 JavaScript，才能回应点击并绘制图表。</p></noscript>
+    </section>
+
+    <div data-mo-content hidden>
+      <div class="mo-arrival"><p><span class="mo-status-dot" aria-hidden="true"></span>你已抵达 · 一间未列入目录的观察室</p><a href="#mo-methods">阅读口径与来源 <span aria-hidden="true">↘</span></a></div>
+      <div class="mo-controls">
+        <fieldset class="mo-cohorts"><legend>观察年级</legend><div data-mo-cohorts></div></fieldset>
+        <button class="mo-text-button" data-mo-reset type="button">重置视角 <span aria-hidden="true">↺</span></button>
+      </div>
+      <p class="mo-scope-note" data-mo-scope role="status" aria-live="polite"></p>
+      <div class="mo-metrics" data-mo-metrics></div>
+
+      <nav class="mo-tabs" role="tablist" aria-label="数据观察视角">
+        {views.map((view, index) => <button id={`mo-tab-${view.id}`} type="button" role="tab" aria-selected={index === 0 ? 'true' : 'false'} aria-controls="mo-panel" tabindex={index === 0 ? 0 : -1} data-mo-tab={view.id}><span>{view.no}</span><strong>{view.label}</strong><small>{view.en}</small></button>)}
+      </nav>
+
+      <section class="mo-panel" id="mo-panel" role="tabpanel" aria-labelledby="mo-tab-overview" tabindex="0">
+        <div class="mo-panel-heading"><div><p class="mo-eyebrow" data-mo-kicker>01 / DISTRIBUTION</p><h2 data-mo-title>先看一片星群，再看它的形状。</h2></div><p data-mo-description>均值之外，分布也是答案的一部分。</p></div>
+        <div class="mo-local-filters" data-mo-filters></div>
+        <div class="mo-chart-grid">
+          <figure class="mo-chart-card">
+            <figcaption><div><span class="mo-card-index">FIG. 01</span><h3 data-mo-chart-title="primary"></h3></div><button class="mo-chart-save" data-mo-image="primary" type="button" aria-label="保存主图为 PNG 图片">保存图片 ↗</button></figcaption>
+            <div class="mo-chart-wrap"><canvas data-mo-chart="primary" role="img"></canvas></div>
+            <p class="mo-chart-note" data-mo-chart-note="primary"></p>
+          </figure>
+          <figure class="mo-chart-card mo-chart-secondary">
+            <figcaption><div><span class="mo-card-index">FIG. 02</span><h3 data-mo-chart-title="secondary"></h3></div><button class="mo-chart-save" data-mo-image="secondary" type="button" aria-label="保存副图为 PNG 图片">保存图片 ↗</button></figcaption>
+            <div class="mo-chart-wrap"><canvas data-mo-chart="secondary" role="img"></canvas></div>
+            <p class="mo-chart-note" data-mo-chart-note="secondary"></p>
+          </figure>
+        </div>
+        <aside class="mo-reading-note"><span>观察边注</span><p data-mo-observation></p></aside>
+        <section class="mo-table-section" aria-labelledby="mo-table-title">
+          <header><div><p class="mo-eyebrow">THE NUMBERS, IN FULL VIEW</p><h3 id="mo-table-title" data-mo-table-title>把图表摊开来看</h3></div><button class="mo-button mo-button-quiet" data-mo-csv type="button">导出汇总 CSV <span aria-hidden="true">↓</span></button></header>
+          <p class="mo-table-caption" data-mo-table-caption></p>
+          <div class="mo-table-scroll" tabindex="0" role="region" aria-label="汇总数据表，可横向滚动"><table><caption class="sr-only" data-mo-table-accessible>当前视角的汇总数据</caption><thead data-mo-thead></thead><tbody data-mo-tbody></tbody></table></div>
+          <div class="mo-pagination"><p data-mo-table-count></p><div><button data-mo-prev type="button" aria-label="上一页汇总数据">← 上一页</button><span data-mo-page></span><button data-mo-next type="button" aria-label="下一页汇总数据">下一页 →</button></div></div>
+        </section>
+      </section>
+      <p class="mo-feedback" data-mo-feedback role="status" aria-live="polite"></p>
+      <section class="mo-methods" id="mo-methods">
+        <div class="mo-methods-heading"><p class="mo-eyebrow">READ THE FOOTNOTES</p><h2>数字有口径，<br />观察有边界。</h2><p>这些图表描述一组记录。理解差异，还需要课程、时间与人的处境。</p></div>
+        <div class="mo-methods-body">
+          <details open><summary>这些数据描述了什么？</summary><div data-mo-methodology></div></details>
+          <details><summary>公开版本保留了哪些内容？</summary><p>这里展示群体汇总。公开文件不包含姓名、学号、个人成绩单或逐人学习轨迹；人数不足 10 的分组不展示，绩点分布中的小区间合并后呈现。</p><p>彩蛋是一种发现方式，并不提供身份验证。入口重新隐藏后，公开的汇总资料仍然是公开资料。</p></details>
+          <details><summary>月面影像与这间观察室</summary><p>月面影像来自 <a href="https://science.nasa.gov/resource/lunar-far-side-2/" target="_blank" rel="noopener noreferrer">NASA 的 Lunar Far Side</a>，由 LRO 相机数据制作。影像署名：NASA / Goddard Space Flight Center / Arizona State University。</p><p>“月之暗面”是这间小屋的名字。月球背面同样经历昼夜，并非永远黑暗。</p></details>
+        </div>
+      </section>
+      <div class="mo-departure"><div><span class="mo-eyebrow">UNTIL NEXT TIME</span><p>看过另一面，仍可循着月光回来。</p></div><div><a class="mo-button" href="/">回到主页 <span aria-hidden="true">↗</span></a><button class="mo-text-button" data-moon-relock type="button">重新隐藏入口</button></div></div>
+    </div>
+    <p class="mo-load-error" data-mo-load-error hidden role="alert">观察室暂时未能载入。<button class="mo-text-button" type="button" data-mo-retry>再试一次</button></p>
+  </article>
+  <script>import '../../scripts/moon-observatory';</script>
+</BaseLayout>

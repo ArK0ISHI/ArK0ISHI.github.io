@@ -1,0 +1,40 @@
+---
+import '../styles/moon-gate.css';
+---
+
+<div class="moon-gate" id="moon-entry" data-moon-gate data-phase="0">
+  <button class="moon-gate-trigger" data-moon-trigger type="button" aria-label="月亮，还有另一面" aria-describedby="moon-gate-hint">
+    <span class="moon-gate-orbit moon-gate-orbit-outer" aria-hidden="true"></span>
+    <span class="moon-gate-orbit moon-gate-orbit-inner" aria-hidden="true"></span>
+    <span class="moon-gate-satellite" aria-hidden="true"></span>
+    <span class="moon-gate-face" aria-hidden="true">
+      <img src="/images/moon/lro-farside-small.webp" alt="" width="160" height="160" loading="lazy" decoding="async" />
+    </span>
+    <span class="moon-gate-spark" aria-hidden="true"></span>
+  </button>
+  <span class="moon-gate-hint" id="moon-gate-hint">月亮，还有另一面。</span>
+  <span class="moon-gate-status" data-moon-status aria-live="polite" aria-atomic="true"></span>
+</div>
+
+<dialog class="moon-welcome" data-moon-dialog aria-labelledby="moon-welcome-title" aria-describedby="moon-welcome-copy">
+  <button class="moon-welcome-close" type="button" data-moon-close aria-label="关闭欢迎提示">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+  </button>
+  <div class="moon-welcome-art" aria-hidden="true">
+    <span class="moon-welcome-orbit"></span>
+    <img src="/images/moon/lro-farside-small.webp" alt="" width="160" height="160" loading="lazy" decoding="async" />
+    <span class="moon-welcome-cross">+</span>
+  </div>
+  <p class="moon-welcome-eyebrow">THE FAR SIDE · 039</p>
+  <h2 id="moon-welcome-title">欢迎来到<span>月之暗面</span></h2>
+  <p class="moon-welcome-copy" id="moon-welcome-copy">你找到了这间小屋，未曾写进目录的一页。<br />在数字的另一侧，看看学习留下的轨迹。</p>
+  <div class="moon-welcome-actions">
+    <a class="moon-welcome-enter" href="/moon/" data-moon-enter autofocus>进入暗面 <span aria-hidden="true">↗</span></a>
+    <button class="moon-welcome-later" type="button" data-moon-close>稍后再看</button>
+  </div>
+  <p class="moon-welcome-note">这枚月亮已记住你。菜单里，也多了一页。</p>
+</dialog>
+
+<script>
+  import '../scripts/moon-gate';
+</script>

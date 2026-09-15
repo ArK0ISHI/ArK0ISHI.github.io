@@ -1,10 +1,10 @@
 ---
 import { site } from '../data/site';
+import MoonGate from './MoonGate.astro';
 const year = new Date().getFullYear();
 ---
 
 <footer class="site-footer">
-  <div class="footer-symbol" aria-hidden="true"><span></span><i></i></div>
   <div class="footer-grid page-width">
     <div>
       <a class="footer-brand" href="/">亚略<span>Ar</span></a>
@@ -29,6 +29,7 @@ const year = new Date().getFullYear();
       <p class="eyebrow">COORDINATES / 坐标</p>
       <p>SHANGHAI · 31° N</p>
       <a class="footer-experience" href="/experience/">经历与公开边界 <span aria-hidden="true">↗</span></a>
+      <MoonGate />
     </div>
   </div>
   <div class="footer-bottom page-width">

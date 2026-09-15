@@ -138,5 +138,8 @@ function setupMarginalia() {
 document.addEventListener('astro:before-swap', () => {
   activeController?.abort(); activeRoot = null; activeController = null;
 });
+// The new page and its history state are ready here; do not leave visible links
+// uninitialized while astro:page-load waits for the remaining page scripts.
+document.addEventListener('astro:after-swap', setupMarginalia);
 document.addEventListener('astro:page-load', setupMarginalia);
 setupMarginalia();

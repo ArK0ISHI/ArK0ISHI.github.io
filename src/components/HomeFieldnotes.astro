@@ -1,5 +1,6 @@
 ---
 import { lightNotePhotos } from '../data/lightNotes';
+import KaleidoscopeLink from './KaleidoscopeLink.astro';
 
 const selections = [
   { id: '20260716-191447', title: '重返西湖', story: 'westlake-return', caption: '晚霞落进湖面，两周后的西湖换了一种光。' },
@@ -48,6 +49,8 @@ const selections = [
         </figure>
       ))}
     </div>
+
+    <KaleidoscopeLink />
 
     <footer class="fieldnotes-footer"><span>先把时间与地点存下，再慢慢写成故事。</span><a href="/light-notes/">展开 {lightNotePhotos.length} 张光影札记 <span aria-hidden="true">→</span></a></footer>
   </div>

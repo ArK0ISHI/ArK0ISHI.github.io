@@ -86,6 +86,15 @@ npm run sync:music
 
 作品设定在正文标明出处，个人解读与设定分开表述；秘封器乐专辑的附带故事与歌词随笔分别归档。朋友的视觉小说暂以匿名案例展示，参与范围仅列阅读反馈与文字校订。新增内容时应同步检查作品名称、媒介、原作者署名与实际参与范围。
 
+## 万景幕
+
+`/kaleidoscope/` 是从行旅照片延伸出的横向车窗体验：杭州暮色、南京雨景与上海夜色组成三段风景，观察点连接具体照片故事与秘封阅读边注。首页光影区、光影札记卷首、相关文章和站内检索均有入口。
+
+- 场景、照片引用与观察文字：`src/data/kaleidoscope.ts`；照片继续引用 `src/data/lightNotes.ts` 中的公开派生图，不写入原图的 GPS 或设备信息。
+- 页面、交互与样式：`src/pages/kaleidoscope/index.astro`、`src/scripts/kaleidoscope.ts`、`src/styles/kaleidoscope.css`。
+- 跨页入口：`src/components/KaleidoscopeLink.astro`、`src/styles/kaleidoscope-link.css`。
+- 「保留偶然／修饰风景」是同一批照片的两种网页观看方式；它们不改变原始归档，也不把这段组合旅程描述为真实列车路线。
+
 ## 桌上的小实验
 
 `/lab/` 将双摆、机器人决策与原有任意球观察器放在一起。首页、项目档案、站内检索及各实验之间均有入口。

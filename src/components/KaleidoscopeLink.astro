@@ -1,0 +1,29 @@
+---
+import { lightNotePhotos } from '../data/lightNotes';
+import '../styles/kaleidoscope-link.css';
+
+interface Props {
+  context?: 'home' | 'journal';
+}
+
+const { context = 'home' } = Astro.props;
+const preview = lightNotePhotos.find(photo => photo.id === '20260716-191447');
+if (!preview) throw new Error('Missing photograph for the kaleidoscope doorway.');
+---
+
+<a class:list={['kaleidoscope-link', `kaleidoscope-link--${context}`]} href="/kaleidoscope/" aria-label="坐到窗边，进入万景幕互动行旅">
+  <span class="kaleidoscope-link-art" aria-hidden="true">
+    <span class="kaleidoscope-link-window">
+      <img src={preview.thumb} width={preview.thumbWidth} height={preview.thumbHeight} alt="" loading="lazy" decoding="async" />
+      <span class="kaleidoscope-link-glint"></span>
+    </span>
+    <span class="kaleidoscope-link-seat">WINDOW SEAT / 03 VIEWS</span>
+  </span>
+  <span class="kaleidoscope-link-copy">
+    <span class="kaleidoscope-link-kicker">KALEIDOSCOPE / 互动行旅</span>
+    <strong class="kaleidoscope-link-title">万景幕<span>把目光，留在途中。</span></strong>
+    <span class="kaleidoscope-link-description">三段行旅影像，几处可点击的细节。在「保留偶然」与「修饰风景」之间，换一种观看方式。</span>
+    <span class="kaleidoscope-link-route">杭州暮色<span aria-hidden="true">—</span>南京雨景<span aria-hidden="true">—</span>上海夜色</span>
+  </span>
+  <span class="kaleidoscope-link-action">坐到窗边<span aria-hidden="true">↗</span></span>
+</a>

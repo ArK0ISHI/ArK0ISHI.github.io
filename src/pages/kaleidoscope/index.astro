@@ -1,0 +1,85 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { kaleidoscopeScenes } from '../../data/kaleidoscope';
+import { lightNotePhotos } from '../../data/lightNotes';
+import '../../styles/kaleidoscope.css';
+
+const scenes = kaleidoscopeScenes.map(scene => {
+  const photo = lightNotePhotos.find(photo => photo.id === scene.photoId);
+  if (!photo) throw new Error(`Missing window photograph: ${scene.photoId}`);
+  return { ...scene, photo };
+});
+const first = scenes[0];
+---
+
+<BaseLayout title="万景幕｜一段窗边的想象旅程" description="坐到窗边，经过西湖暮色、南京雨景与上海夜航。点开九处细节，在真实行旅与秘封故事之间，留住一点不为我们安排的风景。" image={first.photo.full}>
+  <article class="kaleidoscope-page" data-kaleidoscope data-view="chance" data-motion="paused" data-markers="visible">
+    <header class="kw-intro page-width">
+      <div class="kw-title-block">
+        <p class="kw-eyebrow">AR'S WINDOW SEAT <span>行旅影像 × 秘封札记</span></p>
+        <h1>万景<em>幕</em><span lang="en">Kaleido Window</span></h1>
+      </div>
+      <div class="kw-intro-copy"><p>在抵达之前，<br />把目光留在<em>窗外。</em></p><span>三段影像，九处细节。一张可以多坐一会儿的靠窗座位。</span></div>
+    </header>
+
+    <section class="kw-carriage" aria-label="万景幕摄影车窗" style={`--scene-accent:${first.accent}`}>
+      <div class="kw-carriage-top"><span class="kw-seat">WINDOW SEAT <b>01 — Ar</b></span><span class="kw-carriage-caption">风景缓行 · 不必急着抵达</span><span class="kw-scene-counter" data-kw-counter>01 / 03</span></div>
+
+      <div class="kw-window" id="kaleido-window">
+        {scenes.map((scene, index) => (
+          <section class="kw-scene" data-kw-scene={scene.id} aria-label={`${scene.city}：${scene.title}`}>
+            <div class="kw-photo-world" style={`--focus-y:${scene.focusY}%; --scene-accent:${scene.accent}`}>
+              <img class="kw-landscape" src={scene.photo.full} srcset={`${scene.photo.thumb} 720w, ${scene.photo.full} 2000w`} sizes="(max-width: 680px) calc(100vw - 40px), (max-width: 1440px) calc(100vw - 128px), 1312px" width={scene.photo.width} height={scene.photo.height} alt={scene.photo.alt} loading={index === 0 ? 'eager' : 'lazy'} fetchpriority={index === 0 ? 'high' : 'auto'} decoding="async" />
+              <div class="kw-colour-glass" aria-hidden="true"></div>
+              <div class="kw-hotspots" aria-label={`${scene.city}窗外的三个细节`}>
+                {scene.details.map((detail, detailIndex) => <a href={`#kw-note-${scene.id}-${detail.id}`} class="kw-hotspot" data-kw-point={detail.id} data-kw-point-scene={scene.id} data-edge={detail.x > 72 ? 'right' : undefined} style={`left:${detail.x}%;top:${detail.y}%`} aria-label={`观察 ${detailIndex + 1}：${detail.title}`} aria-controls={`kw-note-${scene.id}-${detail.id}`}><span class="kw-point-number">{String(detailIndex + 1).padStart(2, '0')}</span><span class="kw-point-label">{detail.title}</span></a>)}
+              </div>
+            </div>
+            <div class="kw-scene-vignette" aria-hidden="true"></div>
+            <div class="kw-window-caption"><span>{scene.city} <small>{scene.atmosphere}</small></span><p>{scene.subtitle}</p></div>
+          </section>
+        ))}
+        <div class="kw-glass-reflection" aria-hidden="true"></div>
+        <p class="kw-window-hint" data-kw-hint hidden>点选光点，翻开一则窗边观察</p>
+        <p class="kw-image-error" data-kw-image-error hidden>这扇窗暂时未能载入影像。<button type="button" data-kw-retry>重新载入</button><a data-kw-error-source href={first.photo.full}>打开完整照片</a></p>
+      </div>
+
+      <div class="kw-sill"><span data-kw-place>{first.photo.location.place}</span><time data-kw-time datetime={first.photo.shotAt}>{first.timeLabel}</time><a data-kw-original href={first.photo.full} target="_blank" rel="noreferrer">看完整照片 <span aria-hidden="true">↗</span></a></div>
+
+      <div class="kw-controls" data-kw-controls hidden>
+        <div class="kw-view-control"><span class="kw-control-label">观看方式</span><div class="kw-view-switch" role="group" aria-label="选择观看方式"><button type="button" data-kw-view="chance" aria-pressed="true">保留偶然</button><button type="button" data-kw-view="curated" aria-pressed="false">修饰风景</button></div></div>
+        <div class="kw-tools"><button type="button" data-kw-motion aria-pressed="false">让光影流动</button><button type="button" data-kw-markers aria-pressed="true">收起观察点</button><button type="button" data-kw-copy>带走这扇窗 <span aria-hidden="true">↗</span></button></div>
+      </div>
+      <div class="kw-tone-control" data-kw-tone-control hidden><label for="kw-tone">修饰程度</label><input id="kw-tone" type="range" min="0" max="100" value="70" step="1" data-kw-tone /><output for="kw-tone" data-kw-tone-value>70%</output><span>色彩、光晕与玻璃反光</span></div>
+      <div class="kw-share-fallback" data-kw-share-fallback hidden><label for="kw-share-url">复制这段地址，回到同一扇窗</label><input id="kw-share-url" type="text" readonly data-kw-share-url /><button type="button" data-kw-share-close>收起</button></div>
+
+      <nav class="kw-stations" aria-label="选择行旅场景" data-kw-stations hidden>
+        {scenes.map((scene, index) => <button type="button" data-kw-station={scene.id} aria-pressed={index === 0 ? 'true' : 'false'} aria-controls="kaleido-window"><img src={scene.photo.thumb} alt="" width="96" height="72" loading="lazy" /><span class="kw-station-copy"><small>{scene.number} <span>{scene.timeLabel.split(' · ')[0]}</span></small><strong>{scene.city}<em>{scene.title}</em></strong></span><span class="kw-station-state" aria-hidden="true">停靠</span></button>)}
+      </nav>
+    </section>
+
+    <section class="kw-notebook page-width" aria-labelledby="kw-notebook-title">
+      <header class="kw-notebook-heading"><p class="kw-eyebrow">NOTES BY THE WINDOW / 窗边手记</p><div><h2 id="kw-notebook-title" data-kw-scene-title>{first.title}</h2><span data-kw-progress>从一处细节开始</span></div></header>
+      <div class="kw-notebook-grid">
+        <div class="kw-scene-reading">
+          <p class="kw-scene-introduction" data-kw-introduction>{first.introduction}</p>
+          <div class="kw-view-note"><span data-kw-view-label>保留偶然</span><p data-kw-view-note>{first.chanceNote}</p></div>
+          <div class="kw-detail-index" data-kw-detail-index hidden><span>也可以从这里选一处细节</span>{scenes.map(scene => <div data-kw-detail-list={scene.id}>{scene.details.map((detail, index) => <a href={`#kw-note-${scene.id}-${detail.id}`} data-kw-detail-link={detail.id} data-kw-detail-scene={scene.id}><small>{String(index + 1).padStart(2, '0')}</small>{detail.title}<span aria-hidden="true">↗</span></a>)}</div>)}</div>
+        </div>
+        <div class="kw-observation" data-kw-observation>
+          <div class="kw-observation-empty" data-kw-empty hidden><span class="kw-note-number">OPEN NOTE / 留白</span><h3>风景里，还有什么？</h3><p>看一眼树影、远处的灯，或者雨里经过的人。<br />点选窗外的标记，把一个细节留在这里。</p><span class="kw-empty-signature">亚略 Ar · 窗边留白</span></div>
+          {scenes.map(scene => scene.details.map((detail, index) => <article id={`kw-note-${scene.id}-${detail.id}`} class="kw-observation-note" data-kw-note={detail.id} data-kw-note-scene={scene.id} tabindex="-1"><div class="kw-note-topline"><span class="kw-note-number">{scene.city} / OBSERVATION {String(index + 1).padStart(2, '0')}</span><button type="button" data-kw-note-close hidden aria-label="收起窗边观察">收起</button></div><h3>{detail.title}</h3><p>{detail.observation}</p><blockquote>{detail.question}</blockquote><a class="kw-reading-link" href={detail.href}>{detail.linkLabel}<span aria-hidden="true">↗</span></a></article>))}
+        </div>
+      </div>
+    </section>
+
+    <section class="kw-colophon page-width" aria-labelledby="kw-colophon-title">
+      <div class="kw-colophon-title"><p class="kw-eyebrow">BEHIND THIS WINDOW</p><h2 id="kw-colophon-title">给风景留一点，<br /><em>不为我安排的部分。</em></h2><a href="/blog/hifuu-kaleido-window/">读《万景幕：一扇太懂乘客的窗》 <span aria-hidden="true">↗</span></a></div>
+      <div class="kw-colophon-copy"><p>灵感来自 ZUN《卯酉东海道》中的万景幕。这段想象旅程以我的行旅摄影重新编排，把沿途的偶然与经过修饰的风景，放进同一扇窗。</p><p>杭州与南京的照片摄于湖岸和校园；上海夜景来自飞机舷窗。这里的窗景顺序是一种创作编排。切换观看方式会改变色彩、光晕和玻璃反光，照片中的人物、建筑与细节都仍在原处。</p><div class="kw-colophon-links"><a href="/light-notes/">翻阅完整行旅</a><a href="/writing/marginalia/">阅读更多边注</a><a href="https://www16.big.or.jp/~zun/html/mcdtop.html" target="_blank" rel="noreferrer">ZUN 官方专辑介绍 ↗</a></div><p class="kw-credit">摄影 · 亚略 Ar / 2026 年 7 月<br />万景幕意象 · ZUN／上海爱丽丝幻乐团《卯酉東海道》</p></div>
+    </section>
+    <p class="sr-only" data-kw-announcement role="status" aria-live="polite" aria-atomic="true"></p>
+    <script is:inline type="application/json" data-kw-data set:html={JSON.stringify(scenes).replace(/</g, '\\u003c')}></script>
+  </article>
+</BaseLayout>
+
+<script>import '../../scripts/kaleidoscope';</script>

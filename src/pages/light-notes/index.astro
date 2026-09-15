@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import KaleidoscopeLink from '../../components/KaleidoscopeLink.astro';
 import { lightNotePhotos, lightNoteStories } from '../../data/lightNotes';
 import '../../styles/light-notes.css';
 
@@ -101,6 +102,8 @@ const heroPhoto = photosById.get('20260716-191447')!;
         </figcaption>
       </figure>
     </header>
+
+    <KaleidoscopeLink context="journal" />
 
     <section class="journal-note" aria-label="归档说明">
       <p>照片沿日期排成一条仍可书写的时间线。地点只保留城市、校园或景区级信息；公开影像均已移除 GPS 与设备信息。</p>

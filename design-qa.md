@@ -1,201 +1,47 @@
-# 2026-09-14 · 音游档案与研学手册
+# 万景幕 · 设计与交互验收
 
-- 新增 `/rhythm/`：舞萌 DX Rating 15600、十段；Arcaea 13.050。数据逐项对照用户成绩图，保留完整原图与生成工具署名，收录日期和原图日期分开标记。暗紫和青色成绩卡、三首成绩摘录、原图阅读与光影关联均可用。
-- 新增 `/projects/future-scientists-handbook/`：21 页 A4 营员手册的作品档案，包含封面、六张精选内页、三个阅读阶段与完整 PDF。原稿使用 Poppler 全书渲染核查，公开副本与用户原文件字节一致；网页图像按 1200px 优化，不改页面内容。
-- 首页新增成绩卡与手册作品展示，写作、书架、项目、关于、主导航、页脚及站内搜索补全入口。八项桌面导航在 901px 起不与品牌和按钮重叠，首页手机音游标题保持完整断行。
-- 两种原生图片查看器支持放大、滚动、Escape 关闭与焦点归位；手册支持六张选页前后翻阅、方向键与 PDF 对应页定位。原图/PDF 链接保留无脚本访问路径。
-- 发现并修复初次 `astro:page-load` 再次初始化导致快速点开的菜单或图片关闭的竞态：按当前 DOM 与未中止的控制器幂等初始化，应用于页眉、搜索及两个新查看器。模拟头像延迟 1.8 秒，四项在 interactive 阶段开启后均跨首次 page-load 保持状态。
+日期：2026-09-15。范围：新增 `/kaleidoscope/` 及首页、光影、边注、搜索入口。
 
-验证：最终 `pnpm build` 检查 70 个文件，0 errors / 0 warnings / 0 hints；生成 145 页。两新页面 320 / 390 / 768 / 1024 / 1440px、深浅色截图、入口、检索、导航和查看器检查通过。手册模块在首页、写作、书架三处五种宽度均无破损、溢出或图文覆盖。成绩原图和 PDF 校验一致，PDF 为 2,261,140 字节。所有原有 `src/content` 文稿保持原样。
+## 视觉基准
 
-证据位于工作区 `../round-four/`：线上修改前截图、全书渲染与资产清单、生产预览截图、布局/查看器及加载时交互报告。验证使用本机 Edge 响应式视口，不替代实际触屏和完整读屏检查。
+延续现有站点的宋体标题、纸本底色、朱红强调和暗色阅读表面。新页面依据现有代码与摄影设计，没有声称逐像素复刻外部设计稿。
 
----
+- 视觉来源：`src/styles/global.css`、`src/components/HomeFieldnotes.astro`，以及 `public/images/journal/2026-summer/` 内的三张 2000 × 1500 摄影：`20260716-191447-full.webp`、`20260713-101553-full.webp`、`20260705-224241-full.webp`。
+- 全页实现截图：本地证据目录 `../round-eight/production/page-{320,390,768,1440}-{light,dark}.png`。
+- 清晰的局部对照：同目录 `clean-frame-hangzhou-1440-{chance,curated}.png`、`clean-frame-nanjing-390-chance.png`、`clean-frame-shanghai-320-chance.png`。
+- 原摄影与实现截图已在同一比较输入中查看：杭州原图／两种模式，南京原图／手机窗口，上海原图／小屏窗口。全页截图另用于检查字体、留白和阅读层级。
+- 浏览器像素密度为 1；全页检查视口为 320/390 × 844、768/1440 × 1080 CSS px，局部对照使用 1200 px 高视口。局部截图按真实窗口边界裁切，没有缩放后再比较。精确窗口边界记录在 `../round-eight/production/report.json` 的 `geometry` 中。
+- 桌面窗口有意采用横向裁切，手机接近原照片比例；可从“看完整照片”访问完整公开归档。照片本身没有重绘。
 
-# 2026-09-13 · 用户头像与全站设计精修
+## 五项视觉检查
 
-- 品牌圆圈使用用户本轮提供的头像，源码原图 SHA-256 与附件一致。Astro 原生优化生成 48 / 96px WebP（1528 / 4244 字节）及 64px PNG 网站图标（9044 字节）；圆形裁切、深浅色、320px 手机页眉和品牌回首页均核对。新增并固定 sharp 0.35.4，依赖锁定安装及构建检查通过。
-- 常规内页的中文标题统一同字号正体强调，收紧卷首上下留白；沿用写作、书架的现有字体关系。独立摄影封面与作品档案排版保留。
-- 首页修复 681–900px 下信号面板覆盖主链接和滚动入口；正文与信号之间实测保留 44px，信号与滚动入口之间保留 19px。房间导航标题独占一行，曲目说明避免孤字。
-- 首页文章分类和展开状态通过 URL 恢复，真实点击文章后返回、刷新、全部重置、非法类别回退、其他参数/hash/history.state 保留均验证。
-- 关于页手机摘要改为双列，段落首字恢复普通排版；上间距实测 30px，390px 的自述位置由约 739px 提前到 523px。个人自述、资料与公开边界保留。
-- 页脚增加书架与关于的完整栏目导航，六个栏目链接使用两列、至少 44px 可点击高度，经历和 RSS 入口保留，替换无关技术署名为站点主题。
+1. 字体：沿用 Noto Serif SC 与 DM Mono；标题、辅助文字、正文分层明确，320–1440 px 下无标题或长观察文字溢出。
+2. 布局：大幅车窗、窗台说明、观看控制、三站入口和窗边手记依次展开；手机改为单列，三个站点保留直接切换。
+3. 颜色：纸本与暗色主题均经过浏览器查看；“修饰风景”调整显示色彩及玻璃光泽，原摄影细节位置保持一致。
+4. 影像：采用本站现有摄影和响应式图片来源；九个观察点按原图坐标绑定，图像与观察点一同进行轻微缩放。未使用缺乏网站使用授权的外部插画。
+5. 文案：九则观察围绕可见细节展开；上海明确为飞机舷窗摄影，杭州—南京—上海为原创想象编排，原作意象来源在页面结尾标明。
 
-验证：64 文件检查 0 errors / 0 warnings / 0 hints，生成 143 页及 3 个头像尺寸。共享导航、主题、头像和页脚交互检查通过；10 个代表性页面在 320 / 390 / 768 / 900 / 1024 / 1440px 无横向溢出或页眉覆盖。首页另覆盖 681px 边界；关于页覆盖深浅色 320 / 390 / 1440。原长篇续读、随页换章、字号位置保持，以及《看不见的远方》暗色正文继续有效。
+## 发现与修复历史
 
-证据位于工作区 `../round-three/`。审查使用本轮新截图：首页来自线上，内页最终采用与线上 6eb09db 同版的本机生产构建以确保首屏图片完整加载；修改后使用生产预览。查看原头像、修改前后页眉、手机内页、页脚、平板首页及暗色正文。已有文稿文件没有改动。
+- P2：窗内说明与部分小屏观察点重叠。先将说明移到左上，再在 1000 px 以下只显示城市；重复地点保留在窗台。最终 24 个场景／尺寸／主题组合均无标记与说明重叠。
+- P3：靠边观察点的外部焦点线被窗框裁切。改为数字圆内的高对比焦点线；右侧标签向左展开。
+- P3：320 px 顶栏装饰文字零碎换行。小屏隐藏中间短句，两端保持完整。
+- P2：已有正文状态下 Ctrl 打开另一个观察点，会带上旧 detail。每个链接现生成独立的目标 scene/detail 并同步 view/tone；调节滑杆后链接也立即更新。
+- P2：隐藏观察点后收起正文，焦点可能落到 body。现在返回对应的可见目录链接。
+- 截图记录：早期证据在 `../round-eight/visual-review/`，修复后证据在 `../round-eight/production/`；交互复查在 `../round-eight/interaction/`。
 
-限制：本机 Edge 的响应式视口与实际点击检查；未声称覆盖真实触屏、完整读屏、全部第三方音源或天气响应可靠性。
+## 功能验收
 
----
+- 三场景、两种观看方式、九个热点、修饰滑杆、观察目录、展开和收起。
+- 分享复制、剪贴板不可用时的可选地址、刷新、复制地址后打开、Ctrl 新标签页、文章返回。
+- 方向键、Home/End、可见焦点及隐藏标记后的焦点恢复。
+- 动态效果暂停、系统减少动态效果初始值及运行中变化；用户主动开启前保持静止。
+- 图片失败提示与重试；关闭 JavaScript 后三张照片、九则正文和原生锚点仍可用。
+- 320/390/768/1440 px 明暗八组生产版检查，未发现横向溢出或页面脚本错误。
+- 正式构建：180 页；92 个文件检查无错误、警告或提示。
 
+## 开放项与实现清单
 
-# 2026-09-13 · 书架、续读与浏览路径精修
-
-本轮根据新拍线上截图，继续改善书架和长篇阅读，再补齐笔记、关于与经历页的浏览路径。
-
-- 书架先展示真实小说书封与首章/目录入口；篇幅来自内容集合：88 章正文、1 篇间奏、2 篇后记。主题计数与目标标签页使用同一类别或标签口径。390px 首屏书封位于约 441px，首章按钮约 782px，原目录入口约 2522px。两篇原文章、四个主题与光影入口保留。
-- 小说页避开固定全站页眉，320px 阅读工具条为 283×54px，阅读中可访问前后篇、目录与设置；快速停滚安排尾部书签保存；目录主按钮显示继续阅读。字体、行距与版心调整按实际重排完成后补偿当前段落。91 份小说源文件逐一 SHA-256 对比一致，署名保持。
-- 笔记筛选显示实际数量，按钮至少 44px，分类随 URL 保留，刷新与读完返回后仍在原分类，选择全部清除分类参数并保留 Astro 历史状态。
-- 关于页新增三个继续浏览入口；经历页的三项已有项目统一显示阅读链接，可返回关于页。原个人资料与公开边界保留。
-- 桌面音乐在未播放或进入正文时收成 52px 圆钮。非阅读页面播放中仍有完整紧凑控制，展开、Escape 与本地曲目跨页连续播放均验证。
-
-验证记录在工作区 `../round-two/`：新拍修改前截图、生产版修改后截图、共享流程报告、独立只读复核、小说完整性对比和阅读流程报告。产品展示素材均取自原站，无生成替代图。
-
-生产构建：64 个文件检查，0 errors / 0 warnings / 0 hints；143 页生成。书架、笔记、关于、经历在 320 / 390 / 768 / 1440px 无横向溢出。小说目录与正文检查 320 / 390 / 1440px 的页眉、随页工具、设置、续读、换章及暗色状态。查看生产截图并修正了书架样式优先级与阅读位置恢复问题。
-
-限制：本轮使用本机 Edge 与实际页面交互，未测试真实手机手势、完整读屏或全部第三方网络音乐可用性。未对原论文或获奖事实做额外外部核实。
-
----
-
-
-# 2026-09-13 · 导航、阅读与作品展示完善
-
-本轮按线上审查修改手机菜单、正文与旅途目录、音乐入口、科研图表和作品展示。
-
-- 首页手机菜单使用明确主题色，背景内容在展开期间不可聚焦；支持 Tab 循环、Escape、搜索快捷键及切换桌面布局后的清理。新增全站“光影”导航。
-- 980px 以下音乐入口收为 52px 圆钮；完整控制仍可展开，Escape 可收起。切页收起面板，音频继续播放。
-- 《看不见的远方》手机阅读中可随时打开章节目录，显示阅读进度和当前章节，选择后回到正文标题。原文与上版逐字一致。
-- 磁镜与 PF2 共 9 处数学图注进入原有 KaTeX 渲染；科研图表支持适应屏幕、原尺寸内部滚动、打开原图、Escape 和焦点恢复。
-- 项目页增加 3 张真实研究图预览，保留 7 项完整档案，标题可点击且阅读链接具有 44px 触控高度。
-- 写作页增加真实刊页、书封与章首展示，准确标明原作者和整理职责，保留 3 篇文章索引。
-- 手机首页研究区从约 1895px 提前到 1488px；光影页有卷首直达、完整可见的城市标签及照片流中的章节选择。
-
-验证：生产构建检查 64 个文件，0 errors / 0 warnings / 0 hints，生成 143 页。Edge 生产预览逐项验证手机菜单（浅/暗、滚动、搜索、桌面切换）、阅读目录、原文一致性、音乐本地曲目跨页播放、城市筛选和章节恢复；5 个主要页面在 320 / 390 / 768 / 1024 / 1440px 均无横向溢出。研究图在 390 / 1440px 验证，原尺寸仅在查看器内部滚动，图注正常，切页返回及暗色状态正常。测试流程无 pageerror。
-
-已查看生产预览截图：写作桌面与手机、菜单浅暗、暗色正文与目录、城市与章节、研究卡片、图注及图表放大。测试使用本机 Edge；未声称覆盖真实手机手势、读屏或全部网络音乐曲目的可用性。
-
----
-# 《看不见的远方》暗色阅读精修
-
-Date: 2026-09-13
+无待处理的 P0/P1/P2 发现。本次已完成所列实现与修复。验证覆盖桌面 Edge 的实际浏览器渲染和手机尺寸模拟，未声明完成所有浏览器及实体设备认证。
 
 final result: passed
-
-## Scope and visual target
-
-The user requested further refinement, specifically a dark background for the essay text. The existing work-archive layout, published essay, printed pages and credits remain the source of truth. Intentional changes are the reader palette, type rhythm, reading aids and page-scoped navigation/player contrast.
-
-- Source: https://ark0ishi.github.io/blog/invisible-distance/ at commit `19a3ead243eb8ed4896b6ca83306fdc7bf86d31e`.
-- Implementation preview: http://127.0.0.1:4322/blog/invisible-distance/.
-- Evidence directory in the recovery workspace: `../dark-reading/`.
-- Desktop source/implementation captures: `before-desktop.png`, `after-desktop.png`; 1440 × 1000 CSS and image pixels, device scale 1.
-- Mobile source/implementation: `before-mobile-text.png`, `after-mobile-text.png`; 390 × 844 CSS and image pixels, device scale 1.
-- State: same route/content, global light preference, reduced motion, standard font, closed menu/player. Each reading capture starts at the top and scrolls down to the same semantic region, allowing header scroll state to settle. Finite screenshot animations are disabled.
-- Combined evidence: `comparison-desktop.jpg`, `comparison-mobile-text.jpg`, `comparison-quote.jpg`, `comparison-middle.jpg`, `comparison-hero.jpg`. Both images are placed at original equal dimensions with a 42px label strip. No independent rescaling or stretching.
-- Additional states: `after-mobile-controls.png` and `after-global-dark.png`.
-
-## Findings and repair history
-
-No actionable P0/P1/P2 issues remain in the reviewed states.
-
-1. **P2 / requested palette correction:** the original reader hardcoded a pale paper panel inside the dark work archive. Replaced its background and all dependent body, note, heading, quote, link and emphasis colors as one local palette. Removed distracting paper rules. Post-fix evidence: desktop, quote and mobile combined inputs.
-2. **P2 / chapter navigation:** the original `main` overflow container prevented viewport sticky behavior. Added page-scoped `overflow: clip`; the new sidebar stays at 118px on desktop. Added current chapter state, 44px link targets and mobile native disclosure. Deep-jump and focus checks pass.
-3. **P2 / hero navigation contrast:** global light-mode text was nearly invisible on the fixed dark hero. Page-scoped light navigation now remains legible there; mobile menu retains its own global theme colors. Evidence: combined hero capture and mobile navigation interaction.
-4. **Polish:** two font sizes with remembered preference, body-only progress, quieter player colors, restrained heading size/spacing and a reader-facing closing sentence. No essay text, quotations, references or credits changed.
-
-## Required fidelity surfaces
-
-- **Typography:** original Noto Serif SC / DM Mono families retained; 18px standard desktop text, 17px mobile text, 20px/19px larger option. Body leading remains about 2; chapter titles have calmer scale and spacing. Original Chinese and Japanese text remains complete.
-- **Spacing:** retained the existing reading grid and full-width mobile panel. Desktop measure capped at 38em. The mobile contents collapse before the text; no extra fixed reading overlay was introduced.
-- **Colors:** reader surface #17222e, warm body #d9d5ce and muted gold accents. Computed contrast ratios: body 11.01:1, notes 7.59:1, headings 13.37:1, quotes 9.62:1. Reader colors are independent of the user's stored global theme. Selection/focus and mobile menu remain readable.
-- **Images:** retained all original covers, printed spreads, page 70 and physical-book images. Original gallery opens and advances correctly; no generated or substitute artwork was introduced.
-- **Copy/content:** browser textContent of the entire essay matches the source capture exactly. Seven chapter headings and original references/credits are retained. UI labels explain font size, chapter navigation and progress directly.
-
-## Validation
-
-`checks.json` records a passing local browser run with no page or console errors:
-
-- Text equality, palette contrast, font size and persistence.
-- Desktop sticky position, direct chapter jumps, current location and 0–100% progress limited to the essay.
-- Dark reader in both global themes; no overflow at widths 320, 390, 768 and 1440.
-- Mobile contents open/jump/close and focus the destination heading.
-- Mobile navigation, original gallery keyboard controls and Escape.
-- Astro client navigation away/back and no-JavaScript fallback.
-
-`pnpm build`: 63 checked files, 0 errors, 0 warnings, 0 hints. Final production build generates 143 pages. The final CSS-only menu color addition was rebuilt successfully. Browser checks exercise the final build.
-
-## Checklist and limits
-
-- [x] Capture and compare source and implementation together at equal density.
-- [x] Inspect readable text, quotation, hero and mobile detail regions.
-- [x] Verify reading controls and existing gallery/navigation behavior.
-- [x] Preserve the essay and publication credits.
-- [ ] External music streaming and weather reliability are outside this scoped reading refinement.
-
-The following report is the earlier homepage review retained for history.
-
-
----
-
-# Homepage refinement — Design QA
-
-Date: 2026-09-13 (Asia/Shanghai)
-
-final result: passed
-
-## Findings and scope
-
-No actionable P0/P1/P2 findings remain in the reviewed homepage states. The research, publication and photography displays are intentional editorial additions to the original dusk/paper identity, rather than a pixel-for-pixel clone. Existing content routes and original artwork/novel attribution remain intact. The previous work-archive QA is preserved in Git at the recovered baseline.
-
-## Source and implementation
-
-- Source visual truth: https://ark0ishi.github.io/, recovered baseline `54e921b81b450272b9e5927f26757d795848089e`; captures `before-desktop.png`, `before-hero.png`, `before-mobile.png`.
-- Implementation: http://127.0.0.1:4322/; captures `after-desktop.png`, `after-hero.png`, `after-mobile.png`, `after-mobile-hero.png`, `after-dark.png`, `after-mobile-320.png`.
-- Evidence location: `../design/` in the recovered working project; `../visual-check/` relative to the ZIP's `project/` directory.
-- Capture tool: local headless Edge through Playwright, explicitly authorized by the user after connected-browser failures.
-- Desktop CSS viewport 1440 × 1000; both hero captures 1440 × 1000 pixels. Mobile CSS viewport 390 × 844; both hero crops 390 × 844 pixels. Density 1, no device frames/browser chrome.
-- Full desktop source 1440 × 7210, implementation 1440 × 7522 pixels. Full-page comparison pads the shorter image and scales both equally by 0.5. Other responsive checks cover 320 and 768 CSS pixels.
-- State: light theme unless labeled dark, reduced motion, default research tab, all-article filter with four visible items, menu/player closed. Dynamic weather and music metadata differ across captures and are excluded from exact matching.
-
-## Combined visual evidence
-
-- `compare-full-page.jpg`: original/refined composition, section hierarchy, gutters and rhythm together in one input.
-- `compare-desktop-hero.jpg`: same-viewport original/refined typography, actions, illustration and attribution.
-- `compare-mobile-hero.jpg`: original, initial refinement and final contrast repair together at equal density.
-- `mobile-content-details.jpg`: readable research, publication and photo crops from the final mobile page.
-- `after-desktop-prologue-clean.png`: document-width opening crop with correct margins.
-- `compare-works-themes.jpg`: equally scaled light/dark publication sections, complete covers, captions and credits.
-
-Focused crops use document coordinates from full-page screenshots. Earlier element screenshots scrolled beneath the fixed header; those capture artifacts were excluded from final evidence. Focused checks were required because text is too small to assess in the full-page overview alone.
-
-## Required fidelity surfaces
-
-- **Typography:** retained Noto Serif SC / DM Mono and the Latin serif accent; larger name display, readable paragraph leading, stable mobile heading wraps and complete credit lines.
-- **Spacing/layout:** consistent desktop gutters and rules; research/books collapse into one column; mobile photos retain full-width frames and captions. No horizontal overflow at 320, 390, 768 or 1440 pixels.
-- **Color/tokens:** warm paper, navy and muted red retained through theme variables. Mobile hero overlay now supports light text; paper navigation has red focus indicators; dark works surfaces preserve original cover colors.
-- **Images:** actual repository illustration, research charts, physical publication photo, novel cover/chapter and travel photos. No generated substitutes. Charts/covers remain uncropped; photos use responsive sources. Visible images load correctly.
-- **Copy/content:** dynamic counts match 8 published posts, 7 projects and 43 photos. All projects remain linked. Illustrator attribution and coolcate's novel authorship remain explicit. Ar's editing/typesetting role, original dates and publication page range remain accurate. Search summary now describes the new homepage sections.
-
-## Repair and comparison history
-
-1. **P2 — cream navigation focus:** inherited gold lacked contrast. Changed threshold focus to the existing red accent and retained gold on the dark hero; final source and theme captures rechecked.
-2. **P2 — populated search Escape:** native search behavior could clear text while leaving the dialog open. Added a composing-aware key handler with preventDefault and closeSearch. Final browser test verifies dismissal after entering a known query.
-3. **P2 — mobile text over bright clouds:** initial evidence `mobile-hero-before-contrast-fix.png`. Increased middle overlay opacity .26 → .5, paragraph type 12px → 13px and mobile actions 41px → 44px. Rebuilt and recaptured; `compare-mobile-hero.jpg` shows the final clearer text while retaining the original scene. 320px overflow and button-height checks pass.
-4. **P3 — stale homepage search copy:** replaced the obsolete three-path description with the new research, works, photos and articles summary; present in the final build.
-
-## Runtime and interaction evidence
-
-Final `interaction-report.json`: passed, no page errors, console errors or failed local requests.
-
-- Research tabs: click, ArrowRight, Home, selected state and visible panel.
-- Article filters/counts, show-more and collapse.
-- Search returns the known query and closes with Escape.
-- Music drawer opens/closes without autoplay.
-- All 47 distinct internal homepage links return HTTP 200.
-- Client navigation away/back reinitializes controls.
-- Mobile menu/Escape and research tabs work.
-- All visible homepage images load.
-- Reduced-motion preference disables scenic animation; primary mobile action is at least 44px.
-- Width equals scrollWidth at 1440 light/dark, 768, 390 and 320 pixels.
-
-`pnpm check`: 63 files, 0 errors, 0 warnings, 0 hints. Final Astro production build: 143 pages, successful. `git diff --check`: passed.
-
-## Remaining scope and checklist
-
-- [x] Compare source and implementation in combined inputs.
-- [x] Review typography, spacing, colors, assets and content at readable scale.
-- [x] Repair focus, search Escape and mobile readability; rebuild and repeat checks.
-- [x] Preserve real materials and credits.
-- [ ] External music playback, geolocation and third-party weather reliability were not comprehensively tested.
-- [ ] Publishing has not been requested or performed; this is a local preview.

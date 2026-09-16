@@ -29,6 +29,7 @@ body.moon-page::before { opacity:.04; }
 .mo-arrival { display:flex; align-items:center; justify-content:space-between; gap:20px; padding:20px 0 25px; color:#a6b5be; font-size:11px; }
 .mo-arrival p { margin:0; display:flex; align-items:center; gap:10px; }
 .mo-arrival a { color:var(--lamp); padding:8px 0; }
+.mo-arrival-actions { display:flex;gap:22px;flex-wrap:wrap;justify-content:flex-end; }
 .mo-status-dot { width:5px; height:5px; border-radius:50%; background:#9fc4b4; }
 .mo-controls { display:flex; align-items:center; justify-content:space-between; gap:20px; }
 .mo-cohorts { display:flex; align-items:center; flex-wrap:wrap; gap:18px; margin:0; padding:0; border:0; }

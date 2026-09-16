@@ -23,14 +23,19 @@ function setupMoonGate() {
 
   function paint(state: MoonState) {
     if (!gate) return;
-    const phase = state.unlocked ? 3 : state.count >= 26 ? 2 : state.count >= 13 ? 1 : 0;
+    const phase = state.unlocked ? 3 : state.count >= 26 ? 2 : state.count >= 14 ? 1 : 0;
     gate.dataset.phase = String(phase);
     gate.dataset.unlocked = String(state.unlocked);
     document.documentElement.dataset.moonUnlocked = String(state.unlocked);
     document.querySelector<HTMLElement>('[data-header]')?.setAttribute('data-moon-unlocked', String(state.unlocked));
     document.querySelectorAll<HTMLElement>('[data-moon-nav]').forEach(link => { link.hidden = !state.unlocked; });
-    trigger?.setAttribute('aria-label', state.unlocked ? '进入月之暗面' : '月亮，还有另一面');
-    if (hint) hint.textContent = state.unlocked ? '月之暗面，已为你留灯。' : '月亮，还有另一面。';
+    trigger?.setAttribute('aria-label', state.unlocked ? '进入月之暗面' : phase > 0 ? '月亮，还有另一面' : '月面');
+    if (hint) hint.textContent = state.unlocked ? '月之暗面，已为你留灯。' : phase > 0 ? '月亮，还有另一面。' : '';
+    if (phase === 0) {
+      clearTimeout(pulseTimer);
+      gate.classList.remove('is-touched');
+      if (status) status.textContent = '';
+    }
     if (!state.unlocked && dialog?.open) dialog.close();
   }
 
@@ -52,13 +57,14 @@ function setupMoonGate() {
       return;
     }
     const state = activateMoonGate();
+    if (state.count <= 13) return;
     gate.classList.remove('is-touched');
     void gate.offsetWidth;
     gate.classList.add('is-touched');
     clearTimeout(pulseTimer);
     pulseTimer = setTimeout(() => gate.classList.remove('is-touched'), 700);
     if (status) {
-      if (state.count === 13) status.textContent = '轨道浮现了。月亮似乎听见了你。';
+      if (state.count === 14) status.textContent = '轨道浮现了。月亮似乎听见了你。';
       if (state.count === 26) status.textContent = '月缘亮起，另一面正慢慢显露。';
       if (state.count === 38) status.textContent = '再轻叩一下。';
       if (state.unlocked) status.textContent = '月之暗面已解锁，导航中已加入入口。';
@@ -106,7 +112,6 @@ function setupMoonGate() {
     const relock = event.target.closest<HTMLElement>('[data-moon-relock]');
     if (!relock) return;
     resetMoonState();
-    if (status) status.textContent = '入口已重新隐藏。月亮仍在这里。';
     if (document.activeElement === relock || !(document.activeElement instanceof HTMLElement) || !document.activeElement.getClientRects().length) trigger?.focus({ preventScroll: true });
   }, { signal });
   window.addEventListener('storage', event => {

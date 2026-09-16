@@ -10,8 +10,10 @@
 .moon-gate-face::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(105deg, transparent 10%, rgba(9, 16, 27, .25) 32%, rgba(9, 16, 27, .92) 72%); transform: translateX(0); transition: transform .8s, opacity .8s; }
 .moon-gate-spark { position: absolute; width: 78px; height: 78px; border: 1px solid var(--lamp); opacity: 0; border-radius: 50%; pointer-events: none; }
 .moon-gate-hint { display: block; min-height: 22px; margin-top: -3px; font-size: 10px; letter-spacing: .05em; opacity: 0; transform: translateY(-3px); transition: opacity .3s, transform .3s; }
-.moon-gate:hover .moon-gate-hint, .moon-gate:focus-within .moon-gate-hint, .moon-gate.is-touched .moon-gate-hint, .moon-gate[data-unlocked='true'] .moon-gate-hint { opacity: 1; transform: none; }
-.moon-gate:hover .moon-gate-face, .moon-gate:focus-within .moon-gate-face { box-shadow: 0 0 0 1px rgba(192, 192, 179, .6), 0 0 28px rgba(180, 164, 130, .18); }
+.moon-gate:not([data-phase='0']):hover .moon-gate-hint, .moon-gate:not([data-phase='0']):focus-within .moon-gate-hint, .moon-gate.is-touched .moon-gate-hint, .moon-gate[data-unlocked='true'] .moon-gate-hint { opacity: 1; transform: none; }
+.moon-gate:not([data-phase='0']):hover .moon-gate-face, .moon-gate:not([data-phase='0']):focus-within .moon-gate-face { box-shadow: 0 0 0 1px rgba(192, 192, 179, .6), 0 0 28px rgba(180, 164, 130, .18); }
+.moon-gate[data-phase='0'] .moon-gate-trigger { cursor: default; }
+.moon-gate[data-phase='0'] :is(.moon-gate-orbit, .moon-gate-face, .moon-gate-hint), .moon-gate[data-phase='0'] .moon-gate-face::after { transition: none; }
 .moon-gate[data-phase='1'] .moon-gate-orbit-inner, .moon-gate[data-phase='2'] .moon-gate-orbit-inner, .moon-gate[data-phase='3'] .moon-gate-orbit-inner { opacity: .85; border-color: var(--lamp); }
 .moon-gate[data-phase='1'] .moon-gate-face::after { transform: translateX(10%); }
 .moon-gate[data-phase='2'] .moon-gate-face::after { transform: translateX(42%); opacity: .7; }
@@ -47,5 +49,5 @@ body.moon-dialog-open { overflow: hidden; }
 @keyframes moon-welcome-in { from { opacity: 0; transform: translateY(15px) scale(.98); } to { opacity: 1; transform: none; } }
 @media (max-width: 600px) { .moon-gate { flex-basis: 100%; width: 184px; max-width: 184px; margin: 4px auto 0; } }
 @media (max-width: 380px) { .moon-welcome { padding-inline: 19px; } .moon-welcome-actions { gap: 8px; } .moon-welcome-enter, .moon-welcome-later { padding-inline: 18px; } }
-@media (hover: none) { .moon-gate-hint { opacity: .8; transform: none; } }
+@media (hover: none) { .moon-gate:not([data-phase='0']) .moon-gate-hint { opacity: .8; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .moon-gate *, .moon-gate *::after, .moon-welcome[open] { animation: none; transition: none; } }

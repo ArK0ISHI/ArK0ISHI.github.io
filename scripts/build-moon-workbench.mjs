@@ -24,9 +24,10 @@ const tokens = new Map([
   ['semester-dataset', '__MOON_SEMESTER_DATASET__'],
   ['course-dataset', '__MOON_COURSE_DATASET__'],
   ['full-dataset', '__MOON_FULL_DATASET__'],
+  ['recommendation-dataset', '__MOON_RECOMMENDATION_DATASET__'],
 ]);
 const expectedViews = [
-  'overview', 'trends', 'changes', 'trajectories', 'colleges',
+  'overview', 'recommendation', 'trends', 'changes', 'trajectories', 'colleges',
   'majors', 'allcourses', 'courses', 'students', 'method',
 ];
 const source = await readFile(sourcePath, 'utf8');
@@ -47,8 +48,8 @@ const template = source.replace(/<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi, (e
   return `<script${attributes}>${tokens.get(id)}</script>`;
 });
 
-assert.equal(datasets.size, tokens.size, 'All four datasets must be found and removed');
-assert.equal(executableScripts, 6, 'The dashboard script layout changed; review extraction before publishing');
+assert.equal(datasets.size, tokens.size, 'All five datasets must be found and removed');
+assert.equal(executableScripts, 7, 'The dashboard script layout changed; review extraction before publishing');
 for (const [id, token] of tokens) {
   assert.equal(template.split(token).length - 1, 1, 'Each data token must appear exactly once');
   assert.match(template, new RegExp(`<script\\b[^>]*\\bid=["']${id}["'][^>]*>${token}<\\/script>`));
@@ -57,12 +58,15 @@ for (const view of expectedViews) {
   assert.ok(template.includes(`data-view="${view}"`), 'A dashboard navigation item is missing');
   assert.ok(template.includes(`id="${view}"`), 'A dashboard section is missing');
 }
+const actualViews = [...template.matchAll(/<button\b[^>]*\bdata-view="([^"]+)"[^>]*>/g)].map((match) => match[1]);
+assert.ok(actualViews.length === expectedViews.length && actualViews.every((view, index) => view === expectedViews[index]), 'The dashboard navigation changed; review every view before publishing');
 
 // Verify the remaining static document against identities in every dataset.
 // Report no matching values: a failed check must not expose records in logs.
 const D = datasets.get('dataset');
 const CD = datasets.get('course-dataset');
 const FD = datasets.get('full-dataset');
+const RD = datasets.get('recommendation-dataset');
 assert.ok(Array.isArray(D.rows) && Array.isArray(CD.groups) && Array.isArray(FD.students));
 const people = [
   ...D.rows.map((row) => ({ name: row[3], id: row[4] })),
@@ -79,7 +83,7 @@ assert.ok(!privateValuesRemain(FD.students.map((student) => student.source)), 'A
 // A common noun in curriculum descriptions also happens to match one name in
 // this source. Keep the ordinary static label; it contains no identity context.
 const staticVocabulary = new Set(['方向']);
-assert.ok(!privateValuesRemain(people.map((person) => person.name).filter((name) => !staticVocabulary.has(name))), 'A personal name remains outside the stripped datasets');
+assert.ok(!privateValuesRemain([...people.map((person) => person.name), ...RD.entries.map((entry) => entry.name)].filter((name) => !staticVocabulary.has(name))), 'A personal name remains outside the stripped datasets');
 assert.ok(!/(?:["'\s])[A-Za-z]:[\\/]|file:\/\//.test(template), 'A local filesystem path remains in the template');
 
 if (checkOnly) {

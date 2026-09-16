@@ -32,7 +32,11 @@ const views = [
     </section>
 
     <div data-mo-content hidden>
-      <div class="mo-arrival"><p><span class="mo-status-dot" aria-hidden="true"></span>你已抵达 · 一间未列入目录的观察室</p><div class="mo-arrival-actions"><a href="/moon/workbench/">完整数据工作台 <span aria-hidden="true">↗</span></a><a href="#mo-methods">口径与来源 <span aria-hidden="true">↘</span></a></div></div>
+      <div class="mo-arrival"><p><span class="mo-status-dot" aria-hidden="true"></span>你已抵达 · 从群体分布开始观察</p><a href="#mo-methods">口径与来源 <span aria-hidden="true">↘</span></a></div>
+      <section class="mo-workbench-entry" aria-labelledby="mo-workbench-heading">
+        <div><p class="mo-eyebrow">THE WHOLE ATLAS</p><h2 id="mo-workbench-heading">把整张星图，摊在桌上。</h2><p>完整分析视角，逐人学习轨迹与课程明细。打开即可查看，无需导入文件。</p></div>
+        <a class="mo-button" href="/moon/workbench/">进入完整工作台 <span aria-hidden="true">↗</span></a>
+      </section>
       <div class="mo-controls">
         <fieldset class="mo-cohorts"><legend>观察年级</legend><div data-mo-cohorts></div></fieldset>
         <button class="mo-text-button" data-mo-reset type="button">重置视角 <span aria-hidden="true">↺</span></button>
@@ -72,7 +76,7 @@ const views = [
         <div class="mo-methods-heading"><p class="mo-eyebrow">READ THE FOOTNOTES</p><h2>数字有口径，<br />观察有边界。</h2><p>这些图表描述一组记录。理解差异，还需要课程、时间与人的处境。</p></div>
         <div class="mo-methods-body">
           <details open><summary>这些数据描述了什么？</summary><div data-mo-methodology></div></details>
-          <details><summary>公开版本保留了哪些内容？</summary><p>这里展示群体汇总。公开文件不包含姓名、学号、个人成绩单或逐人学习轨迹；人数不足 10 的分组不展示，绩点分布中的小区间合并后呈现。</p><p>彩蛋是一种发现方式，并不提供身份验证。入口重新隐藏后，公开的汇总资料仍然是公开资料。</p></details>
+          <details><summary>汇总观察与完整工作台有什么不同？</summary><p>当前页面从群体分布出发：汇总图表中人数不足 10 的分组不展示，绩点分布中的小区间合并后呈现。</p><p><a href="/moon/workbench/">完整工作台</a>保留原始数据的全部细节，包括姓名、学号、逐人成绩与课程记录，以及原有筛选、比较和导出。进入后自动载入，无需选择本机文件。</p><p>彩蛋是一种发现方式，并不提供身份验证。重新隐藏入口不会改变这些资料的公开状态。</p></details>
           <details><summary>月面影像与这间观察室</summary><p>月面影像来自 <a href="https://science.nasa.gov/resource/lunar-far-side-2/" target="_blank" rel="noopener noreferrer">NASA 的 Lunar Far Side</a>，由 LRO 相机数据制作。影像署名：NASA / Goddard Space Flight Center / Arizona State University。</p><p>“月之暗面”是这间小屋的名字。月球背面同样经历昼夜，并非永远黑暗。</p></details>
         </div>
       </section>
@@ -82,3 +86,12 @@ const views = [
   </article>
   <script>import '../../scripts/moon-observatory';</script>
 </BaseLayout>
+
+<style>
+  .mo-workbench-entry { display:flex;align-items:center;justify-content:space-between;gap:28px;padding:24px 26px;margin:0 0 30px;border:1px solid #786e54;background:linear-gradient(110deg,#252b2b,#17212b);border-radius:3px; }
+  .mo-workbench-entry h2 { margin:8px 0;font:400 20px/1.6 var(--serif);color:var(--ink); }
+  .mo-workbench-entry p:last-child { max-width:590px;margin:0;font-size:11px;line-height:1.9;color:#b5c1c8; }
+  .mo-workbench-entry .mo-button { flex-shrink:0;background:#cbb481;border-color:#cbb481;color:#17212b; }
+  .mo-workbench-entry .mo-button:hover { background:#e0c993; }
+  @media(max-width:600px) { .mo-workbench-entry { align-items:flex-start;flex-direction:column;gap:18px;padding:20px 18px;margin-bottom:26px; }.mo-workbench-entry h2 { font-size:18px; }.mo-workbench-entry p:last-child { font-size:10px; }.mo-workbench-entry .mo-button { width:100%; } }
+</style>

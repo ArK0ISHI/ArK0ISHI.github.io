@@ -20,6 +20,7 @@ function setupMoonGate() {
   let previousFocus: HTMLElement | null = null;
   let restoreFocus = true;
   let pulseTimer: ReturnType<typeof setTimeout> | undefined;
+  let unlockPointer: { x: number; y: number; at: number } | null = null;
 
   function paint(state: MoonState) {
     if (!gate) return;
@@ -39,10 +40,11 @@ function setupMoonGate() {
     if (!state.unlocked && dialog?.open) dialog.close();
   }
 
-  function openWelcome() {
+  function openWelcome(event: MouseEvent) {
     if (!dialog || dialog.open) return;
     previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : trigger;
     restoreFocus = true;
+    unlockPointer = event.detail > 0 ? { x: event.clientX, y: event.clientY, at: performance.now() } : null;
     dialog.showModal();
     document.body.classList.add('moon-dialog-open');
   }
@@ -51,9 +53,10 @@ function setupMoonGate() {
     if (event.repeat && (event.key === 'Enter' || event.key === ' ')) event.preventDefault();
   }, { signal });
 
-  trigger?.addEventListener('click', () => {
+  trigger?.addEventListener('click', event => {
+    if (dialog?.open) return;
     if (readMoonState().unlocked) {
-      void navigate('/moon/');
+      void navigate('/moon/workbench/');
       return;
     }
     const state = activateMoonGate();
@@ -69,9 +72,21 @@ function setupMoonGate() {
       if (state.count === 38) status.textContent = '再轻叩一下。';
       if (state.unlocked) status.textContent = '月之暗面已解锁，导航中已加入入口。';
     }
-    if (state.unlocked) openWelcome();
+    if (state.unlocked) openWelcome(event);
   }, { signal });
 
+  // The next tap in a burst can land on a newly appeared dialog button.
+  // Consume taps near the original point until the visitor pauses or aims elsewhere.
+  dialog?.addEventListener('click', event => {
+    if (!unlockPointer || event.detail === 0) return;
+    const now = performance.now();
+    const nearUnlock = Math.hypot(event.clientX - unlockPointer.x, event.clientY - unlockPointer.y) < 28;
+    if (nearUnlock && now - unlockPointer.at < 600) {
+      unlockPointer.at = now;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    }
+  }, { capture: true, signal });
   dialog?.querySelectorAll<HTMLElement>('[data-moon-close]').forEach(button => {
     button.addEventListener('click', () => dialog.close(), { signal });
   });
@@ -80,6 +95,10 @@ function setupMoonGate() {
     dialog.close();
   }, { signal });
   dialog?.addEventListener('keydown', event => {
+    if (event.repeat && (event.key === 'Enter' || event.key === ' ')) {
+      event.preventDefault();
+      return;
+    }
     if (event.key !== 'Tab') return;
     const stops = [...dialog.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), [tabindex="0"]')]
       .filter(element => element.getClientRects().length > 0);
@@ -93,13 +112,10 @@ function setupMoonGate() {
       first?.focus();
     }
   }, { signal });
-  dialog?.addEventListener('click', event => {
-    if (event.target !== dialog) return;
-    const box = dialog.getBoundingClientRect();
-    if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) dialog.close();
-  }, { signal });
+  // Keep backdrop taps inert: only an explicit action or Escape dismisses the welcome.
   dialog?.addEventListener('close', () => {
     document.body.classList.remove('moon-dialog-open');
+    unlockPointer = null;
     if (restoreFocus && previousFocus?.isConnected) previousFocus.focus({ preventScroll: true });
     previousFocus = null;
   }, { signal });

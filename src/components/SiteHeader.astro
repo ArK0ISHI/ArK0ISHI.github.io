@@ -23,7 +23,7 @@ const isActive = (href: string) => href === '/' ? pathname === '/' : pathname.st
           <small>{item.en}</small>
         </a>
       ))}
-      <a class:list={['nav-link', 'moon-nav-link', { active: isActive('/moon/') }]} href="/moon/" aria-current={isActive('/moon/') ? 'page' : undefined} data-moon-nav hidden>
+      <a class:list={['nav-link', 'moon-nav-link', { active: isActive('/moon/') }]} href="/moon/workbench/" aria-current={isActive('/moon/') ? 'page' : undefined} data-moon-nav hidden>
         <span>月之暗面</span><small>Far Side</small>
       </a>
     </nav>
@@ -52,7 +52,7 @@ const isActive = (href: string) => href === '/' ? pathname === '/' : pathname.st
         <em>{item.en}</em>
       </a>
     ))}
-    <a class:list={['mobile-link', 'moon-mobile-link', { active: isActive('/moon/') }]} href="/moon/" aria-current={isActive('/moon/') ? 'page' : undefined} data-moon-nav hidden>
+    <a class:list={['mobile-link', 'moon-mobile-link', { active: isActive('/moon/') }]} href="/moon/workbench/" aria-current={isActive('/moon/') ? 'page' : undefined} data-moon-nav hidden>
       <small>☾</small><span>月之暗面</span><em>Far Side</em>
     </a>
   </nav>

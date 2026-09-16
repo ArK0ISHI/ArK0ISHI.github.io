@@ -1,61 +1,16 @@
-/** Private records exist only in this document's memory, never browser storage. */
-export const datasetIds = ['dataset','semester-dataset','course-dataset','full-dataset'] as const;
+export const datasetIds = ['dataset', 'semester-dataset', 'course-dataset', 'full-dataset', 'recommendation-dataset'] as const;
 export type DatasetId = typeof datasetIds[number];
 export type WorkbenchData = Record<DatasetId, Record<string, unknown>>;
-export type WorkbenchSession = { data: WorkbenchData; fileName: string; people: number; semesterRecords: number; courseRecords: number; asOf: string };
-let current: WorkbenchSession | null = null;
-export const getWorkbenchSession = () => current;
-export const clearWorkbenchSession = () => { current = null; };
-export const setWorkbenchSession = (session: WorkbenchSession) => { current = session; };
-if (typeof document !== 'undefined') document.addEventListener('ar:moon-state', (event) => {
-  if (!(event as CustomEvent<{unlocked:boolean}>).detail?.unlocked) clearWorkbenchSession();
-});
+export type WorkbenchSnapshot = { data: WorkbenchData; people: number; semesterRecords: number; courseRecords: number; recommendations: number; asOf: string };
+export const workbenchModules = ['总绩点全景', '保研分析', '学期趋势', '学期变化', '学生轨迹', '学院分析', '专业对比', '全部课程', '核心十课', '学生明细', '数据与口径'];
 
-function record(value: unknown): value is Record<string, unknown> {
-  return value !== null && typeof value === 'object' && !Array.isArray(value);
-}
-function arrayAt(data: Record<string, unknown>, key: string): unknown[] {
-  const value = data[key];
-  if (!Array.isArray(value) || !value.length) throw new Error('文件里的数据表不完整，请选择原始完整 HTML。');
-  return value;
-}
-
-/** Extract inert JSON text without creating a document or evaluating any code. */
-export function parseWorkbenchHtml(html: string, fileName: string): WorkbenchSession {
-  const data = {} as WorkbenchData;
-  for (const match of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi)) {
-    const id = /\bid\s*=\s*(["'])([^"']+)\1/i.exec(match[1])?.[2] as DatasetId;
-    if (!datasetIds.includes(id)) continue;
-    if (!/\btype\s*=\s*(["'])application\/json\1/i.test(match[1]) || data[id]) throw new Error('文件的数据区块格式不正确，或存在重复区块。');
-    let parsed: unknown;
-    try { parsed = JSON.parse(match[2]); } catch { throw new Error('数据区块无法读取，请使用保存完整的原始 HTML。'); }
-    if (!record(parsed)) throw new Error('数据区块格式与原工作台不一致。');
-    data[id] = parsed;
-  }
-  if (datasetIds.some((id) => !data[id])) throw new Error('没有找到全部四组数据。请选择原来的「四年级绩点可视化.html」，而非当前主页的保存文件。');
-  let nodes = 0;
-  function validate(value: unknown, depth = 0): void {
-    if (++nodes > 2000000 || depth > 35) throw new Error('文件结构过于复杂，无法在本机安全读取。');
-    if (typeof value === 'number' && !Number.isFinite(value)) throw new Error('文件包含无法识别的数值。');
-    if (typeof value === 'string' && (/[<>]/.test(value) || /\bon[a-z]+\s*=|javascript:|data:text\/html/i.test(value))) throw new Error('数据中含有网页代码标记，请改用未经改写的原始数据文件。');
-    if (Array.isArray(value)) value.forEach((item) => validate(item,depth+1));
-    else if (record(value)) for (const [key,item] of Object.entries(value)) {
-      if (['__proto__','constructor','prototype'].includes(key)) throw new Error('文件包含不支持的数据字段。');
-      validate(item,depth+1);
-    }
-  }
-  validate(data);
-  const rows = arrayAt(data.dataset,'rows');
-  arrayAt(data.dataset,'years'); arrayAt(data.dataset,'colleges'); arrayAt(data.dataset,'majors');
-  const gpas = arrayAt(data['semester-dataset'],'gpas');
-  const terms = arrayAt(data['semester-dataset'],'terms');
-  if (rows.length !== gpas.length || rows.length > 200000 || !rows.every((row) => Array.isArray(row) && row.length >= 8) || !gpas.every((row) => Array.isArray(row) && row.length === terms.length)) throw new Error('学生与学期记录无法对应，请使用同一份完整可视化文件。');
-  const groups = arrayAt(data['course-dataset'],'groups');
-  if (!groups.every((group) => record(group) && Array.isArray(group.students) && Array.isArray(group.courses))) throw new Error('核心课程数据不完整。');
-  const full = data['full-dataset'];
-  const records = arrayAt(full,'records');
-  arrayAt(full,'students'); arrayAt(full,'courses'); arrayAt(full,'terms'); arrayAt(full,'years');
-  if (records.length > 500000) throw new Error('课程记录过多，请使用原始可视化文件。');
-  const meta = record(data.dataset.meta) ? data.dataset.meta : {};
-  return { data, fileName, people: rows.length, semesterRecords: gpas.reduce<number>((sum,row) => sum+(row as unknown[]).filter((v) => typeof v === 'number').length,0), courseRecords: records.length, asOf: typeof meta.asOf === 'string' ? meta.asOf : '以原文件为准' };
+export function describeWorkbench(data: WorkbenchData): WorkbenchSnapshot {
+  for (const id of datasetIds) if (!data[id] || typeof data[id] !== 'object') throw new Error('工作台数据尚未完整载入。');
+  const rows = data.dataset.rows as unknown[][];
+  const gpas = data['semester-dataset'].gpas as (number | null)[][];
+  const records = data['full-dataset'].records as unknown[];
+  const entries = data['recommendation-dataset'].entries as unknown[];
+  if (![rows, gpas, records, entries].every(Array.isArray) || rows.length !== gpas.length) throw new Error('工作台数据版本不一致。');
+  const meta = data.dataset.meta as { asOf?: string };
+  return { data, people: rows.length, semesterRecords: gpas.reduce((total, row) => total + row.filter(value => typeof value === 'number').length, 0), courseRecords: records.length, recommendations: entries.length, asOf: meta?.asOf || '' };
 }

@@ -1,0 +1,24 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import { getImage } from 'astro:assets';
+import avatar from '../assets/avatar.jpg';
+import '../styles/moon-workbench.css';
+interface Props { title: string; description: string; }
+const { title, description } = Astro.props;
+const icon = await getImage({ src: avatar, width: 64, height: 64, format: 'png' });
+---
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#10171f" />
+    <meta name="description" content={description} />
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+    <link rel="icon" type="image/png" sizes="64x64" href={icon.src} />
+    <title>{title}｜亚略 Ar</title>
+    <ClientRouter />
+  </head>
+  <body class="workbench-page"><slot /></body>
+</html>

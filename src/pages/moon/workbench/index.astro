@@ -1,27 +1,42 @@
 ---
-import BaseLayout from '../../../layouts/BaseLayout.astro';
-import { workbenchModules } from '../../../lib/moon-workbench';
-import '../../../styles/moon-observatory.css';
-import '../../../styles/moon-workbench.css';
+import WorkbenchLayout from '../../../layouts/WorkbenchLayout.astro';
+import MoonGate from '../../../components/MoonGate.astro';
+import { Image } from 'astro:assets';
+import avatar from '../../../assets/avatar.jpg';
 ---
-<BaseLayout title="月之暗面 · 完整工作台" description="四届绩点、学期轨迹、完整课程与保研分析。原版全部数据，打开即用。" noindex bodyClass="moon-page">
-  <article class="wb page-width" data-workbench>
-    <header class="wb-header"><div><a class="wb-back" href="/moon/">← 月面概览</a><p class="mo-eyebrow">THE WHOLE ATLAS · COMPLETE EDITION</p><h1>把整张星图，<span>摊在桌上。</span></h1><p>从四届绩点，到一条具体的学习轨迹。原版的全部数据与十一个分析视角，在这里直接展开。</p></div><span class="wb-number" aria-hidden="true">039<span>／ FULL ATLAS</span></span></header>
-    <section class="mo-locked" data-wb-locked aria-labelledby="wb-locked-title">
-      <h2 id="wb-locked-title">先从月亮那边，打开这扇门。</h2><p>这间工作台与月之暗面共用同一枚钥匙。</p><a class="mo-button" href="#moon-entry">去看看月亮 ↓</a>
-      <noscript><p>请启用 JavaScript，以便展开数据和绘制图表。</p></noscript>
+<WorkbenchLayout title="月之暗面 · 完整工作台" description="四届绩点、学期轨迹、完整课程与保研分析。原版全部数据，打开即用。">
+  <main class="wb" id="main" data-workbench>
+    <header class="wb-toolbar">
+      <a class="wb-identity" href="/" aria-label="返回亚略的主页"><Image src={avatar} width={32} height={32} alt="" /></a>
+      <h1>月之暗面 <span>数据工作台</span></h1>
+      <nav class="wb-tools" aria-label="工作台操作">
+        <a href="/" class="wb-home">主页 <span aria-hidden="true">↗</span></a>
+        <button type="button" data-wb-expand hidden>全屏</button>
+        <details class="wb-more" data-wb-tools hidden>
+          <summary aria-label="更多工作台操作">更多 <span aria-hidden="true">⌄</span></summary>
+          <div class="wb-menu">
+            <span class="wb-menu-label">工作台</span>
+            <button type="button" data-wb-reload>重置筛选与视图</button>
+            <a href="/moon/" class="wb-back">月面概览 <span aria-hidden="true">↗</span></a>
+            <button type="button" data-moon-relock>重新隐藏入口</button>
+          </div>
+        </details>
+      </nav>
+    </header>
+    <section class="wb-locked" data-wb-locked aria-labelledby="wb-locked-title">
+      <div><p class="wb-eyebrow">THE FAR SIDE</p><h2 id="wb-locked-title">月亮的另一侧，<br />藏着一张星图。</h2><p>从这枚月亮，重新找到入口。</p>
+      <noscript><p>请启用 JavaScript，以便展开数据和绘制图表。</p></noscript></div>
     </section>
-    <div data-wb-content hidden>
-      <p class="wb-status" data-wb-status role="status" aria-live="polite">完整工作台，即将展开。</p>
-      <section class="wb-error" data-wb-error hidden role="alert"><p>完整工作台暂时未能载入。</p><button type="button" class="mo-button" data-wb-retry>重新载入 ↻</button></section>
+    <MoonGate />
+    <div class="wb-content" data-wb-content hidden>
+      <p class="wb-sr-only" data-wb-status role="status" aria-live="polite">完整工作台，即将展开。</p>
+      <p class="wb-sr-only" data-wb-summary></p>
+      <section class="wb-error" data-wb-error hidden role="alert"><p>完整工作台暂时未能载入。</p><button type="button" data-wb-retry>重新载入 ↻</button></section>
       <section class="wb-room" data-wb-room hidden aria-label="完整数据工作台">
-        <header class="wb-room-bar"><div><strong>完整原版</strong><span data-wb-summary>四届绩点 · 保研分析 · 学期轨迹 · 全部课程</span></div><div class="wb-actions"><button type="button" data-wb-reload>重置工作台</button><button type="button" data-wb-expand>展开工作台</button></div></header>
         <div class="wb-loading" data-wb-loading><span class="wb-loading-orbit" aria-hidden="true">◌</span><p>正在展开整张星图</p><small>首次进入需要载入完整数据，请稍候。</small></div>
         <iframe data-wb-frame title="月之暗面：完整原版的十一个分析模块" sandbox="allow-scripts allow-downloads allow-popups allow-popups-to-escape-sandbox" referrerpolicy="no-referrer"></iframe>
       </section>
-      <details class="wb-modules"><summary>完整原版 · 十一个分析视角</summary><ol>{workbenchModules.map((module,index) => <li><span>{String(index+1).padStart(2,'0')}</span>{module}</li>)}</ol><p>保留原网页的姓名、学号、逐人成绩、课程记录、保研名单、图表、筛选和导出。统计口径、数据日期与来源说明，可以在工作台的「数据与口径」及对应模块中查看。</p></details>
-      <footer class="wb-footer"><a href="/moon/">查看月面概览 ←</a><button class="mo-text-button" data-moon-relock type="button">重新隐藏入口</button></footer>
     </div>
-  </article>
+  </main>
   <script>import '../../../scripts/moon-workbench';</script>
-</BaseLayout>
+</WorkbenchLayout>

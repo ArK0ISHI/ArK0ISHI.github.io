@@ -1,42 +1,46 @@
-# Moon complete edition — release QA
+# Moon workbench — full-window layout QA
 
-## Approved scope
+## Scope and result
 
-On 2026-09-16 the owner explicitly replaced the earlier local-import-only choice with permission to publish the original's complete details, including names, student identifiers and individual records, in the public site and repository. The 39-activation discovery remains a presentation feature, not access control. The current release supersedes the earlier privacy-preserving importer described in previous commits.
+Result: passed
 
-The source has since gained recommendation analysis. This release follows the latest supplied original: five full datasets, eleven views and seven executable scripts. The five dataset objects are copied without field removal, aggregation or anonymization. The iframe uses the trusted published template; the separate public dataset is loaded automatically. There is no file chooser. The main moon menu and welcome action now lead directly to /moon/workbench/; /moon/ remains an optional aggregate overview.
+2026-09-17. The user requested a larger, more suitable workspace rather than a page nested inside a page. This release changes the shell, responsive layout and navigation affordances only. The original template, all five datasets, calculations, eleven modules and exports are unchanged. Existing publication authorization remains in effect.
 
-## Welcome dialog correction
+## Evidence and comparison
 
-Reproduced three real failures before changing code: desktop click 40 dismissed the backdrop; mobile click 40 landed directly on the newly appeared Enter button; keyboard Enter 40 activated the previously autofocused link. See ../round-ten/before/repro.json and paired screenshots.
+Evidence directory: `../round-eleven/` (outside the repository). Baseline is the deployed `abdc2da` layout; implementation is the production build served on port 4340. Captures use Edge/Chromium at DPR 1, 100% zoom, reduced motion, fonts ready, unlocked default overview, loader hidden, no selected filters, no menu open, scroll at top.
 
-The backdrop no longer dismisses the dialog. Focus initially lands on its heading. A continuation of the unlocking pointer burst near the same screen coordinates is consumed until a pause or deliberately different target; queued moon-trigger events are ignored while the dialog is open. Explicit close, Later, Enter and Escape remain available, and held-key repeats are suppressed. The first thirteen activations remain silent.
+| Viewport | Source | Implementation |
+| --- | --- | --- |
+| 1920 × 1080 | before/top-1920.png | after/top-1920.png |
+| 1440 × 1000 | before/top-1440.png | after/top-1440.png |
+| 390 × 844 | before/top-390.png | after/top-390.png |
 
-../round-ten/after/report.json verifies desktop, touch and keyboard: 39 real activations followed by eight extra clicks; four extra programmatic trigger events; twelve taps with the original touch point deliberately aligned to the new Enter button; rapid Enter and held Enter/Space; explicit close, Later, Enter, Escape and focus return. Zero browser errors. Final static/online evidence uses the same regression script with the new direct-entry target.
+`comparison-1920.png` (1920 × 540, each source scaled equally to half size) and `comparison-390.png` (780 × 844, original size) were inspected as combined visual inputs: baseline left, implementation right. `before/audit.json` and `after/audit.json` record exact bounds. Initial baseline capture caught a remount/loading flash; it was rejected and replaced after waiting for the ready marker and loader disappearance. The new setup is idempotent for an unchanged route root.
 
-## Visual evidence
+At 1920 px width, the original iframe was x=371, y=488, width=1178, height=970, while the outer document scrolled to 2130 px. The new frame is x=0, y=52, width=1920, height=1028, with the outer document exactly one viewport tall. Mobile frame moves from y=544 and width=356 to y=52 and width=390. Its five primary metrics are now visible in the first viewport.
 
-The original supplied dashboard was reviewed against the current complete-workbench desktop and mobile captures. Layout and calculations retain the original structure; the navy background, muted gold actions, serif headings, compact site frame and navigation follow the existing portfolio. The eleven original modules include the new recommendation view.
+## Intentional visual changes
 
-Evidence is kept outside the repository under ../round-ten/:
+The ordinary site header, hero, second title bar, footer, music float and framed card are replaced on this route by a dedicated full-window application shell. A 52 px bar contains the real existing avatar, a restrained serif title, home, fullscreen and More. The existing navy and muted gold palette connects it to the site. No new illustrations or external assets were introduced.
 
-- complete-local/overview-desktop.png and overview-mobile.png: automatic complete data view, no import screen.
-- after/mobile-after-burst.png and mobile-overlapping-enter-protected.png: welcome typography, buttons and touch protection.
-- workbench-qa/functionality-report.json: all views and original interactive functions.
-- complete-local/report.json: loading, exact data equality, state lifecycle and viewport containment.
+Desktop has a 224 px analysis directory, five metrics across above 1280 px and comfortable chart gutters. Tablet uses three metrics. Mobile has a sticky current-view selector opening all eleven original destinations in two columns; filters collapse to a live scope summary. Two metric columns plus a full-width fifth metric provide a clear hierarchy. The original graphs and tables retain their functions; wide tables keep local horizontal scrolling.
 
-Widths 320, 390 and 768 were checked across all eleven views (33 combinations). No outer or iframe document overflow and no clipped controls. The recommendation statistics and list tables have their own real horizontal scroll areas (1170 and 1420 px table widths). Additional host bounds checks cover 1440 px. The mobile navigation strip intentionally scrolls.
+Typography uses system UI fonts for compact controls, the site's serif fallbacks for headings, and tabular numerals for metrics. No remote font dependency is introduced by the shell. The original labels and data descriptions are retained; duplicate inner branding becomes “分析目录”, and the inherited offline badge becomes “完整数据”. Contrast, wrapping, avatar crop, labels and chart spacing were checked in the paired captures. No unresolved visual mismatch within this layout brief.
 
-## Data and functionality
+## Interaction and lifecycle verification
 
-The public JSON is deeply equal to all five original data blocks. It contains 15,205 people, 73,559 semester records, 3,066 full-course records, 400 core-course scores and 879 recommendation entries. Both template and data generators pass --check. The aggregate-only generator also passes, confirming the optional overview stays consistent with the current original.
+`check-layout.cjs` passed against the final production build (`layout-local/report.json`):
 
-Functionality QA passed 27 checks with no browser errors: eleven views, original filters and sorting, student pagination and trajectories, paired semester changes, full-course and core-course comparisons, and the new recommendation analysis. The latter covers six populated chart instances, college/major/channel/minimum-group filters, grouping and sorting, list kind/status/search/pagination, 822 main-list and 57 alternate entries. Nine nonempty CSV Blobs and three PNG data URLs were checked; download anchors were intercepted so tests did not save personal exports. All five identity masks start off, with their original controls still available.
+- Widths 320, 390, 768, 1280, 1440, 1920: full-width frame, 52 px bar, no outer horizontal or vertical overflow; one main vertical scrolling surface.
+- Mobile selection reaches all eleven original modules. Directory closes on selection, Escape and keyboard focus leaving it; the selected view remains apparent. Filters retain original behavior and no empty filter panel remains on independently filtered modules.
+- More closes on Escape, focus leaving, outside click and iframe interaction. Fullscreen includes the host toolbar and visible exit control. Reset exits fullscreen and reconstructs the dashboard.
+- Normal-site round trip restores the full site layout and returns to the standalone workbench; refresh initializes the frame successfully. Relock clears the frame and restores the gate, also checked at 667 × 375 landscape.
+- First thirteen taps remain silent. Thirty-nine taps unlock; an uninterrupted burst through forty-five leaves the welcome dialog open; explicit Escape closes it.
+- Zero browser errors in the end-to-end run.
 
-The automated host test compares every injected dataset object with the published JSON, verifies there is no file chooser, checks automatic load after in-site navigation and refresh, fullscreen reset, and relock removing the running iframe. The iframe retains an opaque origin and a no-network CSP. Trusted source links open separately with noopener/noreferrer. A failed dynamic-module fetch is retried through a fresh page load because browsers retain failed module loads in the current document; simulated network failure and recovery both passed.
+`check-focus-summary.cjs` additionally verifies keyboard focus across desktop/mobile breakpoints and original chart drilldown/reset updating the collapsed scope summary. The review found and fixed expanded mobile menus covering later focused controls, focus disappearing when a breakpoint hides a control, and summaries becoming stale after non-form filter changes. The scope text observer covers those original render paths without changing calculations.
 
-## Delivery
+The existing retry regression (`../round-ten/check-workbench-retry.cjs`) passed: an aborted initial module request exposes the retry state, and retry performs a fresh load successfully. The original frame isolation/CSP remains unchanged.
 
-Astro check: 104 files, zero errors/warnings/hints. The complete data and original plotting template are lazy-loaded after entering the unlocked workspace; their size warnings are expected for this intentionally complete edition. Hidden routes remain noindex and excluded from public indexes.
-
-Current result: local and static-build checks passed. The production build contains 182 pages. Static gate evidence is in gate-static/report.json; complete-local/report.json records the production preview at port 4340. Live-release reports are saved separately alongside these artifacts.
+`pnpm build` passed: 106 files checked, zero errors/warnings/hints in Astro diagnostics, 182 pages generated. The existing large static data/library chunk notice remains. `git diff --check` passed; neither the template nor data file has a diff. No unrelated data refresh was included.

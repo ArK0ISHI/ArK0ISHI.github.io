@@ -1,8 +1,9 @@
 import { readMoonState } from '../lib/moon-gate';
 import { datasetIds, describeWorkbench, type WorkbenchData, type WorkbenchSnapshot } from '../lib/moon-workbench';
 import frameStyles from '../styles/moon-workbench-frame.css?raw';
+import frameEnhancements from './moon-workbench-frame.js?raw';
 
-const host = window as Window & { __arWorkbenchCleanup?: () => void };
+const host = window as Window & { __arWorkbenchCleanup?: () => void; __arWorkbenchElement?: HTMLElement; __arWorkbenchController?: AbortController };
 const tokens = ['__MOON_DATASET__', '__MOON_SEMESTER_DATASET__', '__MOON_COURSE_DATASET__', '__MOON_FULL_DATASET__', '__MOON_RECOMMENDATION_DATASET__'];
 const safeJson = (value: unknown) => JSON.stringify(value).replaceAll('<', '\\u003c').replaceAll('>', '\\u003e').replaceAll('\u2028', '\\u2028').replaceAll('\u2029', '\\u2029');
 function frameDocument(template: string, snapshot: WorkbenchSnapshot, nonce: string) {
@@ -16,24 +17,27 @@ function frameDocument(template: string, snapshot: WorkbenchSnapshot, nonce: str
   const finish = `<script>(()=>{try{document.getElementById('theme').click();for(const id of ['semester-mask','full-mask','course-mask','mask-personal','rec-mask']){const input=document.getElementById(id);if(input){input.checked=false;input.dispatchEvent(new Event('change',{bubbles:true}));}}const brand=document.querySelector('.sidebar .brand>span:last-child');if(brand){brand.textContent='月之暗面';const sub=document.createElement('small');sub.textContent='COMPLETE DATA ATLAS';brand.append(sub);}document.documentElement.classList.remove('wb-booting');requestAnimationFrame(()=>parent.postMessage({type:'moon-workbench',nonce:${safeJson(nonce)},status:'ready'},'*'));}catch(_){${sendError}}})();<\/script>`;
   const bodyEnd = html.toLowerCase().lastIndexOf('</body>');
   if (bodyEnd < 0) throw new Error('Missing workbench document boundary');
-  return html.slice(0, bodyEnd) + finish + html.slice(bodyEnd);
+  return html.slice(0, bodyEnd) + finish + `<script>${frameEnhancements}<\/script>` + html.slice(bodyEnd);
 }
 
 function setupWorkbench() {
-  host.__arWorkbenchCleanup?.();
   const root = document.querySelector<HTMLElement>('[data-workbench]');
+  if (root && root === host.__arWorkbenchElement && !host.__arWorkbenchController?.signal.aborted) return;
+  host.__arWorkbenchCleanup?.();
   if (!root) return;
   const controller = new AbortController(); const { signal } = controller;
+  host.__arWorkbenchElement = root; host.__arWorkbenchController = controller;
   const q = <T extends HTMLElement = HTMLElement>(selector: string) => root.querySelector<T>(selector)!;
   const frame = q<HTMLIFrameElement>('[data-wb-frame]');
   const room = q('[data-wb-room]');
+  const more = q<HTMLDetailsElement>('[data-wb-tools]');
   let operation = 0;
   let channel = '';
   let phase: 'idle' | 'loading' | 'ready' = 'idle';
   let watchdog: ReturnType<typeof setTimeout> | undefined;
   const status = (message: string, error = false) => { const node = q('[data-wb-status]'); node.textContent = message; node.dataset.error = String(error); };
   function resetFrame() {
-    if (document.fullscreenElement === room) void document.exitFullscreen().catch(() => {});
+    if (document.fullscreenElement === root) void document.exitFullscreen().catch(() => {});
     operation++; channel = ''; phase = 'idle'; clearTimeout(watchdog);
     frame.removeAttribute('srcdoc'); frame.src = 'about:blank'; room.hidden = true;
     root!.removeAttribute('data-loaded'); root!.setAttribute('aria-busy', 'false');
@@ -65,6 +69,9 @@ function setupWorkbench() {
   }
   function gate() {
     const unlocked = readMoonState().unlocked;
+    root!.dataset.unlocked = String(unlocked);
+    more.hidden = !unlocked; more.open = false;
+    q('[data-wb-expand]').hidden = !unlocked || !document.fullscreenEnabled;
     q('[data-wb-locked]').hidden = unlocked; q('[data-wb-content]').hidden = !unlocked;
     if (!unlocked) { resetFrame(); q('[data-wb-error]').hidden = true; }
     else void load();
@@ -82,14 +89,21 @@ function setupWorkbench() {
     const button = (event.target as Element).closest<HTMLButtonElement>('button'); if (!button) return;
     // A failed module fetch stays cached in the current document; retry with a fresh one.
     if (button.hasAttribute('data-wb-retry')) { window.location.reload(); return; }
-    if (button.hasAttribute('data-wb-reload')) { resetFrame(); void load(); }
+    if (button.hasAttribute('data-wb-reload')) { more.open = false; resetFrame(); void load(); }
     if (button.hasAttribute('data-wb-expand')) {
-      const toggle = document.fullscreenElement ? document.exitFullscreen() : room.requestFullscreen();
+      const toggle = document.fullscreenElement ? document.exitFullscreen() : root.requestFullscreen();
       void toggle.catch(() => status('当前浏览器未允许全屏，仍可在页面内使用完整工作台。'));
     }
   }, { signal });
+  document.addEventListener('click', event => { if (!more.contains(event.target as Node)) more.open = false; }, { signal });
+  document.addEventListener('keydown', event => { if (event.key === 'Escape' && more.open) { more.open = false; more.querySelector('summary')?.focus(); } }, { signal });
+  more.addEventListener('focusout', event => { if (event.relatedTarget && !more.contains(event.relatedTarget as Node)) more.open = false; }, { signal });
+  window.addEventListener('blur', () => { more.open = false; }, { signal });
+  q<HTMLDialogElement>('[data-moon-dialog]').addEventListener('close', () => {
+    if (readMoonState().unlocked && (!document.activeElement || !document.activeElement.getClientRects().length || document.activeElement === document.body)) q<HTMLDetailsElement>('[data-wb-tools]').querySelector('summary')?.focus();
+  }, { signal });
   document.addEventListener('ar:moon-state', gate, { signal });
-  document.addEventListener('fullscreenchange', () => { q('[data-wb-expand]').textContent = document.fullscreenElement ? '退出展开' : '展开工作台'; }, { signal });
+  document.addEventListener('fullscreenchange', () => { q('[data-wb-expand]').textContent = document.fullscreenElement ? '退出全屏' : '全屏'; }, { signal });
   if (!document.fullscreenEnabled) q('[data-wb-expand]').hidden = true;
   host.__arWorkbenchCleanup = () => { operation++; controller.abort(); clearTimeout(watchdog); frame.removeAttribute('srcdoc'); };
   document.addEventListener('astro:before-swap', host.__arWorkbenchCleanup, { once: true, signal });

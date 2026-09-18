@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
-import { readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { isDeepStrictEqual } from 'node:util';
 
-// The owner explicitly authorized publishing the complete original datasets.
+// Complete datasets are generated outside the repository for private backend upload.
 // Preserve every field and row. This generator never evaluates source HTML,
 // changes the original file, aggregates records, or prints personal values.
 const DATASET_IDS = ['dataset', 'semester-dataset', 'course-dataset', 'full-dataset', 'recommendation-dataset'];
@@ -18,7 +18,10 @@ if (!sourcePath || (outputIndex >= 0 && !args[outputIndex + 1])) {
 }
 const outputPath = outputIndex >= 0
   ? path.resolve(args[outputIndex + 1])
-  : fileURLToPath(new URL('../src/data/moon-workbench.json', import.meta.url));
+  : fileURLToPath(new URL('../../moon-private/workbench-v1.json', import.meta.url));
+const repositoryPath = fileURLToPath(new URL('../', import.meta.url));
+const relativeOutput = path.relative(repositoryPath, outputPath);
+assert.ok(relativeOutput.startsWith('..' + path.sep) || path.isAbsolute(relativeOutput), 'Complete data must be written outside the website repository');
 assert.notEqual(path.resolve(sourcePath).toLowerCase(), outputPath.toLowerCase(), 'The source must never be overwritten');
 
 function parseJson(text, label) {
@@ -83,7 +86,7 @@ assert.ok(RD.entries.every((entry) => !['exact', 'alias'].includes(entry.status)
 
 const serialized = `${JSON.stringify(data)}\n`;
 assert.ok(isDeepStrictEqual(parseJson(serialized, 'Serialized output'), data), 'Serialization changed the source data');
-if (!checkOnly) await writeFile(outputPath, serialized, 'utf8');
+if (!checkOnly) { await mkdir(path.dirname(outputPath), { recursive: true }); await writeFile(outputPath, serialized, 'utf8'); }
 const actualText = await readFile(outputPath, 'utf8');
 const actual = parseJson(actualText, 'Published data');
 assert.ok(isDeepStrictEqual(Object.keys(actual), DATASET_IDS), 'Published data must contain exactly the five original blocks');

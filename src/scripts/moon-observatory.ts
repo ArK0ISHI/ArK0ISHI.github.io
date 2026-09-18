@@ -1,7 +1,9 @@
-import { readMoonState } from '../lib/moon-gate';
+import { fetchMoonObservatoryData, MoonAccessError } from '../lib/moon-access';
+import type { MoonObservatoryData } from '../lib/moon-observatory-data';
+import { readMoonState, resetMoonState } from '../lib/moon-gate';
 import { drawMoonChart, type ChartSpec } from '../lib/moon-charts';
 
-type Data = typeof import('../data/moon-observatory.json');
+type Data = MoonObservatoryData;
 type View = 'overview' | 'semesters' | 'groups' | 'courses';
 type Cell = string | number;
 type Stats = { n: number; mean: number; median: number; q1: number; q3: number };
@@ -209,18 +211,19 @@ function setupObservatory() {
     if (loading || data || signal.aborted) return;
     loading = true; q('[data-mo-load-error]').hidden = true;
     try {
-      const module = await import('../data/moon-observatory.json');
-      if (signal.aborted) return;
-      data = module.default;
+      const received = await fetchMoonObservatoryData(signal);
+      if (signal.aborted || !readMoonState().unlocked) return;
+      data = received as Data;
       q('[data-mo-cohorts]').innerHTML = [['all','四届'],...data.meta.cohortYears.map((year) => [String(year),String(year)])].map(([key,label]) => `<button class="mo-cohort" type="button" data-mo-year="${key}" aria-pressed="${state.year === key}" aria-label="${key === 'all' ? '观察四届合计' : `观察 ${key} 级`}">${key === 'all' ? '' : `<i aria-hidden="true" style="--cohort-color:${cohortColor(Number(key))}"></i>`}${label}</button>`).join('');
       q('[data-mo-methodology]').innerHTML = `<p>资料截至 ${escapeHtml(data.meta.asOf)}。${escapeHtml(data.meta.source)}</p>${data.meta.methodology.filter((_,index) => index < 9).map((text) => `<p>${escapeHtml(text)}</p>`).join('')}<p>${escapeHtml(data.meta.sampleNote)}</p>`;
       updateGate();
       root!.dataset.ready = 'true';
-    } catch { if (!signal.aborted) q('[data-mo-load-error]').hidden = false; }
+    } catch (error) { if (!signal.aborted) { if (error instanceof MoonAccessError && error.code === 'expired') resetMoonState(); else q('[data-mo-load-error]').hidden = false; } }
     finally { loading = false; }
   }
   function updateGate() {
     const unlocked = readMoonState().unlocked;
+    if (!unlocked) { data = undefined; rows = []; }
     q('[data-mo-locked]').hidden = unlocked;
     q('[data-mo-content]').hidden = !unlocked || !data;
     if (unlocked && data) render();

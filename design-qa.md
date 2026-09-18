@@ -44,3 +44,14 @@ Typography uses system UI fonts for compact controls, the site's serif fallbacks
 The existing retry regression (`../round-ten/check-workbench-retry.cjs`) passed: an aborted initial module request exposes the retry state, and retry performs a fresh load successfully. The original frame isolation/CSP remains unchanged.
 
 `pnpm build` passed: 106 files checked, zero errors/warnings/hints in Astro diagnostics, 182 pages generated. The existing large static data/library chunk notice remains. `git diff --check` passed; neither the template nor data file has a diff. No unrelated data refresh was included.
+
+
+## 2026-09-18: private data migration
+
+The 39-step discovery now exchanges signed progress receipts with a private Worker. The welcome and shared unlocked state appear only after the final server proof. Existing boolean-only unlocks cannot fetch data. First thirteen taps stay silent, the continuing-click dialog guard remains, and requests are cancelled on relock or route cleanup. A navigation race found in review was fixed: shared state completes after a valid proof even if the initiating view was replaced; only its old dialog stays suppressed.
+
+Both the complete dataset and overview aggregates are removed from tracked sources and frontend imports. Structural TypeScript types contain no statistic values. Private copies and a full pre-migration Git bundle are kept outside the website repository. Generators reject output paths inside the repository. The build guard was tested against the previous complete-data build and rejected it; the clean build passes.
+
+The Worker has 14 synthetic tests for signed progress, final-step access, forged/expired/wrong-purpose/origin proofs, retries, renewal, cache headers, body limits, private streams and both data routes. The client passed strict type checking and synthetic tests for queue coalescing, transient errors, storage denial, renewal, retry, reload, abort and late responses. Browser end-to-end tests verified legacy flag rejection, no data request before39, silent13, extra-click protection, exact complete-data equality without printing records, all11modules, remembered refresh, overview round trip and relock. No browser errors.
+
+The interface remains the reviewed full-window layout. This protocol prevents downloading raw JSON from the public repository/static files, but it is not identity authentication and can be automated. History rewrite and removal of old Pages artifacts accompany publishing. GitHub unreachable caches and third-party copies cannot be declared erased solely by rewriting main.

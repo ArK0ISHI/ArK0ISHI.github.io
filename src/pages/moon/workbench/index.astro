@@ -24,7 +24,7 @@ import avatar from '../../../assets/avatar.jpg';
       </nav>
     </header>
     <section class="wb-locked" data-wb-locked aria-labelledby="wb-locked-title">
-      <div><p class="wb-eyebrow">THE FAR SIDE</p><h2 id="wb-locked-title">月亮的另一侧，<br />藏着一张星图。</h2><p>从这枚月亮，重新找到入口。</p>
+      <div><p class="wb-eyebrow">THE FAR SIDE</p><h2 id="wb-locked-title">月亮的另一侧，<br />藏着一张星图。</h2><p data-wb-locked-copy>{import.meta.env.PUBLIC_MOON_API_URL ? '从这枚月亮，重新找到入口。' : '月面工作台正在维护，稍后重新开放。'}</p>
       <noscript><p>请启用 JavaScript，以便展开数据和绘制图表。</p></noscript></div>
     </section>
     <MoonGate />

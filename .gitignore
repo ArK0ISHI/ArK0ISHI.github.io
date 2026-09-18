@@ -10,3 +10,11 @@ public/data/music.json
 qa-artifacts/
 design-audit/
 tmp/
+
+# Complete datasets and private backend credentials must never be published.
+src/data/moon-workbench.json
+**/.dev.vars
+**/.dev.vars.*
+**/.wrangler/
+private-data/
+src/data/moon-observatory.json

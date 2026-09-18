@@ -25,6 +25,7 @@ jobs:
         with:
           node-version: 22
         env:
+          PUBLIC_MOON_API_URL: ${{ vars.MOON_API_URL }}
           SITE_URL: https://${{ github.repository_owner }}.github.io
 
   deploy:

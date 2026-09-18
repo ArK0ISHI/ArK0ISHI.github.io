@@ -1,3 +1,5 @@
+import { hasRememberedMoonAccess, clearMoonAccess } from './moon-access';
+
 export interface MoonState {
   count: number;
   unlocked: boolean;
@@ -27,6 +29,10 @@ export function readMoonState(): MoonState {
       state.count = Number.isInteger(stored) ? Math.min(MOON_THRESHOLD - 1, Math.max(0, stored)) : 0;
     }
   } catch { state.sessionUsable = false; }
+  if (state.unlocked && !hasRememberedMoonAccess()) {
+    state.unlocked = false; state.count = 0;
+    try { window.localStorage.removeItem(MOON_UNLOCKED_KEY); window.sessionStorage.removeItem(MOON_PROGRESS_KEY); } catch {}
+  }
   if (state.unlocked) state.count = MOON_THRESHOLD;
   return { count: state.count, unlocked: state.unlocked };
 }
@@ -51,10 +57,16 @@ export function activateMoonGate(): MoonState {
   const state = readMoonState();
   if (state.unlocked) return state;
   const count = Math.min(MOON_THRESHOLD, state.count + 1);
-  return saveMoonState({ count, unlocked: count === MOON_THRESHOLD });
+  return saveMoonState({ count, unlocked: false });
+}
+
+export function completeMoonUnlock(): MoonState {
+  if (!hasRememberedMoonAccess()) return readMoonState();
+  return saveMoonState({ count: MOON_THRESHOLD, unlocked: true });
 }
 
 export function resetMoonState(): MoonState {
   if (typeof window === 'undefined') return { count: 0, unlocked: false };
+  clearMoonAccess();
   return saveMoonState({ count: 0, unlocked: false });
 }

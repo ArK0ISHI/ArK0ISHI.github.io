@@ -10,11 +10,12 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro check && astro build",
+    "build": "astro check && astro build && node scripts/check-moon-public-build.mjs",
     "preview": "astro preview",
     "check": "astro check",
     "test:experiments": "node --experimental-strip-types --test scripts/test-pendulum.mjs scripts/test-foraging.mjs",
-    "sync:music": "node scripts/sync-netease-music.mjs"
+    "sync:music": "node scripts/sync-netease-music.mjs",
+    "test:moon-access": "node --test services/moon-data/test/worker.test.js"
   },
   "dependencies": {
     "@astrojs/check": "0.9.10",

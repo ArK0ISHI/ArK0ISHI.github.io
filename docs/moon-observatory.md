@@ -1,66 +1,51 @@
-# 月之暗面
+# 月之暗面：私有数据与发现入口
 
-点击页脚月亮 39 次后解锁，并在桌面与手机导航中显示直达 `/moon/workbench/` 的入口。第 1–13 次保持静默，不显示提示、不播放反馈动效，也不播报计数；第 14 次开始回应，第 26 次进入第二阶段，第 39 次显示欢迎提示。欢迎提示出现后会防止连续点击穿透，只有明确的按钮操作或 Escape 才会关闭，点击背景不会关闭。键盘操作仍保留焦点轮廓。
+## 访问方式
 
-计数保存在当前浏览会话，解锁保存在同一浏览器；无法使用存储时退回内存状态。清除网站数据或换浏览器后需要重新发现。月面概览底部、完整工作台右上角的「更多」中可以重新隐藏入口。隐藏、noindex 和索引排除只负责发现体验，不提供数据访问保护。
+2026-09-18，用户决定保留公开主页和彩蛋，把月之暗面的明细和汇总数据移出公开 GitHub 仓库及静态发布文件。此前直接发布完整 JSON 的方案已被替代。
 
-## 当前发布范围
+入口仍需点击 39 次，前 13 次无视觉反馈。浏览器按点击进度与私有服务交换签名进度凭证；只有第 39 步返回访问凭证后，才显示欢迎提示和菜单入口。快速连续点击不会误关欢迎窗口。旧版仅存在浏览器里的“已解锁”标记不能取数据；迁移后需要重新发现一次。
 
-2026 年 9 月 16 日，用户已明确授权直接公开完整姓名、学号和逐人记录，并确认完整工作台无需导入文件即可使用。这一决定取代先前仅发布汇总、完整明细依赖本机导入的方案。
+进度凭证有效 30 分钟，访问凭证有效 15 分钟，记忆凭证有效 30 天。记忆有效期内可自动续取短期访问凭证。重新隐藏入口会清除本机凭证、停止正在进行的请求并清空工作台。它不撤销别人已经保存的数据或复制走的有效凭证。
 
-`/moon/workbench/` 是解锁后的主要入口，自动载入全部完整数据，默认显示姓名和学号。工作台保留原件的全部分析模块，涵盖总绩点、学期趋势与变化、逐人轨迹、学院与专业比较、完整课程、核心课程、学生明细及最新保研分析，以及原有筛选、计算和导出。各模块仍可使用身份遮蔽选项控制当前视图；这不会从公开数据中移除记录。
+这仍是开放给所有访客的发现机制，**不是身份认证**：程序可以模拟完整解锁流程。只有用户另行要求指定人员访问时，才加入服务端核验的登录或邀请机制。
 
-`/moon/` 保留群体汇总观察及月面视觉，提供醒目的完整工作台入口。两个页面展示的是同一原件的不同观察层次，均可在解锁后访问。
+## 数据与部署
 
-## 工作台布局
+- 主页继续由 GitHub Pages 发布，地址和完整工作台布局不变。
+- `services/moon-data/` 是 Cloudflare Worker；私有 KV 绑定 `MOON_DATA`，不设公开文件地址。
+- `workbench-v1` 保存原件的五个完整数据区块；`overview-v1` 保存汇总。两者只通过校验短期凭证的接口返回。
+- `TOKEN_SECRET` 只作为 Worker secret 保存，不进入 Git、网页或 Actions 普通变量。
+- GitHub Actions 变量 `MOON_API_URL` 仅保存公开的服务地址，构建时映射为 `PUBLIC_MOON_API_URL`。它不是密钥。
+- 未配置服务地址、服务异常或凭证失效时均不回退到公开数据。
+- 所有数据与凭证响应禁止浏览器及 CDN 缓存；关闭 Worker 请求日志与预览部署地址。
 
-2026 年 9 月 17 日，完整工作台改为独立的全窗布局：52 px 操作栏保留头像、主页、全屏和更多操作，其余高度全部交给分析界面。此路由使用 `WorkbenchLayout.astro`，不加载普通页面的大页头、页脚及音乐浮层。外层不滚动，分析内容使用单一纵向滚动区域，宽表格保持自身横向滚动。
-
-桌面侧栏提供十一项分析目录；宽屏五项指标同排，平板三列，手机两列加一条横向指标。手机目录可展开全部视图，全局筛选默认收起并展示当前范围；切换视图、点击图表、清空筛选时保持同步。键盘移出目录自动收起，跨越响应式断点时保留可见焦点。
-
-全屏包含顶部操作栏，始终可退出。更多菜单提供重置筛选与视图、月面概览和重新隐藏入口。首次进入仍使用同一枚月亮解锁；欢迎弹窗、前十三次无反馈和连续点击保护沿用原逻辑。重置、刷新、站内跳转及重新隐藏时清理运行中的分析界面。
-
-本次只改布局及界面交互，五份数据、原版十一模块、计算方法与导出保持原状。
+完整数据和汇总的本机备份位于网站仓库外的 `../moon-private/`。部署工具、秘密文件和历史备份也只能保存在仓库外或明确忽略的秘密路径中。
 
 ## 数据更新
 
-原始成绩 HTML 保留在网站目录之外，作为生成器的本地输入；无需把整个原件复制进网站。更新完整工作台：
-
 ```sh
 node scripts/build-moon-workbench.mjs /absolute/source.html
-node scripts/build-moon-workbench.mjs /absolute/source.html --check
 node scripts/build-moon-workbench-data.mjs /absolute/source.html
-node scripts/build-moon-workbench-data.mjs /absolute/source.html --check
-```
-
-两个生成器分别维护 `src/data/moon-workbench-template.html` 与 `src/data/moon-workbench.json`。模板保留可信原件的界面、执行脚本、本地 ECharts 及其 Apache 许可，各数据区块的位置仍为占位符。完整数据独立写入 JSON，包括原件新增的保研分析数据；浏览器自动载入后将两者组合为工作台。模板不内嵌数据，不代表完整数据未发布。数据生成器会逐块核对与原件的深度相等性，不删减记录或字段。
-
-工作台继续在不允许同源访问的 sandbox iframe 中运行。父页面加载站内数据并构造工作台，iframe 的内容安全策略禁止网络连接和外部资源；其下载功能用于把用户选择的图表和表格保存到自己的设备。
-
-更新群体汇总：
-
-```sh
 node scripts/build-moon-observatory.mjs /absolute/source.html
-node scripts/build-moon-observatory.mjs /absolute/source.html --check
 ```
 
-汇总生成器只写 `src/data/moon-observatory.json`，以明确字段列表构造统计。至少 10 人的统计组才展示；课程门槛按有数值成绩的不同学生计算；分布小区间合并。这些规则仅属于汇总页面，不限制完整工作台中的逐人记录。汇总图表和 CSV 都来自这一份汇总。
+模板生成器只维护可信、无数据的界面模板。两个数据生成器默认分别输出到仓库外的 `../moon-private/workbench-v1.json` 与 `../moon-private/overview-v1.json`；拒绝把数据写入网站仓库。随后通过已登录的 Cloudflare 管理工具更新对应私有 KV 键。访问端的明细、筛选、计算及导出功能保持原版；课程样本仍存在选择偏差，不能代表专业总体。
 
-更新后应核对两份数据的日期、统计口径、计数守恒与课程样本说明，再检查全部工作台模块、筛选、导出和窄屏布局。课程样本为应用物理和光电各前 20 名资料，存在选择偏差，不能代表专业总体。原始离线分析文件不受网站改版影响。
+`pnpm build` 在生成后执行公开产物检查，拒绝包含完整数据或私有部署文件的结果。`pnpm test:moon-access` 检查凭证、防伪造、过期、请求来源与数据接口。检查只使用合成测试数据。
 
-## 主要文件
+## 布局与文件
 
-- `src/components/MoonGate.astro`、`src/scripts/moon-gate.ts`、`src/lib/moon-gate.ts`：发现、状态及欢迎提示。
-- `src/pages/moon/index.astro`、`src/scripts/moon-observatory.ts`：汇总观察、筛选、表格与导出。
-- `src/lib/moon-charts.ts`：汇总页面的本地 Canvas 图表，无远程绘图库。
-- `src/styles/moon-gate.css`、`src/styles/moon-observatory.css`：入口与汇总页面样式。
-- `src/layouts/WorkbenchLayout.astro`、`src/pages/moon/workbench/index.astro`：完整工作台的独立全窗布局。
-- `src/scripts/moon-workbench.ts`：自动加载、全屏、菜单与生命周期。
-- `src/scripts/moon-workbench-frame.js`：原版界面的响应式目录、筛选摘要及键盘焦点增强。
-- `src/lib/moon-workbench.ts`：完整数据结构与校验。
-- `src/data/moon-workbench-template.html`、`src/data/moon-workbench.json`：由生成器维护的工作台模板和完整数据。
-- `src/styles/moon-workbench.css`、`src/styles/moon-workbench-frame.css`：全窗容器和工作台内部的响应式暗色适配。
+- `WorkbenchLayout.astro`：全窗工作台，52 px 操作栏，桌面侧栏与手机展开目录。
+- `src/lib/moon-access.ts`：串行进度凭证、短期访问、记忆续期与请求取消。
+- `src/lib/moon-gate.ts`、`src/scripts/moon-gate.ts`：发现状态和欢迎提示。
+- `src/scripts/moon-workbench.ts`：按需取私有明细并在隔离 iframe 中呈现。
+- `src/scripts/moon-observatory.ts`：按需取私有汇总。
+- `src/lib/moon-observatory-data.ts`：结构类型，不含统计数值。
+- `services/moon-data/`：数据服务与合成测试，见该目录 README。
 
-状态事件为 `ar:moon-state`，携带 `{ count, unlocked }`；事件和观察器在 Astro 页面切换时清理。解锁不会改变用户保存的全站主题。
+## 历史清理限制
 
-月面影像来源：[NASA Lunar Far Side](https://science.nasa.gov/resource/lunar-far-side-2/)，署名 NASA / Goddard Space Flight Center / Arizona State University。图片尺寸优化，保留原始月面内容。
+迁移需要清理数据文件的历史提交、旧 Pages 构建产物和已发布数据地址。普通删除文件并不能清除旧提交。清理后仍可能存在 GitHub 的不可达提交缓存；必要时需向 GitHub Support 请求清除。已经被别人下载、复制或留存的副本无法远程收回。
+
+月面影像来源：NASA / Goddard Space Flight Center / Arizona State University。

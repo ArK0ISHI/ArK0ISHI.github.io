@@ -1,4 +1,5 @@
-import { readMoonState } from '../lib/moon-gate';
+import { fetchMoonWorkbenchData, MoonAccessError } from '../lib/moon-access';
+import { readMoonState, resetMoonState } from '../lib/moon-gate';
 import { datasetIds, describeWorkbench, type WorkbenchData, type WorkbenchSnapshot } from '../lib/moon-workbench';
 import frameStyles from '../styles/moon-workbench-frame.css?raw';
 import frameEnhancements from './moon-workbench-frame.js?raw';
@@ -55,9 +56,9 @@ function setupWorkbench() {
     q<HTMLButtonElement>('[data-wb-reload]').disabled = true;
     room.hidden = false; status('正在展开完整数据与十一个分析视角……');
     try {
-      const [{ default: template }, { default: data }] = await Promise.all([
+      const [{ default: template }, data] = await Promise.all([
         import('../data/moon-workbench-template.html?raw'),
-        import('../data/moon-workbench.json'),
+        fetchMoonWorkbenchData(signal),
       ]);
       if (signal.aborted || version !== operation || !readMoonState().unlocked) return;
       const snapshot = describeWorkbench(data as unknown as WorkbenchData);
@@ -65,7 +66,14 @@ function setupWorkbench() {
       q('[data-wb-summary]').textContent = `${snapshot.people.toLocaleString('zh-CN')} 人 · ${snapshot.semesterRecords.toLocaleString('zh-CN')} 条学期记录 · ${snapshot.courseRecords.toLocaleString('zh-CN')} 条课程记录 · ${snapshot.recommendations.toLocaleString('zh-CN')} 条保研记录`;
       frame.removeAttribute('src'); frame.srcdoc = frameDocument(template, snapshot, channel);
       watchdog = setTimeout(() => { if (version === operation) fail(); }, 25000);
-    } catch { if (!signal.aborted && version === operation) fail(); }
+    } catch (error) {
+      if (!signal.aborted && version === operation) {
+        if (error instanceof MoonAccessError && error.code === 'expired') {
+          resetMoonState();
+          q('[data-wb-locked-copy]').textContent = '月面通行凭证已到期，轻叩月亮，重新找到入口。';
+        } else fail();
+      }
+    }
   }
   function gate() {
     const unlocked = readMoonState().unlocked;

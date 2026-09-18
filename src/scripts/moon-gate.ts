@@ -1,5 +1,6 @@
+import { advanceMoonAccess, MoonAccessError } from '../lib/moon-access';
 import { navigate } from 'astro:transitions/client';
-import { activateMoonGate, MOON_UNLOCKED_KEY, readMoonState, resetMoonState, type MoonState } from '../lib/moon-gate';
+import { activateMoonGate, completeMoonUnlock, MOON_UNLOCKED_KEY, readMoonState, resetMoonState, type MoonState } from '../lib/moon-gate';
 
 type GateWindow = Window & { __arMoonController?: AbortController; __arMoonElement?: HTMLElement };
 const host = window as GateWindow;
@@ -17,6 +18,7 @@ function setupMoonGate() {
   const status = gate.querySelector<HTMLElement>('[data-moon-status]');
   const hint = gate.querySelector<HTMLElement>('.moon-gate-hint');
   const dialog = document.querySelector<HTMLDialogElement>('[data-moon-dialog]');
+  let pendingUnlock = false;
   let previousFocus: HTMLElement | null = null;
   let restoreFocus = true;
   let pulseTimer: ReturnType<typeof setTimeout> | undefined;
@@ -54,12 +56,14 @@ function setupMoonGate() {
   }, { signal });
 
   trigger?.addEventListener('click', event => {
-    if (dialog?.open) return;
+    if (dialog?.open || pendingUnlock) return;
     if (readMoonState().unlocked) {
       void navigate('/moon/workbench/');
       return;
     }
     const state = activateMoonGate();
+    const progress = advanceMoonAccess(state.count);
+    if (state.count < 39) void progress.catch(() => {});
     if (state.count <= 13) return;
     gate.classList.remove('is-touched');
     void gate.offsetWidth;
@@ -72,7 +76,23 @@ function setupMoonGate() {
       if (state.count === 38) status.textContent = '再轻叩一下。';
       if (state.unlocked) status.textContent = '月之暗面已解锁，导航中已加入入口。';
     }
-    if (state.unlocked) openWelcome(event);
+    if (state.count === 39) {
+      pendingUnlock = true; trigger.setAttribute('aria-busy', 'true');
+      if (hint) hint.textContent = '正在接通月面信号……';
+      if (status) status.textContent = '正在接通月面信号，请稍候。';
+      void progress.then(ready => {
+        if (!ready) return;
+        const unlocked = completeMoonUnlock();
+        if (signal.aborted || !unlocked.unlocked) return;
+        if (status) status.textContent = '月之暗面已解锁，导航中已加入入口。';
+        openWelcome(event);
+      }).catch(error => {
+        if (signal.aborted || (error instanceof MoonAccessError && error.code === 'cancelled')) return;
+        const message = error instanceof MoonAccessError && error.code === 'unavailable' ? '月面信号暂未接通，请稍后再来。' : '信号暂时中断，再轻叩一次重试。';
+        if (hint) hint.textContent = message;
+        if (status) status.textContent = message;
+      }).finally(() => { pendingUnlock = false; trigger.removeAttribute('aria-busy'); });
+    }
   }, { signal });
 
   // The next tap in a burst can land on a newly appeared dialog button.

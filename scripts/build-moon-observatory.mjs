@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFile, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
@@ -16,7 +16,11 @@ if (!sourcePath || (outputOption >= 0 && !args[outputOption + 1])) {
 }
 const outputPath = outputOption >= 0
   ? path.resolve(args[outputOption + 1])
-  : fileURLToPath(new URL('../src/data/moon-observatory.json', import.meta.url));
+  : fileURLToPath(new URL('../../moon-private/overview-v1.json', import.meta.url));
+const repositoryPath = fileURLToPath(new URL('../', import.meta.url));
+const relativeOutput = path.relative(repositoryPath, outputPath);
+assert.ok(relativeOutput.startsWith('..' + path.sep) || path.isAbsolute(relativeOutput), 'Moon aggregate data must be written outside the website repository');
+await mkdir(path.dirname(outputPath), { recursive: true });
 assert.notEqual(path.resolve(sourcePath).toLowerCase(), outputPath.toLowerCase(), 'The source must never be overwritten');
 
 const html = await readFile(sourcePath, 'utf8');
